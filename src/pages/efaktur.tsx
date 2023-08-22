@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import React, { Component, useEffect, useState } from "react"
+import React, { Component, useEffect, useState, useMemo } from "react"
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import toast, { Toaster } from 'react-hot-toast';
 import axios from "axios";
@@ -9,11 +9,14 @@ import Select from "./components/reactSelect";
 import ReactTable from "./components/reactTable";
 import DebouncedInput from "./components/debouncedInput"
 
-export default function Npwp({ userData, setuserData }: any) {
+export default function Efaktur({ userData, setuserData }: any) {
     const [dataCreate, setdataCreate] = useState();
     const [search, setsearch] = useState('');
-    const URL = "/api/npwp";
-    const Subject = "NPWP";
+    const [npwp, setnpwp] = useState();
+    const URL = "/api/efaktur";
+    const Subject = "E-Faktur";
+
+
 
     const handleApi = async (url: any, data: any = null) => {
         if (url === 'create') {
@@ -31,6 +34,21 @@ export default function Npwp({ userData, setuserData }: any) {
                     ($('.btn-close') as any).trigger("click");
                     (document.getElementById('formCreate') as HTMLFormElement).reset();
                     handleApi('view_user')
+                });
+            } catch (error: any) {
+                toast.error(error.response.data.massage);
+            }
+        } else if (url === 'view_npwp') {
+            try {
+                await axios({
+                    method: "GET",
+                    url: '/api/npwp',
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                }).then((res: any) => {
+                    let arr = res.data.data.map((val: any) => { return { label: val.npwp + ' (' + val.fullName + ')', value: val.npwp, data: val } })
+                    setnpwp(arr)
                 });
             } catch (error: any) {
                 toast.error(error.response.data.massage);
@@ -53,24 +71,51 @@ export default function Npwp({ userData, setuserData }: any) {
 
     const modalData = [
         {
-            name: 'npwp',
-            type: 'number',
-            id: 'npwp'
+            name: 'detail',
+            label: 'Detail Transaction',
+            type: 'reactSelect',
+            select: [{ label: 'Kepada Pihak Yang Bukan Pemungut', value: 1 }]
         },
         {
-            name: 'fullName',
-            type: 'text',
-            id: 'fullName'
+            name: 'jenis',
+            label: 'Jenis Faktur',
+            type: 'reactSelect',
+            select: [{ label: 'Faktur Pajak', value: 1 }]
         },
         {
-            name: 'phone',
-            type: 'text',
-            id: 'nophone'
+            label: 'Tanggal Dokument',
+            name: 'date',
+            type: 'date',
         },
         {
-            name: 'address',
+            name: 'Laporan SPT',
+            type: 'group',
+            group: [
+                { name: 'masa', placeholder: 'Masa Pajak', type: 'number' },
+                { name: 'year', type: 'number', placeholder: 'Tahun Pajak' },
+            ]
+        },
+        {
+            name: 'Nomor Seri Faktur Pajak',
+            type: 'group',
+            group: [
+                { name: 'seri1', type: 'number', defaultValue: '010', readOnly: true },
+                { name: 'seri2', type: 'number' },
+                { name: 'seri3', type: 'number' },
+                { name: 'seri4', type: 'number' },
+            ]
+        },
+        {
+            name: 'referensi',
+            label: 'Referensi Faktur',
             type: 'textarea',
-            id: 'address'
+        },
+        {
+            name: 'npwp',
+            label: 'NPWP',
+            type: 'reactSelect',
+            search: true,
+            select: npwp
         },
     ];
 
@@ -82,6 +127,10 @@ export default function Npwp({ userData, setuserData }: any) {
             return '';
         }
     }
+
+    useEffect(() => {
+        handleApi('view_npwp')
+    }, [])
 
     return (
         <>
@@ -119,14 +168,14 @@ export default function Npwp({ userData, setuserData }: any) {
                         <div className="col hp-flex-none w-auto">
                             <button type="button" className="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addNew">
                                 <i className="ri-user-add-line remix-icon"></i>
-                                <span>Add NPWP</span>
+                                <span>Add {Subject}</span>
                             </button>
                         </div>
-                        <div className="modal fade" id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" aria-hidden="true">
-                            <div className="modal-dialog modal-dialog-centered">
+                        <div className="modal fade" id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" role="dialog" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
+                            <div className="modal-dialog modal-lg modal-dialog-centered">
                                 <div className="modal-content">
                                     <div className="modal-header py-16 px-24">
-                                        <h5 className="modal-title" id="addNewLabel">Add {Subject}</h5>
+                                        <h5 className="modal-title font-bold" id="addNewLabel">Add {Subject}</h5>
                                         <button type="button" className="btn-close hp-bg-none d-flex align-items-center justify-content-center" data-bs-dismiss="modal" aria-label="Close">
                                             <i className="ri-close-line hp-text-color-dark-0 lh-1" style={{ fontSize: "24px" }}></i>
                                         </button>
@@ -144,7 +193,7 @@ export default function Npwp({ userData, setuserData }: any) {
                                                                 <div className="mb-24">
                                                                     <label htmlFor={val.id} className="form-label">
                                                                         <span className="text-danger me-4">*</span>
-                                                                        {convertCamelCase(val.name)}
+                                                                        {convertCamelCase(val.label ?? val.name)}
                                                                     </label>
                                                                     <input type={val.type} className="form-control" name={val.name} id={val.id} />
                                                                 </div>
@@ -153,7 +202,7 @@ export default function Npwp({ userData, setuserData }: any) {
                                                                     <div className="mb-24">
                                                                         <label htmlFor={val.id} className="form-label">
                                                                             <span className="text-danger me-4">*</span>
-                                                                            {convertCamelCase(val.name)}
+                                                                            {convertCamelCase(val.label ?? val.name)}
                                                                         </label>
                                                                         <input type={val.type} className="form-control" name={val.name} id={val.id} />
                                                                     </div> :
@@ -161,7 +210,7 @@ export default function Npwp({ userData, setuserData }: any) {
                                                                         <div className="mb-24">
                                                                             <label htmlFor={val.id} className="form-label">
                                                                                 <span className="text-danger me-4">*</span>
-                                                                                {convertCamelCase(val.name)}
+                                                                                {convertCamelCase(val.label ?? val.name)}
                                                                             </label>
                                                                             <input type={val.type} className="form-control" name={val.name} id={val.id} />
                                                                         </div>
@@ -169,31 +218,45 @@ export default function Npwp({ userData, setuserData }: any) {
                                                                             <div className="mb-24">
                                                                                 <label htmlFor={val.id} className="form-label">
                                                                                     <span className="text-danger me-4">*</span>
-                                                                                    {convertCamelCase(val.name)}
+                                                                                    {convertCamelCase(val.label ?? val.name)}
                                                                                 </label>
                                                                                 <input type={val.type} className="form-control" name={val.name} id={val.id} />
                                                                             </div>
-                                                                            : val.type === 'textarea' ?
+
+                                                                            : val.type === 'group' ?
                                                                                 <div className="mb-24">
                                                                                     <label htmlFor={val.id} className="form-label">
                                                                                         <span className="text-danger me-4">*</span>
-                                                                                        {convertCamelCase(val.name)}
+                                                                                        {convertCamelCase(val.label ?? val.name)}
                                                                                     </label>
-                                                                                    <textarea id={val.id} name={val.name} className="form-control"></textarea>
+                                                                                    <div className="input-group">
+                                                                                        {val.group.map((vall: any, ii: number) => {
+                                                                                            return (<input key={ii} type={vall.type} defaultValue={vall.defaultValue} readOnly={vall.readOnly} placeholder={vall.placeholder} name={vall.name} className="form-control" />)
+                                                                                        })}
+                                                                                    </div>
                                                                                 </div>
-                                                                                : val.type === 'reactSelect' ?
+                                                                                : val.type === 'textarea' ?
                                                                                     <div className="mb-24">
                                                                                         <label htmlFor={val.id} className="form-label">
                                                                                             <span className="text-danger me-4">*</span>
-                                                                                            {convertCamelCase(val.name)}
+                                                                                            {convertCamelCase(val.label ?? val.name)}
                                                                                         </label>
-                                                                                        <Select
-                                                                                            id={val.id}
-                                                                                            name={val.name}
-                                                                                            data={val.select}
-                                                                                        />
+                                                                                        <textarea id={val.id} name={val.name} className="form-control"></textarea>
                                                                                     </div>
-                                                                                    : null
+                                                                                    : val.type === 'reactSelect' ?
+                                                                                        <div className="mb-24">
+                                                                                            <label htmlFor={val.id} className="form-label">
+                                                                                                <span className="text-danger me-4">*</span>
+                                                                                                {convertCamelCase(val.label ?? val.name)}
+                                                                                            </label>
+                                                                                            <Select
+                                                                                                id={val.id}
+                                                                                                name={val.name}
+                                                                                                data={val.select}
+                                                                                                search={val.search}
+                                                                                            />
+                                                                                        </div>
+                                                                                        : null
                                                         }</div>
                                                 }) : null}
                                             </div>

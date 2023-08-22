@@ -23,6 +23,13 @@ module.exports = async (req, res) => {
     });
   }
 
+  if (!user.status === "active") {
+    return res.json({
+      status: 404,
+      message: "Account not active",
+    });
+  }
+
   const isPasswordCorrect = verify(body.password, user.password);
   if (!isPasswordCorrect) {
     return res.json({

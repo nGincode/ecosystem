@@ -17,10 +17,10 @@ module.exports = {
 
     return queryInterface.bulkInsert("Users", [
       {
-        username: "Doe",
+        username: "fembinurilham",
         role: "admin",
         status: "active",
-        email: "example@example.com",
+        email: "fembinurilham@gmail.com",
         password: Password.hash("12345678"),
         uuid: Crypto.randomUUID(),
         createdAt: new Date(),
