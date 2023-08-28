@@ -38,17 +38,30 @@ export default function Npwp({ userData, setuserData }: any) {
         }
     }
 
-    const submitUsers = (event: any) => {
+    const submitAdd = (event: any) => {
         event.preventDefault();
+
+        let address = {
+            jalan: event.target.jalan.value,
+            block: event.target.block.value,
+            no: event.target.no.value,
+            rt: event.target.rt.value,
+            rw: event.target.rw.value,
+            kel: event.target.kel.value,
+            kec: event.target.kec.value,
+            kabkot: event.target.kabkot.value,
+            prov: event.target.prov.value,
+            kodepos: event.target.kodepos.value,
+        };
 
         let data = {
             npwp: event.target.npwp.value,
             fullName: event.target.fullName.value,
             phone: event.target.phone.value,
-            address: event.target.address.value,
+            address: address
         };
-        handleApi('create', data);
 
+        handleApi('create', data);
     };
 
     const modalData = [
@@ -69,8 +82,26 @@ export default function Npwp({ userData, setuserData }: any) {
         },
         {
             name: 'address',
-            type: 'textarea',
-            id: 'address'
+            type: 'group',
+            full: true,
+            group: [
+                { name: 'jalan', placeholder: 'Jl', type: 'text' },
+                { name: 'block', type: 'text', placeholder: 'Block' },
+                { name: 'no', type: 'number', placeholder: 'No' },
+                { name: 'rt', type: 'number', placeholder: 'RT' },
+                { name: 'rw', type: 'number', placeholder: 'RW' },
+            ]
+        },
+        {
+            type: 'group',
+            full: true,
+            group: [
+                { name: 'kel', type: 'text', placeholder: 'Kel' },
+                { name: 'kec', type: 'text', placeholder: 'Kec' },
+                { name: 'kabkot', type: 'text', placeholder: 'Kab/Kot' },
+                { name: 'prov', type: 'text', placeholder: 'Prov' },
+                { name: 'kodepos', type: 'number', placeholder: 'Kode Pos' },
+            ]
         },
     ];
 
@@ -134,17 +165,17 @@ export default function Npwp({ userData, setuserData }: any) {
 
                                     <div className="divider m-0"></div>
 
-                                    <form onSubmit={submitUsers} id="formCreate">
+                                    <form onSubmit={submitAdd} id="formCreate">
                                         <div className="modal-body">
                                             <div className="row gx-8">
                                                 {modalData.length ? modalData?.map((val: any, i: number) => {
-                                                    return <div className="col-12 col-md-6" key={i}>
+                                                    return <div className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
                                                         {
                                                             val.type === 'text' ?
                                                                 <div className="mb-24">
                                                                     <label htmlFor={val.id} className="form-label">
                                                                         <span className="text-danger me-4">*</span>
-                                                                        {convertCamelCase(val.name)}
+                                                                        {convertCamelCase(val.label ?? val.name)}
                                                                     </label>
                                                                     <input type={val.type} className="form-control" name={val.name} id={val.id} />
                                                                 </div>
@@ -153,7 +184,7 @@ export default function Npwp({ userData, setuserData }: any) {
                                                                     <div className="mb-24">
                                                                         <label htmlFor={val.id} className="form-label">
                                                                             <span className="text-danger me-4">*</span>
-                                                                            {convertCamelCase(val.name)}
+                                                                            {convertCamelCase(val.label ?? val.name)}
                                                                         </label>
                                                                         <input type={val.type} className="form-control" name={val.name} id={val.id} />
                                                                     </div> :
@@ -161,7 +192,7 @@ export default function Npwp({ userData, setuserData }: any) {
                                                                         <div className="mb-24">
                                                                             <label htmlFor={val.id} className="form-label">
                                                                                 <span className="text-danger me-4">*</span>
-                                                                                {convertCamelCase(val.name)}
+                                                                                {convertCamelCase(val.label ?? val.name)}
                                                                             </label>
                                                                             <input type={val.type} className="form-control" name={val.name} id={val.id} />
                                                                         </div>
@@ -169,31 +200,47 @@ export default function Npwp({ userData, setuserData }: any) {
                                                                             <div className="mb-24">
                                                                                 <label htmlFor={val.id} className="form-label">
                                                                                     <span className="text-danger me-4">*</span>
-                                                                                    {convertCamelCase(val.name)}
+                                                                                    {convertCamelCase(val.label ?? val.name)}
                                                                                 </label>
                                                                                 <input type={val.type} className="form-control" name={val.name} id={val.id} />
                                                                             </div>
-                                                                            : val.type === 'textarea' ?
+
+                                                                            : val.type === 'group' ?
                                                                                 <div className="mb-24">
-                                                                                    <label htmlFor={val.id} className="form-label">
-                                                                                        <span className="text-danger me-4">*</span>
-                                                                                        {convertCamelCase(val.name)}
-                                                                                    </label>
-                                                                                    <textarea id={val.id} name={val.name} className="form-control"></textarea>
+                                                                                    {val.label || val.name ?
+                                                                                        <label htmlFor={val.id} className="form-label">
+                                                                                            <span className="text-danger me-4">*</span>
+                                                                                            {convertCamelCase(val.label ?? val.name)}
+                                                                                        </label>
+                                                                                        : null}
+                                                                                    <div className="input-group">
+                                                                                        {val.group.map((vall: any, ii: number) => {
+                                                                                            return (<input key={ii} type={vall.type} defaultValue={vall.defaultValue} readOnly={vall.readOnly} placeholder={vall.placeholder} name={vall.name} className="form-control" />)
+                                                                                        })}
+                                                                                    </div>
                                                                                 </div>
-                                                                                : val.type === 'reactSelect' ?
+                                                                                : val.type === 'textarea' ?
                                                                                     <div className="mb-24">
                                                                                         <label htmlFor={val.id} className="form-label">
                                                                                             <span className="text-danger me-4">*</span>
-                                                                                            {convertCamelCase(val.name)}
+                                                                                            {convertCamelCase(val.label ?? val.name)}
                                                                                         </label>
-                                                                                        <Select
-                                                                                            id={val.id}
-                                                                                            name={val.name}
-                                                                                            data={val.select}
-                                                                                        />
+                                                                                        <textarea id={val.id} name={val.name} className="form-control"></textarea>
                                                                                     </div>
-                                                                                    : null
+                                                                                    : val.type === 'reactSelect' ?
+                                                                                        <div className="mb-24">
+                                                                                            <label htmlFor={val.id} className="form-label">
+                                                                                                <span className="text-danger me-4">*</span>
+                                                                                                {convertCamelCase(val.label ?? val.name)}
+                                                                                            </label>
+                                                                                            <Select
+                                                                                                id={val.id}
+                                                                                                name={val.name}
+                                                                                                data={val.select}
+                                                                                                search={val.search}
+                                                                                            />
+                                                                                        </div>
+                                                                                        : null
                                                         }</div>
                                                 }) : null}
                                             </div>

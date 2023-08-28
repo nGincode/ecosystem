@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
 import Swal from 'sweetalert2'
-
+import { Select as Material, Option } from "@material-tailwind/react";
 
 import Select from "react-select";
 import SelectCreate from "react-select/creatable";
@@ -23,7 +23,7 @@ export default function ReactSelect({
     api_token,
     datapost,
     setSearchValue,
-    required }: any) {
+    required, label }: any) {
     if (defaultValue && multi) {
         var dataSelect: any = [...defaultValue].concat(data);
     } else {
@@ -72,8 +72,13 @@ export default function ReactSelect({
     };
 
     const handleOnChangeDefault = (val: any) => {
-        setvalue(val.target.value);
-        if (setSearchValue) setSearchValue(val.target.value);
+        if (val.target?.value) {
+            setvalue(val.target.value);
+            if (setSearchValue) setSearchValue(val.target.value);
+        } else {
+            setvalue(val);
+            if (setSearchValue) setSearchValue(val);
+        }
     };
 
     const handleChangeCreate = (val: any) => {
@@ -164,24 +169,22 @@ export default function ReactSelect({
 
                         />
                     ) : (
-                        <select
+                        <Material
                             name={name}
                             id={id}
-                            value={value}
+                            value={value ? `${value}` : ''}
                             onChange={handleOnChangeDefault}
-                            className={`form-control ` + (className ?? "")}
+                            variant="standard"
+                            label={label}
                         >
-                            <option value="" disabled>
-                                Choose...
-                            </option>
                             {data.map((val: any, i: number) => {
                                 return (
-                                    <option key={i} value={val.value}>
+                                    <Option key={i} className="mb-1" value={`${val.value}`}>
                                         {val.label}
-                                    </option>
+                                    </Option>
                                 );
                             })}
-                        </select>
+                        </Material>
                     )}
                 </>
                 : null}

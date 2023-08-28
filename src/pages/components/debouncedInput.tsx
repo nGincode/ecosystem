@@ -1,11 +1,12 @@
 import React, { Component, useEffect, useState } from "react"
+import { Input } from "@material-tailwind/react";
 
 
 export default function DebouncedInput({
     value: initialValue,
     onChange,
     debounce = 500,
-    ...props
+    placeholder
 }: {
     value: string | number
     onChange: (value: string | number) => void
@@ -26,6 +27,6 @@ export default function DebouncedInput({
     }, [debounce, onChange, value])
 
     return (
-        <input {...props} value={value} onChange={e => setValue(e.target.value)} />
+        <Input label={placeholder} className="border-b-1" variant="standard" value={value} onChange={e => setValue(e.target.value)} />
     )
 }

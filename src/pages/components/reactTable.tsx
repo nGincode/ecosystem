@@ -157,6 +157,37 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                         },
                         footer: (props: any) => props.column.id,
                     })
+                } else if (val === 'address') {
+                    array.push({
+                        accessorKey: val,
+                        header: () => <div>{convertCamelCase(val)}</div>,
+                        cell: ({ row }: any) => {
+                            if (row.original.address?.jalan) {
+                                return row.original.address.jalan +
+                                    " " +
+                                    row.original.address.block +
+                                    " " +
+                                    row.original.address.no +
+                                    " " +
+                                    row.original.address.rt +
+                                    " " +
+                                    row.original.address.rw +
+                                    " " +
+                                    row.original.address.kel +
+                                    " " +
+                                    row.original.address.kec +
+                                    " " +
+                                    row.original.address.kabkot +
+                                    " " +
+                                    row.original.address.prov +
+                                    " " +
+                                    row.original.address.kodepos
+                            } else {
+                                return row.getValue() ?? '-'
+                            }
+                        },
+                        footer: (props: any) => props.column.id,
+                    })
                 } else {
                     array.push({
                         accessorKey: val,
@@ -417,7 +448,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                 <div className="modal-body">
                                     <div className="row gx-8">
                                         {modalData.length ? modalData?.map((val: any, i: number) => {
-                                            return <div className="col-12 col-md-6" key={i}>
+                                            return <div className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
                                                 {
                                                     val.type === 'text' ?
                                                         <div className="mb-24">
@@ -451,27 +482,41 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                                                         </label>
                                                                         <input type={val.type} defaultValue={dataEdit?.[val.name]} className="form-control" name={val.name} id={`${val.id}Edit`} />
                                                                     </div>
-                                                                    : val.type === 'textarea' ?
+                                                                    : val.type === 'group' ?
                                                                         <div className="mb-24">
-                                                                            <label htmlFor={val.id} className="form-label">
-                                                                                <span className="text-danger me-4">*</span>
-                                                                                {convertCamelCase(val.name)}
-                                                                            </label>
-                                                                            <textarea id={`${val.id}Edit`} name={val.name} className="form-control" defaultValue={dataEdit?.[val.name]}></textarea>
+                                                                            {val.label || val.name ?
+                                                                                <label htmlFor={val.id} className="form-label">
+                                                                                    <span className="text-danger me-4">*</span>
+                                                                                    {convertCamelCase(val.label ?? val.name)}
+                                                                                </label>
+                                                                                : null}
+                                                                            <div className="input-group">
+                                                                                {val.group.map((vall: any, ii: number) => {
+                                                                                    return (<input key={ii} type={vall.type} defaultValue={dataEdit?.address ? dataEdit?.address[vall.name] : dataEdit?.[val.name]} readOnly={vall.readOnly} placeholder={vall.placeholder} name={vall.name} className="form-control" />)
+                                                                                })}
+                                                                            </div>
                                                                         </div>
-                                                                        : val.type === 'reactSelect' ?
+                                                                        : val.type === 'textarea' ?
                                                                             <div className="mb-24">
                                                                                 <label htmlFor={val.id} className="form-label">
                                                                                     <span className="text-danger me-4">*</span>
                                                                                     {convertCamelCase(val.name)}
                                                                                 </label>
-                                                                                <Select
-                                                                                    id={`${val.id}Edit`}
-                                                                                    name={val.name}
-                                                                                    data={val.select}
-                                                                                    defaultValue={dataEdit?.[val.name] ? { label: convertCamelCase(dataEdit?.[val.name]), value: dataEdit?.[val.name] } : ''} />
+                                                                                <textarea id={`${val.id}Edit`} name={val.name} className="form-control" defaultValue={dataEdit?.[val.name]}></textarea>
                                                                             </div>
-                                                                            : null
+                                                                            : val.type === 'reactSelect' ?
+                                                                                <div className="mb-24">
+                                                                                    <label htmlFor={val.id} className="form-label">
+                                                                                        <span className="text-danger me-4">*</span>
+                                                                                        {convertCamelCase(val.name)}
+                                                                                    </label>
+                                                                                    <Select
+                                                                                        id={`${val.id}Edit`}
+                                                                                        name={val.name}
+                                                                                        data={val.select}
+                                                                                        defaultValue={dataEdit?.[val.name] ? { label: convertCamelCase(dataEdit?.[val.name]), value: dataEdit?.[val.name] } : ''} />
+                                                                                </div>
+                                                                                : null
                                                 }</div>
                                         }) : null}
                                     </div>

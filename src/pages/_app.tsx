@@ -96,6 +96,7 @@ export default function App({ Component, pageProps }: AppProps) {
                     </Suspense>
                 </Layout> :
                 <Login submitLogin={submitLogin} />}
+
         </>)
 
 }

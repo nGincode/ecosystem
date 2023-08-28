@@ -69,6 +69,35 @@ const get = async (req, res) => {
     });
   }
 
+  const data = Npwp.map((val) => {
+    return {
+      uuid: val.uuid,
+      npwp: val.npwp,
+      fullName: val.fullName,
+      phone: val.phone,
+      address:
+        val.address.jalan +
+        " - " +
+        val.address.block +
+        " - " +
+        val.address.no +
+        " - " +
+        val.address.rt +
+        " - " +
+        val.address.rw +
+        " - " +
+        val.address.kel +
+        " - " +
+        val.address.kec +
+        " - " +
+        val.address.kabkot +
+        " - " +
+        val.address.prov +
+        " - " +
+        val.address.kodepos,
+    };
+  });
+
   res.json({
     massage: "Get data successful",
     data: Npwp,
