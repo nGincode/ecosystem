@@ -4,7 +4,6 @@ import '../css/globals.css'
 import React, { Component, useEffect, useState, Suspense } from "react"
 import type { AppProps } from 'next/app'
 import toast, { Toaster } from 'react-hot-toast';
-import _ from "lodash";
 import axios from "axios";
 
 if (typeof window !== "undefined") {
