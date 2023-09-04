@@ -170,8 +170,8 @@ export default function ReactSelect({
                         />
                     ) : (
                         <>
-                            <input name={name + '_val'} value={value ? value.value ? `${value.value}` : `${value}` : ''} type="hidden" />
-                            <input name={name} value={value ? value.value ? `${value.value}` : `${value}` : ''} type="hidden" />
+                            <input required={required} name={name + '_val'} value={value ? value.value ? `${value.value}` : `${value}` : ''} type="hidden" />
+                            <input required={required} name={name} value={value ? value.value ? `${value.value}` : `${value}` : ''} type="hidden" />
                             <Material
                                 name={name}
                                 id={id}

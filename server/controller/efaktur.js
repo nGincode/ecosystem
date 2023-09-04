@@ -1,4 +1,5 @@
 const { User, npwp, efaktur, efakturItem } = require("../models");
+const moment = require("moment/moment");
 const Crypto = require("crypto");
 
 const getId = async (req, res) => {
@@ -79,10 +80,10 @@ const get = async (req, res) => {
   const data = EFAKTUR.map((val) => {
     return {
       uuid: val.uuid,
-      date: val.date,
+      date: moment(val.date).format("DD/MM/YYYY"),
       noFaktur: val.transaction + val.noFaktur,
       noIdentitas:
-        val.noIdentitas + val.noIdentitas.length == 15 ? "(NPWP)" : "(NIK)",
+        val.noIdentitas + (val.noIdentitas.length == 15 ? " (NPWP)" : " (NIK)"),
       nameIdentitas: val.nameIdentitas,
       DPP: val.jumlahDPP,
       PPN: val.jumlahPPN,
@@ -170,8 +171,8 @@ const post = async (req, res) => {
     keterangan_tambahan,
   } = req.body;
 
-  let valAddress = "";
-  let valNameIdentitas = "";
+  let valAddress;
+  let valNameIdentitas;
   if (typeIdentitas === "NPWP") {
     const Npwp = await npwp.findOne({
       where: { npwp: noIdentitas },
@@ -184,8 +185,8 @@ const post = async (req, res) => {
       });
     }
 
-    valAddress = addressIdentitas;
-    valNameIdentitas = nameIdentitas;
+    valAddress = Npwp.address;
+    valNameIdentitas = Npwp.name;
   } else {
     valAddress = addressIdentitas;
     valNameIdentitas = addressIdentitas;

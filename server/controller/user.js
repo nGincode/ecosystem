@@ -3,6 +3,7 @@ const { hash, verify } = require("node-php-password");
 const { User } = require("../models");
 const { Op } = require("sequelize");
 const Crypto = require("crypto");
+const moment = require("moment/moment");
 
 const getId = async (req, res) => {
   const { users_id, users_uuid, email, username } = req.user;
@@ -120,7 +121,20 @@ const get = async (req, res) => {
 
   res.json({
     massage: "Get data successful",
-    data: user,
+    data: user.map((val) => {
+      return {
+        uuid: val.uuid,
+        img: val.img,
+        fullName: val.fullName,
+        email: val.email,
+        username: val.username,
+        dateOfBirth: moment(val.dateOfBirth).format("DD/MM/YYYY"),
+        phone: val.phone,
+        role: val.role,
+        address: val.address,
+        status: val.status,
+      };
+    }),
   });
 };
 

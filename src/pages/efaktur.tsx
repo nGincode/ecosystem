@@ -186,7 +186,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                 jenis: event.target.jenis_val.value,
                 date: event.target.date.value,
                 referensi: event.target.referensi.value,
-                keterangan_tambahan: event.target.keterangan_tambahan?.value ?? null,
+                keterangan_tambahan: event.target.keterangan_tambahan_val?.value ?? null,
                 noFaktur: event.target.detail_val.value + event.target.seri2.value + event.target.seri3.value + event.target.seri4.value,
                 item: itemFaktur
             };
@@ -212,6 +212,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                 jenis: event.target.jenis_val.value,
                 date: event.target.date.value,
                 referensi: event.target.referensi.value,
+                keterangan_tambahan: event.target.keterangan_tambahan_val?.value ?? null,
                 noFaktur: event.target.detail_val.value + event.target.seri2.value + event.target.seri3.value + event.target.seri4.value,
                 item: itemFaktur
             };
@@ -852,7 +853,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                     </div>
                 </div>
                 <div className="col-12">
-                    <div className="card hp-contact-card mb-32 -mt-3">
+                    <div className="card hp-contact-card mb-32 -mt-3 shadow-md">
                         <div className="card-body px-0 text-center">
                             <label htmlFor="file">
                                 <span className="dropdown-item text-center rounded-lg" aria-hidden="true">Convert fomat Excel to ETax Import

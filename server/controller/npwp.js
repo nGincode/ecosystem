@@ -20,6 +20,7 @@ const getId = async (req, res) => {
   }
 
   res.json({
+    status: 200,
     massage: "Get data successful",
     data: Npwp,
   });
@@ -41,6 +42,7 @@ const putId = async (req, res) => {
     prov,
     kabkot,
     kodepos,
+    email,
   } = req.body;
 
   const Npwp = await npwp.findOne({
@@ -57,6 +59,7 @@ const putId = async (req, res) => {
     npwp: req.body.npwp,
     name: name,
     phone: phone,
+    email: email,
     address: {
       jalan: jalan,
       block: block,
@@ -100,6 +103,7 @@ const get = async (req, res) => {
       name: val.name,
       phone: val.phone,
       addressJson: val.address,
+      email: val.email,
       address:
         val.address.jalan +
         " " +
@@ -124,6 +128,7 @@ const get = async (req, res) => {
   });
 
   res.json({
+    status: 200,
     massage: "Get data successful",
     data: data,
   });
@@ -144,6 +149,7 @@ const put = async (req, res) => {
     prov,
     kabkot,
     kodepos,
+    email,
   } = req.body;
 
   const Npwp = await npwp.findOne({
@@ -160,6 +166,7 @@ const put = async (req, res) => {
     npwp: req.body.npwp,
     name: name,
     phone: phone,
+    email: email,
     address: {
       jalan: jalan,
       block: block,
@@ -202,12 +209,12 @@ const del = async (req, res) => {
 
   res.json({
     massage: "Delete successful",
-    data: npwp,
+    data: Npwp,
   });
 };
 
 const post = async (req, res) => {
-  const { name, address, phone } = req.body;
+  const { name, address, phone, email } = req.body;
 
   const data = {
     uuid: Crypto.randomUUID(),
@@ -215,6 +222,7 @@ const post = async (req, res) => {
     name: name,
     phone: phone,
     address: address,
+    email: email,
   };
 
   await npwp.create(data);

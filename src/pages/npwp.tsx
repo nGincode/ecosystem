@@ -84,6 +84,12 @@ export default function Npwp({ userData, setuserData }: any) {
             required: true
         },
         {
+            name: 'email',
+            type: 'text',
+            id: 'email',
+            required: false
+        },
+        {
             full: true,
             type: 'address',
             required: true
@@ -155,7 +161,7 @@ export default function Npwp({ userData, setuserData }: any) {
                                                         {
                                                             val.type === 'text' || val.type === 'number' || val.type === 'email' || val.type === 'date' ?
                                                                 <div className="mb-24">
-                                                                    <Input type={val.type} required variant="standard" className="border-b-1" label={val.label ?? val.name === 'npwp' ? "NPWP" : convertCamelCase(val.label ?? val.name)} name={val.name} id={val.id} />
+                                                                    <Input type={val.type} required={val.required} variant="standard" className="border-b-1" label={val.label ?? val.name === 'npwp' ? "NPWP" : convertCamelCase(val.label ?? val.name)} name={val.name} id={val.id} />
                                                                 </div>
                                                                 : val.type === 'address' ?
                                                                     <div className="w-full">
@@ -197,8 +203,8 @@ export default function Npwp({ userData, setuserData }: any) {
                     </div>
                 </div>
                 <div className="col-12">
-                    <div className="card hp-contact-card mb-32 -mt-3">
-                        <div className="card-body px-0">
+                    <div className="card hp-contact-card mb-32 -mt-3 shadow-md">
+                        <div className="card-body px-0 ">
                             <ReactTable
                                 search={search}
                                 action={{

@@ -56,7 +56,7 @@ export default function Users({ userData, setuserData }: any) {
             phone: event.target.phone.value,
             address: event.target.address.value,
             dateOfBirth: event.target.dateOfBirth.value,
-            role: event.target.role.value,
+            role: event.target.role_val.value,
             password: event.target.password.value,
             confirm_password: event.target.confirm_password.value,
         };
@@ -147,7 +147,7 @@ export default function Users({ userData, setuserData }: any) {
 
                                                 <div className="col-12 col-md-6">
                                                     <div className="mb-24">
-                                                        <Select variant="standard" required label="Role" name="role" id="role" data={[
+                                                        <Select variant="standard" required={true} label="Role" name="role" id="role" data={[
                                                             { value: 'admin', label: 'Admin' },
                                                             { value: 'staff', label: 'Staff' }
                                                         ]} />
@@ -185,7 +185,7 @@ export default function Users({ userData, setuserData }: any) {
                     </div>
                 </div>
                 <div className="col-12">
-                    <div className="card hp-contact-card mb-32 -mt-3">
+                    <div className="card hp-contact-card mb-32 -mt-3 shadow-md">
                         <div className="card-body px-0">
                             <ReactTable
                                 search={search}

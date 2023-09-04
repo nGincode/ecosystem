@@ -4,6 +4,7 @@ import React, { Component, useEffect, useState, useReducer, useMemo } from "reac
 import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
 import Swal from 'sweetalert2'
+import moment from "moment";
 
 
 import { Input, Textarea, Button } from "@material-tailwind/react";
@@ -422,11 +423,12 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                 <div className="modal-body">
                                     <div className="row gx-8">
                                         {modalData.length ? modalData?.map((val: any, i: number) => {
+
                                             return <div className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
                                                 {
                                                     val.type === 'text' || val.type === 'number' || val.type === 'email' || val.type === 'date' ?
                                                         <div className="mb-24">
-                                                            <Input required={val.required} label={convertCamelCase(val.name)} variant="standard" className="border-b-1" type={val.type} defaultValue={dataEdit?.[val.name]} name={val.name} id={`${val.id}Edit`} />
+                                                            <Input required={val.required} label={convertCamelCase(val.name)} variant="standard" className="border-b-1" type={val.type} defaultValue={val.type === 'date' ? dataEdit?.[val.name] ? moment(dataEdit?.[val.name], 'DD/MM/YYYY').format('YYYY-MM-DD') : dataEdit?.[val.name] : dataEdit?.[val.name]} name={val.name} id={`${val.id}Edit`} />
                                                         </div>
                                                         : val.type === 'group' ?
                                                             <div className="mb-24">

@@ -142,7 +142,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                                 :
                                                                 <li>
                                                                     <Link href={vall.link} className={`${(router.asPath === vall.link ? "active" : "")}`}>
-                                                                        <div className="tooltip-item in-active" data-bs-toggle="tooltip" data-bs-placement="right" title="" data-bs-original-title="Analytics" aria-label="Analytics"></div>
+                                                                        <div className="tooltip-item in-active" data-bs-toggle="tooltip" data-bs-placement="right" title="" data-bs-original-title={vall.label} aria-label={vall.label}></div>
                                                                         <span>
                                                                             <span className="submenu-item-icon">
                                                                                 {vall.icon}
@@ -591,7 +591,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                                         })}
                                                                     </> :
                                                                         <Link href={vall.link} className={router.asPath === vall.link ? "active" : ""}>
-                                                                            <div className="tooltip-item in-active" data-bs-toggle="tooltip" data-bs-placement="right" title="" data-bs-original-title="Analytics" aria-label="Analytics"></div>
+                                                                            <div className="tooltip-item in-active" data-bs-toggle="tooltip" data-bs-placement="right" title="" data-bs-original-title={vall.label} aria-label={vall.label}></div>
                                                                             <span>
                                                                                 <span className="submenu-item-icon">
                                                                                     {vall.icon}
