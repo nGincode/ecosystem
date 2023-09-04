@@ -8,7 +8,16 @@ import Link from "next/link";
 import toast, { Toaster } from 'react-hot-toast';
 import axios from "axios";
 import moment from "moment"
-import { Button, Badge, Input, Textarea } from "@material-tailwind/react";
+import {
+    Button, Badge, Input, Textarea,
+    Tabs,
+    TabsHeader,
+    TabsBody,
+    Tab,
+    TabPanel,
+} from "@material-tailwind/react";
+
+
 import { read, utils, writeFile } from 'xlsx';
 
 // import * as GC from '@grapecity/spread-sheets';
@@ -24,7 +33,66 @@ import DebouncedInput from "./components/debouncedInput"
 export default function Efaktur({ userData, setuserData }: any) {
     const [dataCreate, setdataCreate] = useState();
     const [search, setsearch] = useState('');
+    const [modalData, setmodalData] = useState([
+        {
+            name: 'detail',
+            label: 'Detail Transaction',
+            type: 'reactSelect',
+            select: [
+                { label: 'Kepada Pihak Yang Bukan Pemungut', value: '010' },
+                { label: 'Kepada Pemungut Bendaharawan', value: '020' },
+                { label: 'Kepada Pemungut Selain Bendaharawan', value: '030' },
+                { label: 'DPP Nilai Lain', value: '040' },
+                { label: 'Besaran Tertentu', value: '050' },
+                { label: 'Penyerahan Lainnya', value: '060' },
+                { label: 'Penyerahan Yang PPN-nya Tidak Dipungut', value: '070' },
+                { label: 'Penyerahan Yang PPN-nya Dibebaskan', value: '080' },
+            ],
+            required: true
+        },
+        {
+            name: 'jenis',
+            label: 'Jenis Faktur',
+            type: 'reactSelect',
+            select: [
+                { label: 'Faktur Pajak', value: '0' },
+                { label: 'Faktur Pajak Pengganti', value: '1' },
+            ],
+            required: true
+        },
+        {
+            label: 'Tanggal Dokument',
+            name: 'date',
+            type: 'date',
+            required: true
+        },
+        {
+            name: 'Nomor Seri Faktur Pajak',
+            type: 'group',
+            group: [
+                { name: 'seri2', type: 'number' },
+                { name: 'seri3', type: 'number' },
+                { name: 'seri4', type: 'number' },
+            ],
+            required: true
+        },
+        {
+            type: 'nik/npwp',
+            required: true
+        },
+        {
+            name: 'referensi',
+            label: 'Referensi Faktur',
+            type: 'textarea',
+        },
+        {
+            full: true,
+            type: 'efaktur',
+            required: true
+        }
+    ]);
     const [npwp, setnpwp] = useState([]);
+    const [tabIdentitas, settabIdentitas] = useState('');
     const [itemInputEfak, setitemInputEfak] = useState<any>([{ delete: false }]);
     const URLAPI = "/api/efaktur";
     const Subject = "E-Faktur";
@@ -41,11 +109,10 @@ export default function Efaktur({ userData, setuserData }: any) {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 }).then((res: any) => {
-                    setdataCreate(res.data.data)
+                    setdataCreate(res.data.data);
                     toast.success(res.data.massage);
                     ($('.btn-close') as any).trigger("click");
                     (document.getElementById('formCreate') as HTMLFormElement).reset();
-                    handleApi('view_user')
                 });
             } catch (error: any) {
                 toast.error(error.response.data.massage);
@@ -59,7 +126,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 }).then((res: any) => {
-                    let arr = res.data.data.map((val: any) => { return { label: val.npwp + ' (' + val.fullName + ')', value: val.npwp, data: val } })
+                    let arr = res.data.data.map((val: any) => { return { label: val.npwp + ' (' + val.name + ')', value: val.npwp, data: val } })
                     setnpwp(arr)
                 });
             } catch (error: any) {
@@ -68,77 +135,93 @@ export default function Efaktur({ userData, setuserData }: any) {
         }
     }
 
-    const submitUsers = (event: any) => {
+    const submitAdd = (event: any) => {
         event.preventDefault();
+        let noIdentitas = '';
+        let nameIdentitas = '';
+        let addressIdentitas = '';
 
-        let data = {
-            npwp: event.target.npwp.value,
-            fullName: event.target.fullName.value,
-            phone: event.target.phone.value,
-            address: event.target.address.value,
-        };
-        handleApi('create', data);
+        if (tabIdentitas === 'NPWP') {
+            noIdentitas = event.target.npwp.value;
+            nameIdentitas = event.target.nameIdentitas_npwp.value;
+            addressIdentitas = event.target.address_npwp.value;
+        } else if (tabIdentitas === 'NIK') {
+            noIdentitas = event.target.nik.value;
+            nameIdentitas = event.target.nameIdentitas_nik.value;
+            addressIdentitas = event.target.address_nik.value;
+        } else {
+            return toast.error('NPWP/NIK Harus Terisi')
+        }
+
+
+        if (!event.target.date.value) {
+            return toast.error('Tanggal Faktur Harus Terisi')
+        }
+
+
+        let name = event.target['name[]'];
+        if (name.length > 1) {
+            let itemFaktur = [];
+            for (let i = 0; i < name.length; i++) {
+                itemFaktur.push({
+                    name: event.target['name[]'][i].value ?? null,
+                    kode: event.target['kode[]'][i].value ?? null,
+                    harga: event.target['harga[]'][i].value ?? null,
+                    qty: event.target['qty[]'][i].value ?? null,
+                    diskon: event.target['diskon[]'][i].value ?? null,
+                    dpp: event.target['dpp[]'][i].value ?? null,
+                    ppn: event.target['ppn[]'][i].value ?? null,
+                    ppnbm: event.target['ppnbm[]'][i].value ?? null,
+                    tarif_ppnbm: event.target['tarif_ppnbm[]'][i].value ?? null,
+                })
+
+            }
+
+            const data = {
+                typeIdentitas: tabIdentitas,
+                noIdentitas: noIdentitas,
+                nameIdentitas: nameIdentitas,
+                addressIdentitas: addressIdentitas,
+                detail: event.target.detail_val.value,
+                jenis: event.target.jenis_val.value,
+                date: event.target.date.value,
+                referensi: event.target.referensi.value,
+                keterangan_tambahan: event.target.keterangan_tambahan?.value ?? null,
+                noFaktur: event.target.detail_val.value + event.target.seri2.value + event.target.seri3.value + event.target.seri4.value,
+                item: itemFaktur
+            };
+
+            handleApi('create', data);
+        } else if (event.target['name[]'].value) {
+            let itemFaktur = [{
+                name: event.target['name[]'].value ?? null,
+                kode: event.target['kode[]'].value ?? null,
+                harga: event.target['harga[]'].value ?? null,
+                qty: event.target['qty[]'].value ?? null,
+                diskon: event.target['diskon[]'].value ?? null,
+                dpp: event.target['dpp[]'].value ?? null,
+                ppn: event.target['ppn[]'].value ?? null,
+                ppnbm: event.target['ppnbm[]'].value ?? null,
+                tarif_ppnbm: event.target['tarif_ppnbm[]'].value ?? null,
+            }];
+            const data = {
+                noIdentitas: noIdentitas,
+                nameIdentitas: nameIdentitas,
+                addressIdentitas: addressIdentitas,
+                detail: event.target.detail_val.value,
+                jenis: event.target.jenis_val.value,
+                date: event.target.date.value,
+                referensi: event.target.referensi.value,
+                noFaktur: event.target.detail_val.value + event.target.seri2.value + event.target.seri3.value + event.target.seri4.value,
+                item: itemFaktur
+            };
+
+            handleApi('create', data);
+        } else {
+            return toast.error('Item Faktur Required')
+        }
 
     };
-
-    const modalData = [
-        {
-            name: 'detail',
-            label: 'Detail Transaction',
-            type: 'reactSelect',
-            select: [
-                { label: 'Kepada Pihak Yang Bukan Pemungut', value: '01' },
-                { label: 'Kepada Pemungut Bendaharawan', value: '02' },
-                { label: 'Kepada Pemungut Selain Bendaharawan', value: '03' },
-                { label: 'DPP Nilai Lain', value: '04' },
-                { label: 'Besaran Tertentu', value: '05' },
-                { label: 'Penyerahan Lainnya', value: '06' },
-                { label: 'Penyerahan Yang PPN-nya Tidak dipungut', value: '07' },
-                { label: 'Penyerahan Yang PPN-nya dibebaskan', value: '08' },
-            ]
-        },
-        {
-            name: 'jenis',
-            label: 'Jenis Faktur',
-            type: 'reactSelect',
-            select: [
-                { label: 'Faktur Pajak', value: 1 },
-                { label: 'Faktur Pajak Pengganti', value: 2 },
-            ]
-        },
-        {
-            label: 'Tanggal Dokument',
-            name: 'date',
-            type: 'date',
-        },
-        {
-            name: 'Nomor Seri Faktur Pajak',
-            type: 'group',
-            group: [
-                { name: 'seri1', type: 'number', defaultValue: '010', readOnly: true },
-                { name: 'seri2', type: 'number' },
-                { name: 'seri3', type: 'number' },
-                { name: 'seri4', type: 'number' },
-            ]
-        },
-        {
-            name: 'npwp',
-            label: 'NPWP',
-            type: 'reactSelect',
-            search: true,
-            select: npwp
-        },
-        {
-            name: 'referensi',
-            full: true,
-            label: 'Referensi Faktur',
-            type: 'textarea',
-        },
-        {
-            full: true,
-            type: 'efaktur',
-        },
-    ];
 
     const convertCamelCase = (text: any) => {
         if (text) {
@@ -179,6 +262,63 @@ export default function Efaktur({ userData, setuserData }: any) {
         handleApi('view_npwp')
     }, [])
 
+    const RPtoNumber = (val: string) => {
+        if (val) {
+            let res = val.replace(',', '').replace('Rp', '').replace('-', '');
+            return Number(res)
+        } else {
+            return 0;
+        }
+    }
+
+    const jenisFaktur = (val: any) => {
+        if (val === 'Faktur Pajak') {
+            return '0'
+        } else if (val === 'Faktur Pajak Pengganti') {
+            return '1'
+
+        }
+    }
+
+    const jenisTransaksi = (val: any) => {
+        if (val === 'Kepada Pihak Yang Bukan Pemungut') {
+            return '01'
+        } else if (val == 'Kepada Pemungut Bendaharawan') {
+            return '02'
+        } else if (val == 'Kepada Pemungut Selain Bendaharawan') {
+            return '03'
+        } else if (val == 'DPP Nilai Lain') {
+            return '04'
+        } else if (val == 'Besaran Tertentu (Pasal 9A ayat (1) UU PPN)') {
+            return '05'
+        } else if (val == 'Penyerahan Lainnya') {
+            return '06'
+        } else if (val == 'Penyerahan Yang PPN-nya Tidak Dipungut') {
+            return '07'
+        } else if (val == 'Penyerahan Yang PPN-nya Dibebaskan') {
+            return '08'
+        } else {
+            return false;
+        }
+    }
+
+    const IDKetTambahan07 = (val: any) => {
+        let arr: any = [{
+            label: 'Senjata, Amunisi, Helm Anti Peluru',
+            value: '41'
+        }]
+
+        return arr.filter((vall: any) => vall.label === val)?.value ?? '';
+    }
+
+    const IDKetTambahan08 = (val: any) => {
+        let arr: any = [{
+            label: 'Senjata, Amunisi, Helm Anti Peluru',
+            value: '41'
+        }]
+        return arr.find((vall: any) => vall.label == val)?.value ?? '';
+    }
+
     const importFile = (val: any) => {
         const files = val.target.files;
         if (files.length) {
@@ -197,7 +337,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                         ["OF", "KODE_OBJEK", "NAMA", "HARGA_SATUAN", "JUMLAH_BARANG", "HARGA_TOTAL", "DISKON", "DPP", "PPN", "TARIF_PPNBM", "PPNBM"]
                     ];
 
-                    let sampleArr = rows.map((val: any) => { return val.Tanggal + '_' + val.NPWP }).filter((item, i, self) => {
+                    let sampleArr = rows.map((val: any) => { return val.Tanggal + '_' + val['No Faktur'] }).filter((item, i, self) => {
                         return self.indexOf(item) === i;
                     });
 
@@ -205,22 +345,108 @@ export default function Efaktur({ userData, setuserData }: any) {
                     let err;
                     sampleArr.map((val: any) => {
                         let sub: any = val.split('_');
-                        let dtRes: any = rows.filter((vall: any, i: number) => vall.Tanggal == sub[0] && vall.NPWP == sub[1]);
+                        let dtRes: any = rows.filter((vall: any, i: number) => vall.Tanggal == sub[0] && vall['No Faktur'] == sub[1]);
 
-                        dtRes.map((val: any, i: number) => {
-                            if (!val['Tanggal']) {
+                        dtRes.map((valll: any, i: number) => {
+                            if (!valll['Tanggal']) {
                                 err = "Tanggal ada yang belum di isi";
                             }
 
-                            if (!val['NPWP']) {
-                                err = "NPWP ada yang belum di isi";
+                            if (!valll['No Faktur']) {
+                                err = "No Faktur ada yang belum di isi";
+                            }
+
+                            if (!valll['NPWP/NIK']) {
+                                err = "NPWP/NIK ada yang belum di isi";
+                            }
+
+                            let hargaSatuan = RPtoNumber(valll['Harga Satuan']);
+                            let jumlahBarang = RPtoNumber(valll['Jumlah Barang']);
+                            let hargaTotal = RPtoNumber(valll['Harga Total']);
+                            let diskon = RPtoNumber(valll['Diskon']);
+                            let dpp = RPtoNumber(valll['DPP']);
+                            let ppn = RPtoNumber(valll['PPN']);
+                            let tarif_ppnbm = RPtoNumber(valll['Tarif PPNBM']);
+                            let ppnbm = RPtoNumber(valll['PPNBM']);
+                            let jenis_transaksi = jenisTransaksi(valll['Jenis Transaksi']);
+                            let jenis_faktur = jenisFaktur(valll['Jeni Faktur']);
+                            let IDKet = '';
+                            if (jenis_transaksi === '08') {
+                                IDKet = IDKetTambahan08(valll['ID Keterangan Tambahan']);
+                            } else if (jenis_transaksi === '07') {
+                                IDKet = IDKetTambahan07(valll['ID Keterangan Tambahan']);
+                            }
+
+                            let NPWPDetec = '';
+                            let NAMEDetec = '';
+                            if (valll['NPWP/NIK'].length === 15) {
+                                NPWPDetec = valll['NPWP/NIK'];
+                                NAMEDetec = valll['Nama NPWP/NIK'];
+                            } else {
+                                NPWPDetec = '000000000000000';
+                                NAMEDetec = `${valll['NPWP/NIK']}#NIK#NAMA#${valll['Nama NPWP/NIK']}`;
                             }
 
                             if (!i) {
-                                data.push(["FK", '01', 0, val['No Faktur'] ?? '', moment(val['Tanggal'], 'YYYY/MM/DD').format('MM'), moment(val['Tanggal'], 'YYYY/MM/DD').format('YYYY'), moment(val['Tanggal'], 'YYYY/MM/DD').format('DD/MM/YYYY'), val['NPWP'], val['Perusahaan'], val['Alamat'], val['Jumlah DPP'] ?? 0, val['Jumlah PPN'] ?? 0, val['Jumlah PPNBM'] ?? 0, val['ID Keterangan Tambahan'] ?? '', val['FG Uang Muka'] ?? 0, val['Uang Muka DPP'] ?? 0, val['Uang Muka PPN'] ?? 0, val['Uang Muka PPNBM'] ?? 0, val['Referensi'] ?? '', '']);
-                                data.push(["OF", val['Kode Barang'] ?? '', val['Nama'], val['Harga Satuan'] ?? 0, val['Jumlah Barang'] ?? 0, val['Harga Total'] ?? 0, val['Diskon'] ?? 0, val['DPP'] ?? 0, val['PPN'] ?? 0, val['Tarif PPN'] ?? 0, val['PPNBM'] ?? 0]);
+                                let jumlahPPN = 0;
+                                let jumlahPPNBM = 0;
+                                let jumlahDPP = 0;
+                                dtRes.map((vallll: any) => {
+                                    jumlahDPP += Math.floor(RPtoNumber(vallll['DPP']));
+                                    jumlahPPNBM += Math.floor(RPtoNumber(vallll['PPNBM']));
+                                    jumlahPPN += Math.floor(RPtoNumber(vallll['PPN']));
+                                });
+
+                                data.push([
+                                    "FK",
+                                    jenis_transaksi,
+                                    jenis_faktur,
+                                    valll['No Faktur'],
+                                    moment(valll['Tanggal'],
+                                        'YYYY/MM/DD').format('MM'),
+                                    moment(valll['Tanggal'], 'YYYY/MM/DD').format('YYYY'),
+                                    moment(valll['Tanggal'], 'YYYY/MM/DD').format('DD/MM/YYYY'),
+                                    NPWPDetec,
+                                    NAMEDetec,
+                                    valll['Alamat'],
+                                    jumlahDPP,
+                                    jumlahPPN,
+                                    jumlahPPNBM,
+                                    IDKet ?? '',
+                                    valll['FG Uang Muka'] ?? 0,
+                                    valll['Uang Muka DPP'] ?? 0,
+                                    valll['Uang Muka PPN'] ?? 0,
+                                    valll['Uang Muka PPNBM'] ?? 0,
+                                    valll['Referensi'] ?? '',
+                                    valll['Kode Dokumen Pendukung'] ?? ''
+                                ]);
+                                data.push([
+                                    "OF",
+                                    valll['Kode Barang'] ?? '',
+                                    valll['Nama Barang'],
+                                    hargaSatuan,
+                                    jumlahBarang,
+                                    hargaTotal,
+                                    diskon,
+                                    dpp,
+                                    ppn,
+                                    tarif_ppnbm,
+                                    ppnbm
+                                ])
                             } else {
-                                data.push(["OF", val['Kode Barang'] ?? '', val['Nama'], val['Harga Satuan'] ?? 0, val['Jumlah Barang'] ?? 0, val['Harga Total'] ?? 0, val['Diskon'] ?? 0, val['DPP'] ?? 0, val['PPN'] ?? 0, val['Tarif PPN'] ?? 0, val['PPNBM'] ?? 0]);
+                                data.push([
+                                    "OF",
+                                    valll['Kode Barang'] ?? '',
+                                    valll['Nama Barang'],
+                                    hargaSatuan,
+                                    jumlahBarang,
+                                    hargaTotal,
+                                    diskon,
+                                    dpp,
+                                    ppn,
+                                    tarif_ppnbm,
+                                    ppnbm
+                                ])
                             }
                         })
 
@@ -239,6 +465,60 @@ export default function Efaktur({ userData, setuserData }: any) {
         }
 
     };
+
+    const keteranganTambhan07 = [
+        { label: '07', value: '0' },
+    ]
+
+    const keteranganTambhan08 = [
+        { label: 'Senjata, Amunisi, Helm Anti Peluru dan Jaket Atau Rompi Anti Peluru, Kendaraan Darat Khusus, Radar 7 Suku Cadang', value: '41' },]
+    const tabData = [
+        {
+            label: "NPWP",
+            value: "NPWP",
+            desc:
+                <>
+                    <div className="mb-24">
+                        <label htmlFor="npwp" className="text-xs font-bold">
+                            NPWP
+                        </label>
+                        <Select
+                            id='npwp'
+                            name='npwp'
+                            data={npwp}
+                            search={true}
+                            label="NPWP"
+                            setSearchValue={(value: any) => {
+                                let val = value.data;
+                                (document.getElementById('nameIdentitas_npwp') as HTMLInputElement).value = val.name;
+                                (document.getElementById('address_npwp') as HTMLInputElement).value = val.address;
+                            }}
+                        />
+                    </div>
+                    <div className="mb-24">
+                        <Input readOnly={true} type="text" id="nameIdentitas_npwp" className="border-b-1" variant="standard" label="Name Identitas" name='name_npwp' />
+                    </div>
+                    <div className="mb-24">
+                        <Input readOnly={true} type="text" id="address_npwp" className="border-b-1" variant="standard" label="Alamat" name='address_npwp' />
+                    </div>
+                </>,
+        },
+        {
+            label: "NIK",
+            value: "NIK",
+            desc: <>
+                <div className="mb-24 mt-2">
+                    <Input type="number" id="noIdentitas_nik" className="border-b-1" variant="standard" label="No Identitas" name='nik' />
+                </div>
+                <div className="mb-24">
+                    <Input type="text" id="nameIdentitas_nik" className="border-b-1" variant="standard" label="Nama Identitas" name='name_nik' />
+                </div>
+                <div className="mb-24">
+                    <Input readOnly={true} type="text" id="address_nik" className="border-b-1" variant="standard" label="Alamat" name='address_nik' />
+                </div>
+            </>,
+        },
+    ];
 
     return (
         <>
@@ -272,7 +552,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                         </div>
 
                         <div className="col hp-flex-none w-auto">
-                            <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNew"><i className="ri-user-add-line remix-icon"></i> Add {Subject}</Button>
+                            <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNew"><i className="ri-add-line remix-icon"></i> Add {Subject}</Button>
                         </div>
                         <div className="modal fade -mt-1" id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" role="dialog" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
                             <div className="modal-dialog modal-xl modal-dialog-centered">
@@ -286,11 +566,11 @@ export default function Efaktur({ userData, setuserData }: any) {
 
                                     <div className="divider m-0"></div>
                                     {npwp?.length ?
-                                        <form onSubmit={submitUsers} id="formCreate">
+                                        <form onSubmit={submitAdd} id="formCreate">
                                             <div className="modal-body">
                                                 <div className="row gx-8">
                                                     {modalData.length ? modalData?.map((val: any, i: number) => {
-                                                        return <div className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
+                                                        return <div id={val.name + '_div'} className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
                                                             {
                                                                 val.type === 'email' || val.type === 'number' || val.type === 'date' || val.type === 'text' ?
                                                                     <div className="mb-24">
@@ -301,7 +581,6 @@ export default function Efaktur({ userData, setuserData }: any) {
                                                                             <label htmlFor={val.id} className="text-xs">
                                                                                 {convertCamelCase(val.label ?? val.name)}
                                                                             </label>
-
                                                                             <div className="input-group">
                                                                                 {val.group.map((vall: any, ii: number) => {
                                                                                     return (<input key={ii} type={vall.type} defaultValue={vall.defaultValue} readOnly={vall.readOnly} placeholder={vall.placeholder} name={vall.name} className="form-control" />)
@@ -313,18 +592,154 @@ export default function Efaktur({ userData, setuserData }: any) {
                                                                                 <Textarea id={val.id} name={val.name} className="border-b-1 mt-2" variant="standard" label={convertCamelCase(val.label ?? val.name)}></Textarea>
                                                                             </div>
                                                                             : val.type === 'reactSelect' ?
-                                                                                <div className="mb-24">
+                                                                                <div className={val.search ? "mb-5 -mt-3" : "mb-24 -mt-3"}>
+                                                                                    {val.search &&
+                                                                                        <label htmlFor={val.id} className="text-xs">
+                                                                                            {convertCamelCase(val.label ?? val.name)}
+                                                                                        </label>
+                                                                                    }
                                                                                     <Select
                                                                                         id={val.id}
                                                                                         name={val.name}
                                                                                         data={val.select}
                                                                                         search={val.search}
                                                                                         label={convertCamelCase(val.label ?? val.name)}
+                                                                                        setSearchValue={(vall: any) => {
+                                                                                            if (val.name === 'detail') {
+                                                                                                if (vall === '080' || vall === '070') {
+                                                                                                    setmodalData([
+                                                                                                        {
+                                                                                                            name: 'detail',
+                                                                                                            label: 'Detail Transaction',
+                                                                                                            type: 'reactSelect',
+                                                                                                            select: [
+                                                                                                                { label: 'Kepada Pihak Yang Bukan Pemungut', value: '010' },
+                                                                                                                { label: 'Kepada Pemungut Bendaharawan', value: '020' },
+                                                                                                                { label: 'Kepada Pemungut Selain Bendaharawan', value: '030' },
+                                                                                                                { label: 'DPP Nilai Lain', value: '040' },
+                                                                                                                { label: 'Besaran Tertentu', value: '050' },
+                                                                                                                { label: 'Penyerahan Lainnya', value: '060' },
+                                                                                                                { label: 'Penyerahan Yang PPN-nya Tidak Dipungut', value: '070' },
+                                                                                                                { label: 'Penyerahan Yang PPN-nya Dibebaskan', value: '080' },
+                                                                                                            ],
+                                                                                                            required: true
+                                                                                                        },
+                                                                                                        {
+                                                                                                            name: 'keterangan_tambahan',
+                                                                                                            label: 'Keterangan Tambahan',
+                                                                                                            type: 'reactSelect',
+                                                                                                            select: vall === '080' ? keteranganTambhan08 : keteranganTambhan07,
+                                                                                                            required: true
+                                                                                                        },
+                                                                                                        {
+                                                                                                            name: 'jenis',
+                                                                                                            label: 'Jenis Faktur',
+                                                                                                            type: 'reactSelect',
+                                                                                                            select: [
+                                                                                                                { label: 'Faktur Pajak', value: '0' },
+                                                                                                                { label: 'Faktur Pajak Pengganti', value: '1' },
+                                                                                                            ],
+                                                                                                            required: true
+                                                                                                        },
+                                                                                                        {
+                                                                                                            label: 'Tanggal Dokument',
+                                                                                                            name: 'date',
+                                                                                                            type: 'date',
+                                                                                                            required: true
+                                                                                                        },
+                                                                                                        {
+                                                                                                            name: 'Nomor Seri Faktur Pajak',
+                                                                                                            type: 'group',
+                                                                                                            group: [
+                                                                                                                { name: 'seri2', type: 'number' },
+                                                                                                                { name: 'seri3', type: 'number' },
+                                                                                                                { name: 'seri4', type: 'number' },
+                                                                                                            ],
+                                                                                                            required: true
+                                                                                                        },
+                                                                                                        {
+                                                                                                            type: 'nik/npwp',
+                                                                                                            required: true
+                                                                                                        },
+                                                                                                        {
+                                                                                                            name: 'referensi',
+                                                                                                            label: 'Referensi Faktur',
+                                                                                                            type: 'textarea',
+                                                                                                        },
+                                                                                                        {
+                                                                                                            full: true,
+                                                                                                            type: 'efaktur',
+                                                                                                            required: true
+                                                                                                        }
+                                                                                                    ])
+                                                                                                } else {
+                                                                                                    setmodalData([
+                                                                                                        {
+                                                                                                            name: 'detail',
+                                                                                                            label: 'Detail Transaction',
+                                                                                                            type: 'reactSelect',
+                                                                                                            select: [
+                                                                                                                { label: 'Kepada Pihak Yang Bukan Pemungut', value: '010' },
+                                                                                                                { label: 'Kepada Pemungut Bendaharawan', value: '020' },
+                                                                                                                { label: 'Kepada Pemungut Selain Bendaharawan', value: '030' },
+                                                                                                                { label: 'DPP Nilai Lain', value: '040' },
+                                                                                                                { label: 'Besaran Tertentu', value: '050' },
+                                                                                                                { label: 'Penyerahan Lainnya', value: '060' },
+                                                                                                                { label: 'Penyerahan Yang PPN-nya Tidak Dipungut', value: '070' },
+                                                                                                                { label: 'Penyerahan Yang PPN-nya Dibebaskan', value: '080' },
+                                                                                                            ],
+                                                                                                            required: true
+                                                                                                        },
+                                                                                                        {
+                                                                                                            name: 'jenis',
+                                                                                                            label: 'Jenis Faktur',
+                                                                                                            type: 'reactSelect',
+                                                                                                            select: [
+                                                                                                                { label: 'Faktur Pajak', value: '0' },
+                                                                                                                { label: 'Faktur Pajak Pengganti', value: '1' },
+                                                                                                            ],
+                                                                                                            required: true
+                                                                                                        },
+                                                                                                        {
+                                                                                                            label: 'Tanggal Dokument',
+                                                                                                            name: 'date',
+                                                                                                            type: 'date',
+                                                                                                            required: true
+                                                                                                        },
+                                                                                                        {
+                                                                                                            name: 'Nomor Seri Faktur Pajak',
+                                                                                                            type: 'group',
+                                                                                                            group: [
+                                                                                                                { name: 'seri2', type: 'number' },
+                                                                                                                { name: 'seri3', type: 'number' },
+                                                                                                                { name: 'seri4', type: 'number' },
+                                                                                                            ],
+                                                                                                            required: true
+                                                                                                        },
+                                                                                                        {
+                                                                                                            type: 'nik/npwp',
+                                                                                                            required: true
+                                                                                                        },
+                                                                                                        {
+                                                                                                            name: 'referensi',
+                                                                                                            label: 'Referensi Faktur',
+                                                                                                            type: 'textarea',
+                                                                                                        },
+                                                                                                        {
+                                                                                                            full: true,
+                                                                                                            type: 'efaktur',
+                                                                                                            required: true
+                                                                                                        }
+                                                                                                    ])
+                                                                                                }
+                                                                                            }
+                                                                                        }}
                                                                                     />
                                                                                 </div>
                                                                                 : val.type === 'efaktur' ?
                                                                                     <div className="w-full -mt-5">
                                                                                         {itemInputEfak.map((val: any, i: number) => {
+                                                                                            const tarifPPN = 11;
                                                                                             if (!val.delete)
                                                                                                 return (<div key={i} className="mb-3">
                                                                                                     <button type="button" className="absolute -mt-2 -ml-3" onClick={() => {
@@ -333,19 +748,47 @@ export default function Efaktur({ userData, setuserData }: any) {
                                                                                                     }} >
                                                                                                         <div className="badge badge-danger px-2 py-1 bg-red-900 text-white border-none rounded-full" >x</div>
                                                                                                     </button>
+                                                                                                    <div className="w-full text-right absolute">
+                                                                                                        <div className="badge badge-danger px-2 py-1 bg-cyan-900 text-white border-none rounded-full mr-7" >PPN {tarifPPN}%</div>
+                                                                                                    </div>
                                                                                                     <div className="border-1 border-gray-500 p-2 rounded-lg shadow-sm">
-                                                                                                        <Input className="border-b-1" variant="standard" label="Nama" />
+                                                                                                        <Input className="border-b-1" variant="standard" name='name[]' label="Nama" />
                                                                                                         <div className="xl:flex">
-                                                                                                            <div className="mt-3 w-full"><Input className="border-b-1" variant="standard" label="Kode Barang" /></div>
-                                                                                                            <div className="mt-3 w-full"><Input className="border-b-1" variant="standard" label="Harga Satuan" /></div>
-                                                                                                            <div className="mt-3 w-full"><Input className="border-b-1" variant="standard" label="Qty" /></div>
-                                                                                                            <div className="mt-3 w-full"><Input className="border-b-1" variant="standard" label="Diskon" /></div>
+                                                                                                            <div className="mt-3 w-full">
+                                                                                                                <Input className="border-b-1" variant="standard" name='kode[]' label="Kode Barang" /></div>
+                                                                                                            <div className="mt-3 w-full"><Input name='harga[]' onChange={(el: any) => {
+                                                                                                                let harga = Number(el.target.value);
+                                                                                                                let qty: any = (document.getElementById(`qty_${i}`) as HTMLInputElement).value ?? 0;
+                                                                                                                let diskon: any = (document.getElementById(`diskon_${i}`) as HTMLInputElement).value ?? 0;
+                                                                                                                (document.getElementById(`dpp_${i}`) as HTMLInputElement).value = String((harga * qty) - diskon);
+                                                                                                                (document.getElementById(`ppn_${i}`) as HTMLInputElement).value = String((((harga * qty) - diskon) * (tarifPPN / 100)).toFixed(2)).replace(',', '.');
+
+                                                                                                            }} id={`harga_${i}`} className="border-b-1" type="number" variant="standard" label="Harga Satuan" /></div>
+                                                                                                            <div className="mt-3 w-full"><Input step="any" name='qty[]' id={`qty_${i}`}
+                                                                                                                onChange={(el: any) => {
+                                                                                                                    let harga: any = (document.getElementById(`harga_${i}`) as HTMLInputElement).value ?? 0;
+                                                                                                                    let qty = Number(el.target.value);
+                                                                                                                    let diskon: any = (document.getElementById(`diskon_${i}`) as HTMLInputElement).value ?? 0;
+                                                                                                                    (document.getElementById(`dpp_${i}`) as HTMLInputElement).value = String((harga * qty) - diskon);
+                                                                                                                    (document.getElementById(`ppn_${i}`) as HTMLInputElement).value = String((((harga * qty) - diskon) * (tarifPPN / 100)).toFixed(2)).replace(',', '.');
+
+                                                                                                                }} className="border-b-1" type="number" variant="standard" label="Qty" /></div>
+                                                                                                            <div className="mt-3 w-full"><Input step="any" id={`diskon_${i}`} name='diskon[]'
+                                                                                                                onChange={(el: any) => {
+                                                                                                                    let harga: any = (document.getElementById(`harga_${i}`) as HTMLInputElement).value ?? 0;
+                                                                                                                    let qty: any = (document.getElementById(`qty_${i}`) as HTMLInputElement).value ?? 0;
+                                                                                                                    let diskon: any = Number(el.target.value);
+                                                                                                                    (document.getElementById(`dpp_${i}`) as HTMLInputElement).value = String((harga * qty) - diskon);
+                                                                                                                    (document.getElementById(`ppn_${i}`) as HTMLInputElement).value = String((((harga * qty) - diskon) * (tarifPPN / 100)).toFixed(2)).replace(',', '.');
+
+                                                                                                                }}
+                                                                                                                className="border-b-1" type="number" variant="standard" label="Diskon" /></div>
                                                                                                         </div>
                                                                                                         <div className="xl:flex">
-                                                                                                            <div className="mt-3 w-full"><Input className="border-b-1" variant="standard" label="DPP" /></div>
-                                                                                                            <div className="mt-3 w-full"><Input className="border-b-1" variant="standard" label="PPN" /></div>
-                                                                                                            <div className="mt-3 w-full"><Input className="border-b-1" variant="standard" label="Tarif PPN" /></div>
-                                                                                                            <div className="mt-3 w-full"><Input className="border-b-1" variant="standard" label="PPNBM" /></div>
+                                                                                                            <div className="mt-3 w-full"><Input step="any" name='dpp[]' id={`dpp_${i}`} className="border-b-1" type="number" variant="standard" label="DPP" /></div>
+                                                                                                            <div className="mt-3 w-full"><Input step="any" name='ppn[]' id={`ppn_${i}`} className="border-b-1" type="number" variant="standard" label="PPN" /></div>
+                                                                                                            <div className="mt-3 w-full"><Input step="any" name='tarif_ppnbm[]' className="border-b-1" type="number" variant="standard" label="Tarif PPNBM" /></div>
+                                                                                                            <div className="mt-3 w-full"><Input step="any" name='ppnbm[]' className="border-b-1" type="number" variant="standard" label="PPNBM" /></div>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>)
@@ -358,7 +801,24 @@ export default function Efaktur({ userData, setuserData }: any) {
                                                                                             </svg>
                                                                                         </Button>
                                                                                     </div>
-                                                                                    : null
+                                                                                    : val.type === 'nik/npwp' ?
+                                                                                        <Tabs value="noIdentitas">
+                                                                                            <TabsHeader>
+                                                                                                {tabData.map(({ label, value }) => (
+                                                                                                    <Tab key={value} value={value} onClick={() => settabIdentitas(value)}>
+                                                                                                        {label}
+                                                                                                    </Tab>
+                                                                                                ))}
+                                                                                            </TabsHeader>
+                                                                                            <TabsBody>
+                                                                                                {tabData.map(({ value, desc }) => (
+                                                                                                    <TabPanel key={value} value={value}>
+                                                                                                        {desc}
+                                                                                                    </TabPanel>
+                                                                                                ))}
+                                                                                            </TabsBody>
+                                                                                        </Tabs>
+                                                                                        : null
                                                             }</div>
                                                     }) : null}
                                                 </div>
@@ -366,7 +826,7 @@ export default function Efaktur({ userData, setuserData }: any) {
 
                                             <div className="modal-footer pt-0 px-24 pb-24">
                                                 <div className="divider"></div>
-                                                <Button type="submit" className="w-full" color="blue">Add</Button>
+                                                <Button type="submit" className="w-full" color="blue">Submit</Button>
                                             </div>
                                         </form>
                                         : <div className="m-5 text-center font-semibold">NPWP Tidak ditemukan</div>}
@@ -381,10 +841,9 @@ export default function Efaktur({ userData, setuserData }: any) {
                             <ReactTable
                                 search={search}
                                 action={{
-                                    edit: '/api/npwp/',
-                                    delete: '/api/npwp/'
+                                    delete: '/api/efaktur/'
                                 }}
-                                urlFatch={'/api/npwp'}
+                                urlFatch={'/api/efaktur'}
                                 modalData={modalData}
                                 Subject={Subject}
                                 reload={dataCreate}

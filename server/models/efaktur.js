@@ -9,6 +9,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      this.hasMany(models.efakturItem, {
+        as: "efakturItem",
+        foreignKey: "efaktur_id",
+        onDelete: "cascade",
+        hooks: true,
+      });
     }
   }
   efaktur.init(
@@ -19,7 +26,13 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
       },
       uuid: DataTypes.UUID,
-      npwp: {
+      noIdentitas: {
+        type: DataTypes.STRING,
+      },
+      jenis_faktur: {
+        type: DataTypes.STRING,
+      },
+      transaction: {
         type: DataTypes.STRING,
       },
       date: {
@@ -28,13 +41,10 @@ module.exports = (sequelize, DataTypes) => {
       noFaktur: {
         type: DataTypes.STRING,
       },
-      company: {
-        type: DataTypes.STRING,
-      },
       address: {
         type: DataTypes.JSON,
       },
-      company: {
+      nameIdentitas: {
         type: DataTypes.STRING,
       },
       jumlahDPP: {
@@ -46,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
       jumlahPPNBM: {
         type: DataTypes.STRING,
       },
-      keterangan: {
+      IDKeteranganTambahan: {
         type: DataTypes.STRING,
       },
       FGUangMuka: {

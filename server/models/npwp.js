@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       npwp: {
         type: DataTypes.STRING,
       },
-      fullName: {
+      name: {
         type: DataTypes.STRING,
       },
       phone: {

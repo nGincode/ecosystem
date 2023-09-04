@@ -15,7 +15,7 @@ module.exports = {
       npwp: {
         type: Sequelize.STRING,
       },
-      fullName: {
+      name: {
         type: Sequelize.STRING,
       },
       phone: {

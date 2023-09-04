@@ -5,6 +5,9 @@ import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
 import Swal from 'sweetalert2'
 
+
+import { Input, Textarea, Button } from "@material-tailwind/react";
+
 import Select from "./reactSelect";
 
 
@@ -128,73 +131,44 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
     if (data?.[0]) {
         Object.keys(data[0]).map((val: any, i: number) => {
             if (val !== 'uuid') {
-                if (val === 'img') {
-                    array.push({
-                        id: 'img',
-                        header: () => null,
-                        cell: ({ row }: any) => {
-                            if (row.original.img) {
-                                return <div className="avatar-item avatar-lg d-flex align-items-center justify-content-center bg-primary-4 hp-bg-dark-primary text-primary hp-text-color-dark-0 rounded-circle"><img src={row.original.img} alt={row.original.name} />
-                                </div>
-                            } else {
-                                return <div className="avatar-item avatar-lg d-flex align-items-center justify-content-center bg-primary-4 hp-bg-dark-primary text-primary hp-text-color-dark-0 rounded-circle">{(row.original.name ?? row.original.username).substring(0, 2)}</div>
-                            }
-                        },
-                        footer: (props: any) => props.column.id,
-                    })
-                } else if (val === 'status') {
-                    array.push({
-                        accessorKey: val,
-                        header: () => <div>{convertCamelCase(val)}</div>,
-                        cell: ({ row }: any) => {
-                            if (row.original.status === 'active') {
-                                return <div className="badge bg-success-4 hp-bg-dark-success text-success border-success">active</div>
-                            } else if (row.original.status === 'pending') {
-                                return <div className="badge bg-warning-4 hp-bg-dark-warning text-warning border-warning">pending</div>
-                            } else if (row.original.status === 'inactive') {
-                                return <div className="badge bg-danger-4 hp-bg-dark-danger text-danger border-danger">inactive</div>
-                            }
-                        },
-                        footer: (props: any) => props.column.id,
-                    })
-                } else if (val === 'address') {
-                    array.push({
-                        accessorKey: val,
-                        header: () => <div>{convertCamelCase(val)}</div>,
-                        cell: ({ row }: any) => {
-                            if (row.original.address?.jalan) {
-                                return row.original.address.jalan +
-                                    " " +
-                                    row.original.address.block +
-                                    " " +
-                                    row.original.address.no +
-                                    " " +
-                                    row.original.address.rt +
-                                    " " +
-                                    row.original.address.rw +
-                                    " " +
-                                    row.original.address.kel +
-                                    " " +
-                                    row.original.address.kec +
-                                    " " +
-                                    row.original.address.kabkot +
-                                    " " +
-                                    row.original.address.prov +
-                                    " " +
-                                    row.original.address.kodepos
-                            } else {
-                                return row.getValue() ?? '-'
-                            }
-                        },
-                        footer: (props: any) => props.column.id,
-                    })
-                } else {
-                    array.push({
-                        accessorKey: val,
-                        header: () => <div>{convertCamelCase(val)}</div>,
-                        cell: (info: any) => info.getValue() ?? '-',
-                        footer: (props: any) => props.column.id,
-                    })
+                if (val !== 'addressJson') {
+                    if (val === 'img') {
+                        array.push({
+                            id: 'img',
+                            header: () => null,
+                            cell: ({ row }: any) => {
+                                if (row.original.img) {
+                                    return <div className="avatar-item avatar-lg d-flex align-items-center justify-content-center bg-primary-4 hp-bg-dark-primary text-primary hp-text-color-dark-0 rounded-circle"><img src={row.original.img} alt={row.original.name} />
+                                    </div>
+                                } else {
+                                    return <div className="avatar-item avatar-lg d-flex align-items-center justify-content-center bg-primary-4 hp-bg-dark-primary text-primary hp-text-color-dark-0 rounded-circle">{(row.original.name ?? row.original.username).substring(0, 2)}</div>
+                                }
+                            },
+                            footer: (props: any) => props.column.id,
+                        })
+                    } else if (val === 'status') {
+                        array.push({
+                            accessorKey: val,
+                            header: () => <div>{convertCamelCase(val)}</div>,
+                            cell: ({ row }: any) => {
+                                if (row.original.status === 'active') {
+                                    return <div className="badge bg-success-4 hp-bg-dark-success text-success border-success">active</div>
+                                } else if (row.original.status === 'pending') {
+                                    return <div className="badge bg-warning-4 hp-bg-dark-warning text-warning border-warning">pending</div>
+                                } else if (row.original.status === 'inactive') {
+                                    return <div className="badge bg-danger-4 hp-bg-dark-danger text-danger border-danger">inactive</div>
+                                }
+                            },
+                            footer: (props: any) => props.column.id,
+                        })
+                    } else {
+                        array.push({
+                            accessorKey: val,
+                            header: () => <div>{val === "npwp" ? "NPWP" : convertCamelCase(val)}</div>,
+                            cell: (info: any) => info.getValue() ?? '-',
+                            footer: (props: any) => props.column.id,
+                        })
+                    }
                 }
             }
         });
@@ -433,10 +407,10 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                     </select>
                 </div>
                 <div className="modal fade" id="editUser" tabIndex={-1} aria-labelledby="editUserLabel" aria-hidden="true">
-                    <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-dialog modal-xl modal-dialog-centered">
                         <div className="modal-content" >
                             <div className="modal-header py-16 px-24">
-                                <h5 className="modal-title" id="editUserLabel">Edit {Subject}</h5>
+                                <h5 className="modal-title font-bold" id="editUserLabel">Edit {Subject}</h5>
                                 <button type="button" className="btn-close hp-bg-none d-flex align-items-center justify-content-center" data-bs-dismiss="modal" aria-label="Close">
                                     <i className="ri-close-line hp-text-color-dark-0 lh-1" style={{ fontSize: "24px" }}></i>
                                 </button>
@@ -450,80 +424,68 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                         {modalData.length ? modalData?.map((val: any, i: number) => {
                                             return <div className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
                                                 {
-                                                    val.type === 'text' ?
+                                                    val.type === 'text' || val.type === 'number' || val.type === 'email' || val.type === 'date' ?
                                                         <div className="mb-24">
-                                                            <label htmlFor={val.id} className="form-label">
-                                                                <span className="text-danger me-4">*</span>
-                                                                {convertCamelCase(val.name)}
-                                                            </label>
-                                                            <input type={val.type} defaultValue={dataEdit?.[val.name]} className="form-control" name={val.name} id={`${val.id}Edit`} />
+                                                            <Input required={val.required} label={convertCamelCase(val.name)} variant="standard" className="border-b-1" type={val.type} defaultValue={dataEdit?.[val.name]} name={val.name} id={`${val.id}Edit`} />
                                                         </div>
-                                                        :
-                                                        val.type === 'number' ?
+                                                        : val.type === 'group' ?
                                                             <div className="mb-24">
-                                                                <label htmlFor={val.id} className="form-label">
-                                                                    <span className="text-danger me-4">*</span>
-                                                                    {convertCamelCase(val.name)}
-                                                                </label>
-                                                                <input type={val.type} className="form-control" defaultValue={dataEdit?.[val.name]} name={val.name} id={`${val.id}Edit`} />
-                                                            </div> : val.type === 'email' ?
-                                                                <div className="mb-24">
+                                                                {val.label || val.name ?
                                                                     <label htmlFor={val.id} className="form-label">
                                                                         <span className="text-danger me-4">*</span>
-                                                                        {convertCamelCase(val.name)}
+                                                                        {convertCamelCase(val.label ?? val.name)}
                                                                     </label>
-                                                                    <input type={val.type} defaultValue={dataEdit?.[val.name]} className="form-control" name={val.name} id={`${val.id}Edit`} />
+                                                                    : null}
+                                                                <div className="input-group">
+                                                                    {val.group.map((vall: any, ii: number) => {
+                                                                        return (<input key={ii} type={vall.type} required={val.required} defaultValue={dataEdit?.address ? dataEdit?.addressJson[vall.name] : dataEdit?.[val.name]} readOnly={vall.readOnly} placeholder={vall.placeholder} name={vall.name} className="form-control" />)
+                                                                    })}
                                                                 </div>
-                                                                : val.type === 'date' ?
+                                                            </div>
+                                                            : val.type === 'textarea' ?
+                                                                <div className="mb-24">
+                                                                    <Textarea required={val.required} label={convertCamelCase(val.name)} variant="standard" className="border-b-1" defaultValue={dataEdit?.[val.name]} name={val.name} id={`${val.id}Edit`} />
+                                                                </div>
+                                                                : val.type === 'reactSelect' ?
                                                                     <div className="mb-24">
-                                                                        <label htmlFor={val.id} className="form-label">
-                                                                            <span className="text-danger me-4">*</span>
-                                                                            {convertCamelCase(val.name)}
-                                                                        </label>
-                                                                        <input type={val.type} defaultValue={dataEdit?.[val.name]} className="form-control" name={val.name} id={`${val.id}Edit`} />
+                                                                        <Select
+                                                                            id={`${val.id}Edit`}
+                                                                            name={val.name}
+                                                                            data={val.select}
+                                                                            required={val.required}
+                                                                            label={convertCamelCase(val.name)}
+                                                                            defaultValue={dataEdit?.[val.name] ? { label: convertCamelCase(dataEdit?.[val.name]), value: dataEdit?.[val.name] } : ''} />
                                                                     </div>
-                                                                    : val.type === 'group' ?
-                                                                        <div className="mb-24">
-                                                                            {val.label || val.name ?
-                                                                                <label htmlFor={val.id} className="form-label">
-                                                                                    <span className="text-danger me-4">*</span>
-                                                                                    {convertCamelCase(val.label ?? val.name)}
-                                                                                </label>
-                                                                                : null}
-                                                                            <div className="input-group">
-                                                                                {val.group.map((vall: any, ii: number) => {
-                                                                                    return (<input key={ii} type={vall.type} defaultValue={dataEdit?.address ? dataEdit?.address[vall.name] : dataEdit?.[val.name]} readOnly={vall.readOnly} placeholder={vall.placeholder} name={vall.name} className="form-control" />)
-                                                                                })}
+                                                                    : val.type === 'address' ?
+                                                                        <div className="w-full">
+                                                                            <div className="mb-3">
+                                                                                <div className="border-1 border-gray-500 p-2 rounded-lg shadow-sm">
+                                                                                    <label className="-mt-5 absolute bg-white px-1 text-gray-500">Address</label>
+                                                                                    <div className="xl:flex">
+                                                                                        <div className="mt-3 w-full"><Input defaultValue={dataEdit?.addressJson?.jalan} required name='jalan' className="border-b-1" type="text" variant="standard" label="Jalan" /></div>
+                                                                                        <div className="mt-3 w-full"><Input defaultValue={dataEdit?.addressJson?.block} required name='block' className="border-b-1" type="text" variant="standard" label="Block" /></div>
+                                                                                        <div className="mt-3 w-full"><Input defaultValue={dataEdit?.addressJson?.no} required name='no' className="border-b-1" type="number" variant="standard" label="No" /></div>
+                                                                                        <div className="mt-3 w-full"><Input defaultValue={dataEdit?.addressJson?.rt} required name='rt' className="border-b-1" type="number" variant="standard" label="RT" /></div>
+                                                                                        <div className="mt-3 w-full"><Input defaultValue={dataEdit?.addressJson?.rw} required name='rw' className="border-b-1" type="number" variant="standard" label="RW" /></div>
+                                                                                    </div>
+                                                                                    <div className="xl:flex">
+                                                                                        <div className="mt-3 w-full"><Input defaultValue={dataEdit?.addressJson?.kec} required name='kec' className="border-b-1" type="text" variant="standard" label="Kecamatan" /></div>
+                                                                                        <div className="mt-3 w-full"><Input defaultValue={dataEdit?.addressJson?.kel} required name='kel' className="border-b-1" type="text" variant="standard" label="Keluarahan" /></div>
+                                                                                        <div className="mt-3 w-full"><Input defaultValue={dataEdit?.addressJson?.prov} required name='prov' className="border-b-1" type="text" variant="standard" label="Provinsi" /></div>
+                                                                                        <div className="mt-3 w-full"><Input defaultValue={dataEdit?.addressJson?.kabkot} required name='kabkot' className="border-b-1" type="text" variant="standard" label="Kabupaten/Kota" /></div>
+                                                                                        <div className="mt-3 w-full"><Input defaultValue={dataEdit?.addressJson?.kodepos} required name='kodepos' className="border-b-1" type="number" variant="standard" label="Kode POS" /></div>
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                        : val.type === 'textarea' ?
-                                                                            <div className="mb-24">
-                                                                                <label htmlFor={val.id} className="form-label">
-                                                                                    <span className="text-danger me-4">*</span>
-                                                                                    {convertCamelCase(val.name)}
-                                                                                </label>
-                                                                                <textarea id={`${val.id}Edit`} name={val.name} className="form-control" defaultValue={dataEdit?.[val.name]}></textarea>
-                                                                            </div>
-                                                                            : val.type === 'reactSelect' ?
-                                                                                <div className="mb-24">
-                                                                                    <label htmlFor={val.id} className="form-label">
-                                                                                        <span className="text-danger me-4">*</span>
-                                                                                        {convertCamelCase(val.name)}
-                                                                                    </label>
-                                                                                    <Select
-                                                                                        id={`${val.id}Edit`}
-                                                                                        name={val.name}
-                                                                                        data={val.select}
-                                                                                        defaultValue={dataEdit?.[val.name] ? { label: convertCamelCase(dataEdit?.[val.name]), value: dataEdit?.[val.name] } : ''} />
-                                                                                </div>
-                                                                                : null
+                                                                        : null
                                                 }</div>
                                         }) : null}
                                     </div>
                                 </div>
                                 <div className="modal-footer pt-0 px-24 pb-24">
                                     <div className="divider"></div>
-                                    <button type="submit" className="m-0 btn btn-primary w-100">Edit</button>
+                                    <Button type="submit" className="w-full" color="blue">Edit</Button>
                                 </div>
                             </form>
                         </div>

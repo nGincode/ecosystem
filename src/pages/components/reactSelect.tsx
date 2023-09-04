@@ -23,7 +23,8 @@ export default function ReactSelect({
     api_token,
     datapost,
     setSearchValue,
-    required, label }: any) {
+    required,
+    label }: any) {
     if (defaultValue && multi) {
         var dataSelect: any = [...defaultValue].concat(data);
     } else {
@@ -70,11 +71,10 @@ export default function ReactSelect({
         setvalue(val);
         if (setSearchValue) setSearchValue(val);
     };
-
     const handleOnChangeDefault = (val: any) => {
-        if (val.target?.value) {
-            setvalue(val.target.value);
-            if (setSearchValue) setSearchValue(val.target.value);
+        if (val) {
+            setvalue(val);
+            if (setSearchValue) setSearchValue(val);
         } else {
             setvalue(val);
             if (setSearchValue) setSearchValue(val);
@@ -169,22 +169,26 @@ export default function ReactSelect({
 
                         />
                     ) : (
-                        <Material
-                            name={name}
-                            id={id}
-                            value={value ? `${value}` : ''}
-                            onChange={handleOnChangeDefault}
-                            variant="standard"
-                            label={label}
-                        >
-                            {data.map((val: any, i: number) => {
-                                return (
-                                    <Option key={i} className="mb-1" value={`${val.value}`}>
-                                        {val.label}
-                                    </Option>
-                                );
-                            })}
-                        </Material>
+                        <>
+                            <input name={name + '_val'} value={value ? value.value ? `${value.value}` : `${value}` : ''} type="hidden" />
+                            <input name={name} value={value ? value.value ? `${value.value}` : `${value}` : ''} type="hidden" />
+                            <Material
+                                name={name}
+                                id={id}
+                                value={value ? value.value ? `${value.value}` : `${value}` : ''}
+                                onChange={handleOnChangeDefault}
+                                variant="standard"
+                                label={label}
+                            >
+                                {data.map((val: any, i: number) => {
+                                    return (
+                                        <Option key={i} className="mb-1" value={`${val.value}`}>
+                                            {val.label}
+                                        </Option>
+                                    );
+                                })}
+                            </Material>
+                        </>
                     )}
                 </>
                 : null}

@@ -9,7 +9,13 @@ module.exports = {
         primaryKey: true,
       },
       uuid: Sequelize.UUID,
-      npwp: {
+      noIdentitas: {
+        type: Sequelize.STRING,
+      },
+      jenis_faktur: {
+        type: Sequelize.STRING,
+      },
+      transaction: {
         type: Sequelize.STRING,
       },
       date: {
@@ -18,13 +24,13 @@ module.exports = {
       noFaktur: {
         type: Sequelize.STRING,
       },
-      company: {
+      nameIdentitas: {
         type: Sequelize.STRING,
       },
       address: {
-        type: Sequelize.JSON,
+        type: Sequelize.STRING,
       },
-      company: {
+      nameIdentitas: {
         type: Sequelize.STRING,
       },
       jumlahDPP: {
@@ -36,7 +42,7 @@ module.exports = {
       jumlahPPNBM: {
         type: Sequelize.STRING,
       },
-      keterangan: {
+      IDKeteranganTambahan: {
         type: Sequelize.STRING,
       },
       FGUangMuka: {

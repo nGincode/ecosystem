@@ -36,7 +36,7 @@ module.exports = {
       PPN: {
         type: Sequelize.STRING,
       },
-      tarifPPN: {
+      tarifPPNBM: {
         type: Sequelize.STRING,
       },
       PPNBM: {

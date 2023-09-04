@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.efaktur, {
+        as: "efaktur",
+        foreignKey: "efaktur_id",
+      });
     }
   }
   efakturItem.init(
@@ -21,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
       uuid: DataTypes.UUID,
       efaktur_id: {
         type: DataTypes.INTEGER,
+        references: {
+          model: "efaktur",
+          key: "id",
+        },
       },
       kodeBarang: {
         type: DataTypes.STRING,
@@ -46,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
       PPN: {
         type: DataTypes.STRING,
       },
-      tarifPPN: {
+      tarifPPNBM: {
         type: DataTypes.STRING,
       },
       PPNBM: {
@@ -55,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "efaktur_Item",
+      // modelName: "efaktur_Item",
       tableName: "efaktur_Item",
       // timestamps: true,
       freezeTableName: true,

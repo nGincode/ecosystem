@@ -10,7 +10,7 @@ const getId = async (req, res) => {
 
   const Npwp = await npwp.findOne({
     where: { uuid: uuid },
-    attributes: ["uuid", "npwp", "fullName", "phone", "address"],
+    attributes: ["uuid", "npwp", "name", "phone", "address"],
   });
 
   if (!Npwp) {
@@ -28,7 +28,20 @@ const getId = async (req, res) => {
 const putId = async (req, res) => {
   const { uuid } = req.params;
   const { users_id, users_uuid } = req.user;
-  const { fullName, address, phone } = req.body;
+  const {
+    name,
+    phone,
+    jalan,
+    block,
+    no,
+    rt,
+    rw,
+    kec,
+    kel,
+    prov,
+    kabkot,
+    kodepos,
+  } = req.body;
 
   const Npwp = await npwp.findOne({
     where: { uuid: uuid },
@@ -42,9 +55,20 @@ const putId = async (req, res) => {
 
   const data = {
     npwp: req.body.npwp,
-    fullName: fullName,
+    name: name,
     phone: phone,
-    address: address,
+    address: {
+      jalan: jalan,
+      block: block,
+      no: no,
+      rt: rt,
+      rw: rw,
+      kec: kec,
+      kel: kel,
+      prov: prov,
+      kabkot: kabkot,
+      kodepos: kodepos,
+    },
   };
 
   await Npwp.update(data);
@@ -60,7 +84,7 @@ const get = async (req, res) => {
   const { users_id, users_uuid, email, username } = req.user;
 
   const Npwp = await npwp.findAll({
-    attributes: ["uuid", "npwp", "fullName", "phone", "address"],
+    attributes: ["uuid", "npwp", "name", "phone", "address"],
   });
 
   if (!Npwp) {
@@ -73,40 +97,54 @@ const get = async (req, res) => {
     return {
       uuid: val.uuid,
       npwp: val.npwp,
-      fullName: val.fullName,
+      name: val.name,
       phone: val.phone,
+      addressJson: val.address,
       address:
         val.address.jalan +
-        " - " +
+        " " +
         val.address.block +
-        " - " +
+        " " +
         val.address.no +
-        " - " +
+        " " +
         val.address.rt +
-        " - " +
+        " " +
         val.address.rw +
-        " - " +
+        " " +
         val.address.kel +
-        " - " +
+        " " +
         val.address.kec +
-        " - " +
+        " " +
         val.address.kabkot +
-        " - " +
+        " " +
         val.address.prov +
-        " - " +
+        " " +
         val.address.kodepos,
     };
   });
 
   res.json({
     massage: "Get data successful",
-    data: Npwp,
+    data: data,
   });
 };
 
 const put = async (req, res) => {
   const { users_id, users_uuid } = req.user;
-  const { fullName, address, phone } = req.body;
+  const {
+    name,
+    phone,
+    jalan,
+    block,
+    no,
+    rt,
+    rw,
+    kec,
+    kel,
+    prov,
+    kabkot,
+    kodepos,
+  } = req.body;
 
   const Npwp = await npwp.findOne({
     where: { uuid: uuid },
@@ -120,9 +158,20 @@ const put = async (req, res) => {
 
   const data = {
     npwp: req.body.npwp,
-    fullName: fullName,
+    name: name,
     phone: phone,
-    address: address,
+    address: {
+      jalan: jalan,
+      block: block,
+      no: no,
+      rt: rt,
+      rw: rw,
+      kec: kec,
+      kel: kel,
+      prov: prov,
+      kabkot: kabkot,
+      kodepos: kodepos,
+    },
   };
 
   await npwp.update(data);
@@ -140,7 +189,7 @@ const del = async (req, res) => {
 
   const Npwp = await npwp.findOne({
     where: { uuid: uuid },
-    attributes: ["id", "uuid", "npwp", "fullName", "phone", "address"],
+    attributes: ["id", "uuid", "npwp", "name", "phone", "address"],
   });
 
   if (!Npwp) {
@@ -158,12 +207,12 @@ const del = async (req, res) => {
 };
 
 const post = async (req, res) => {
-  const { fullName, address, phone } = req.body;
+  const { name, address, phone } = req.body;
 
   const data = {
     uuid: Crypto.randomUUID(),
     npwp: req.body.npwp,
-    fullName: fullName,
+    name: name,
     phone: phone,
     address: address,
   };

@@ -3,6 +3,7 @@
 import React, { Component, useEffect, useState } from "react"
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import toast, { Toaster } from 'react-hot-toast';
+import { Input, Textarea, Button } from "@material-tailwind/react";
 import axios from "axios";
 
 import Select from "./components/reactSelect";
@@ -30,7 +31,6 @@ export default function Npwp({ userData, setuserData }: any) {
                     toast.success(res.data.massage);
                     ($('.btn-close') as any).trigger("click");
                     (document.getElementById('formCreate') as HTMLFormElement).reset();
-                    handleApi('view_user')
                 });
             } catch (error: any) {
                 toast.error(error.response.data.massage);
@@ -56,7 +56,7 @@ export default function Npwp({ userData, setuserData }: any) {
 
         let data = {
             npwp: event.target.npwp.value,
-            fullName: event.target.fullName.value,
+            name: event.target.name.value,
             phone: event.target.phone.value,
             address: address
         };
@@ -68,41 +68,26 @@ export default function Npwp({ userData, setuserData }: any) {
         {
             name: 'npwp',
             type: 'number',
-            id: 'npwp'
+            id: 'npwp',
+            required: true
         },
         {
-            name: 'fullName',
+            name: 'name',
             type: 'text',
-            id: 'fullName'
+            id: 'name',
+            required: true
         },
         {
             name: 'phone',
             type: 'text',
-            id: 'nophone'
+            id: 'nophone',
+            required: true
         },
         {
-            name: 'address',
-            type: 'group',
             full: true,
-            group: [
-                { name: 'jalan', placeholder: 'Jl', type: 'text' },
-                { name: 'block', type: 'text', placeholder: 'Block' },
-                { name: 'no', type: 'number', placeholder: 'No' },
-                { name: 'rt', type: 'number', placeholder: 'RT' },
-                { name: 'rw', type: 'number', placeholder: 'RW' },
-            ]
-        },
-        {
-            type: 'group',
-            full: true,
-            group: [
-                { name: 'kel', type: 'text', placeholder: 'Kel' },
-                { name: 'kec', type: 'text', placeholder: 'Kec' },
-                { name: 'kabkot', type: 'text', placeholder: 'Kab/Kot' },
-                { name: 'prov', type: 'text', placeholder: 'Prov' },
-                { name: 'kodepos', type: 'number', placeholder: 'Kode Pos' },
-            ]
-        },
+            type: 'address',
+            required: true
+        }
     ];
 
     const convertCamelCase = (text: any) => {
@@ -148,16 +133,13 @@ export default function Npwp({ userData, setuserData }: any) {
                         </div>
 
                         <div className="col hp-flex-none w-auto">
-                            <button type="button" className="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addNew">
-                                <i className="ri-user-add-line remix-icon"></i>
-                                <span>Add NPWP</span>
-                            </button>
+                            <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNew"><i className="ri-add-line remix-icon"></i> Add NPWP</Button>
                         </div>
-                        <div className="modal fade" id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" aria-hidden="true">
-                            <div className="modal-dialog modal-dialog-centered">
+                        <div className="modal fade " id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" aria-hidden="true">
+                            <div className="modal-dialog modal-xl modal-dialog-centered">
                                 <div className="modal-content">
                                     <div className="modal-header py-16 px-24">
-                                        <h5 className="modal-title" id="addNewLabel">Add {Subject}</h5>
+                                        <h5 className="modal-title font-bold" id="addNewLabel">Add {Subject}</h5>
                                         <button type="button" className="btn-close hp-bg-none d-flex align-items-center justify-content-center" data-bs-dismiss="modal" aria-label="Close">
                                             <i className="ri-close-line hp-text-color-dark-0 lh-1" style={{ fontSize: "24px" }}></i>
                                         </button>
@@ -171,76 +153,34 @@ export default function Npwp({ userData, setuserData }: any) {
                                                 {modalData.length ? modalData?.map((val: any, i: number) => {
                                                     return <div className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
                                                         {
-                                                            val.type === 'text' ?
+                                                            val.type === 'text' || val.type === 'number' || val.type === 'email' || val.type === 'date' ?
                                                                 <div className="mb-24">
-                                                                    <label htmlFor={val.id} className="form-label">
-                                                                        <span className="text-danger me-4">*</span>
-                                                                        {convertCamelCase(val.label ?? val.name)}
-                                                                    </label>
-                                                                    <input type={val.type} className="form-control" name={val.name} id={val.id} />
+                                                                    <Input type={val.type} required variant="standard" className="border-b-1" label={val.label ?? val.name === 'npwp' ? "NPWP" : convertCamelCase(val.label ?? val.name)} name={val.name} id={val.id} />
                                                                 </div>
-                                                                :
-                                                                val.type === 'number' ?
-                                                                    <div className="mb-24">
-                                                                        <label htmlFor={val.id} className="form-label">
-                                                                            <span className="text-danger me-4">*</span>
-                                                                            {convertCamelCase(val.label ?? val.name)}
-                                                                        </label>
-                                                                        <input type={val.type} className="form-control" name={val.name} id={val.id} />
-                                                                    </div> :
-                                                                    val.type === 'email' ?
-                                                                        <div className="mb-24">
-                                                                            <label htmlFor={val.id} className="form-label">
-                                                                                <span className="text-danger me-4">*</span>
-                                                                                {convertCamelCase(val.label ?? val.name)}
-                                                                            </label>
-                                                                            <input type={val.type} className="form-control" name={val.name} id={val.id} />
-                                                                        </div>
-                                                                        : val.type === 'date' ?
-                                                                            <div className="mb-24">
-                                                                                <label htmlFor={val.id} className="form-label">
-                                                                                    <span className="text-danger me-4">*</span>
-                                                                                    {convertCamelCase(val.label ?? val.name)}
-                                                                                </label>
-                                                                                <input type={val.type} className="form-control" name={val.name} id={val.id} />
-                                                                            </div>
-
-                                                                            : val.type === 'group' ?
-                                                                                <div className="mb-24">
-                                                                                    {val.label || val.name ?
-                                                                                        <label htmlFor={val.id} className="form-label">
-                                                                                            <span className="text-danger me-4">*</span>
-                                                                                            {convertCamelCase(val.label ?? val.name)}
-                                                                                        </label>
-                                                                                        : null}
-                                                                                    <div className="input-group">
-                                                                                        {val.group.map((vall: any, ii: number) => {
-                                                                                            return (<input key={ii} type={vall.type} defaultValue={vall.defaultValue} readOnly={vall.readOnly} placeholder={vall.placeholder} name={vall.name} className="form-control" />)
-                                                                                        })}
-                                                                                    </div>
+                                                                : val.type === 'address' ?
+                                                                    <div className="w-full">
+                                                                        <div className="mb-3">
+                                                                            <div className="border-1 border-gray-500 p-2 rounded-lg shadow-sm">
+                                                                                <label className="-mt-5 absolute bg-white px-1 text-gray-500">Address</label>
+                                                                                <div className="xl:flex">
+                                                                                    <div className="mt-3 w-full"><Input required name='jalan' className="border-b-1" type="text" variant="standard" label="Jalan" /></div>
+                                                                                    <div className="mt-3 w-full"><Input required name='block' className="border-b-1" type="text" variant="standard" label="Block" /></div>
+                                                                                    <div className="mt-3 w-full"><Input required name='no' className="border-b-1" type="number" variant="standard" label="No" /></div>
+                                                                                    <div className="mt-3 w-full"><Input required name='rt' className="border-b-1" type="number" variant="standard" label="RT" /></div>
+                                                                                    <div className="mt-3 w-full"><Input required name='rw' className="border-b-1" type="number" variant="standard" label="RW" /></div>
                                                                                 </div>
-                                                                                : val.type === 'textarea' ?
-                                                                                    <div className="mb-24">
-                                                                                        <label htmlFor={val.id} className="form-label">
-                                                                                            <span className="text-danger me-4">*</span>
-                                                                                            {convertCamelCase(val.label ?? val.name)}
-                                                                                        </label>
-                                                                                        <textarea id={val.id} name={val.name} className="form-control"></textarea>
-                                                                                    </div>
-                                                                                    : val.type === 'reactSelect' ?
-                                                                                        <div className="mb-24">
-                                                                                            <label htmlFor={val.id} className="form-label">
-                                                                                                <span className="text-danger me-4">*</span>
-                                                                                                {convertCamelCase(val.label ?? val.name)}
-                                                                                            </label>
-                                                                                            <Select
-                                                                                                id={val.id}
-                                                                                                name={val.name}
-                                                                                                data={val.select}
-                                                                                                search={val.search}
-                                                                                            />
-                                                                                        </div>
-                                                                                        : null
+                                                                                <div className="xl:flex">
+                                                                                    <div className="mt-3 w-full"><Input required name='kec' className="border-b-1" type="text" variant="standard" label="Kecamatan" /></div>
+                                                                                    <div className="mt-3 w-full"><Input required name='kel' className="border-b-1" type="text" variant="standard" label="Keluarahan" /></div>
+                                                                                    <div className="mt-3 w-full"><Input required name='prov' className="border-b-1" type="text" variant="standard" label="Provinsi" /></div>
+                                                                                    <div className="mt-3 w-full"><Input required name='kabkot' className="border-b-1" type="text" variant="standard" label="Kabupaten/Kota" /></div>
+                                                                                    <div className="mt-3 w-full"><Input required name='kodepos' className="border-b-1" type="number" variant="standard" label="Kode POS" /></div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    : null
                                                         }</div>
                                                 }) : null}
                                             </div>
@@ -248,8 +188,7 @@ export default function Npwp({ userData, setuserData }: any) {
 
                                         <div className="modal-footer pt-0 px-24 pb-24">
                                             <div className="divider"></div>
-
-                                            <button type="submit" className="m-0 btn btn-primary w-100">Add</button>
+                                            <Button type="submit" className="w-full" color="blue">Submit</Button>
                                         </div>
                                     </form>
                                 </div>

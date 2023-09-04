@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const verifToken = require("../middleware/jwt");
 
 const user = require("./user");
+const efaktur = require("./efaktur");
 const npwp = require("./npwp");
 const auth = require("./auth");
 
@@ -17,6 +18,7 @@ router.get("/token", (req, res) => {
 });
 
 router.use("/user", verifToken, user);
+router.use("/efaktur", verifToken, efaktur);
 router.use("/npwp", verifToken, npwp);
 router.use("/", auth);
 
