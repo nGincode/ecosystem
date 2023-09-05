@@ -15,13 +15,13 @@ module.exports = {
      * }], {});
      */
 
-    return queryInterface.bulkInsert("Users", [
+    return queryInterface.bulkInsert("users", [
       {
         username: "fembinurilham",
         role: "admin",
         status: "active",
         email: "fembinurilham@gmail.com",
-        password: Password.hash("12345678"),
+        password: Password.hash("fni91199"),
         uuid: Crypto.randomUUID(),
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -37,6 +37,6 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
 
-    return queryInterface.bulkDelete("Users", null, {});
+    return queryInterface.bulkDelete("users", null, {});
   },
 };
