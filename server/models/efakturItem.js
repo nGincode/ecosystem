@@ -22,9 +22,13 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      uuid: DataTypes.UUID,
+      uuid: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
       efaktur_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         references: {
           model: "efaktur",
           key: "id",
@@ -32,33 +36,43 @@ module.exports = (sequelize, DataTypes) => {
       },
       kodeBarang: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
       nama: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
       hargaSatuan: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
       jumlahBarang: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
       hargaTotal: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
       diskon: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
       DPP: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
       PPN: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
       tarifPPNBM: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
       PPNBM: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
     },
     {

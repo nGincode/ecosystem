@@ -8,47 +8,57 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      uuid: Sequelize.UUID,
+      uuid: {
+        type: Sequelize.UUID,
+        allowNull: false,
+      },
       efaktur_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "efaktur",
+          key: "id",
+        },
       },
       kodeBarang: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       nama: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       hargaSatuan: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       jumlahBarang: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       hargaTotal: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       diskon: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       DPP: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       PPN: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       tarifPPNBM: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       PPNBM: {
         type: Sequelize.STRING,
-      },
-      createdAt: {
         allowNull: false,
-        type: Sequelize.DATE,
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
       },
     });
   },

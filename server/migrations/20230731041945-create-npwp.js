@@ -4,36 +4,32 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("npwp", {
       id: {
-        allowNull: false,
+        type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
       },
       uuid: {
         type: Sequelize.UUID,
+        allowNull: false,
       },
       npwp: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       name: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       phone: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       email: {
         type: Sequelize.STRING,
       },
       address: {
         type: Sequelize.JSON,
-      },
-      createdAt: {
         allowNull: false,
-        type: Sequelize.DATE,
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
       },
     });
   },

@@ -18,21 +18,28 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      uuid: DataTypes.UUID,
+      uuid: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
       npwp: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
       name: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
       phone: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
       email: {
         type: DataTypes.STRING,
       },
       address: {
         type: DataTypes.JSON,
+        allowNull: false,
       },
     },
     {
