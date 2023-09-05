@@ -265,7 +265,7 @@ export default function Efaktur({ userData, setuserData }: any) {
 
     const RPtoNumber = (val: string) => {
         if (val) {
-            let res = val.replace(',', '').replace('Rp', '').replace('-', '');
+            let res = val.replaceAll(',', '').replaceAll('Rp', '').replaceAll('-', '');
             return Number(res)
         } else {
             return 0;

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon server/index.js",
     "build": "next build",
-    "start": "git pull && npm update && next build && node server/index.js",
+    "start": "node server/index.js",
     "lint": "next lint",
     "update": "git pull && npm update && next build"
   },
