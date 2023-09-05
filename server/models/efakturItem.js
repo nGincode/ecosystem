@@ -78,7 +78,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       // modelName: "efaktur_Item",
-      tableName: "efaktur_Item",
+      tableName: "efaktur_item",
       // timestamps: true,
       freezeTableName: true,
       // createdAt: "created_at",
