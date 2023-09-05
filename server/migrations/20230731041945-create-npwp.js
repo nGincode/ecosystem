@@ -31,6 +31,14 @@ module.exports = {
         type: Sequelize.JSON,
         allowNull: false,
       },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
