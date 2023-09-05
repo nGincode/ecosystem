@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "nodemon server/index.js",
     "build": "next build",
-    "start": "node server/index.js",
-    "lint": "next lint"
+    "start": "git pull && npm update && next build && node server/index.js",
+    "lint": "next lint",
+    "update": "git pull && npm update && next build"
   },
   "dependencies": {
     "@grapecity/spread-excelio": "16.0.3",
