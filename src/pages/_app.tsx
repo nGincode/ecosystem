@@ -40,31 +40,38 @@ export default function App({ Component, pageProps }: AppProps) {
                     if (res.data.status === 404) {
                         toast.error(res.data.message)
                     }
+                    if (res.data.status === 400) {
+                        toast.error(res.data.message)
+                    }
                     if (res.data.status == 200) {
                         localStorage.setItem('token', res.data.token);
                         localStorage.setItem('client_id', res.data.client_id);
                         setuserData(res.data.data);
                     }
                 });
-            } catch (error) {
-                console.log(error);
+            } catch (error: any) {
+                toast.error(error.response.data.massage);
             }
         } else if (url === 'user') {
             setloadingFull(true);
-            try {
-                await axios({
-                    method: "GET",
-                    url: "/api/user/" + localStorage.getItem("client_id"),
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`
-                    }
-                }).then((res) => {
-                    setuserData(res.data.data);
+            if (localStorage.getItem("client_id")) {
+                try {
+                    await axios({
+                        method: "GET",
+                        url: "/api/user/" + localStorage.getItem("client_id"),
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    }).then((res) => {
+                        setuserData(res.data.data);
+                        setloadingFull(false);
+                    });
+                } catch (error: any) {
+                    if (localStorage.getItem('token'))
+                        toast.error(error.response.data.massage);
                     setloadingFull(false);
-                });
-            } catch (error: any) {
-                if (localStorage.getItem('token'))
-                    toast.error(error.response.data.massage);
+                }
+            } else {
                 setloadingFull(false);
             }
         }

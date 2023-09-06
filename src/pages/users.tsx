@@ -162,13 +162,13 @@ export default function Users({ userData, setuserData }: any) {
 
                                                 <div className="col-12 col-md-6">
                                                     <div className="mb-24">
-                                                        <Input required type="password" variant="standard" className="border-b-1" name="password" label="Password" id="password" />
+                                                        <Input required type="password" autoComplete="" variant="standard" className="border-b-1" name="password" label="Password" id="password" />
                                                     </div>
                                                 </div>
 
                                                 <div className="col-12 col-md-6">
                                                     <div className="mb-24">
-                                                        <Input required type="password" variant="standard" className="border-b-1" name="confirm_password" label="Confirm Password" id="confirm_password" />
+                                                        <Input required type="password" autoComplete="" variant="standard" className="border-b-1" name="confirm_password" label="Confirm Password" id="confirm_password" />
                                                     </div>
                                                 </div>
                                             </div>

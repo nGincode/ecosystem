@@ -2,7 +2,9 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { Component, useEffect, useState } from "react"
 import toast, { Toaster } from 'react-hot-toast';
+import { Input, Textarea, Button } from "@material-tailwind/react";
 import axios from "axios";
+import moment from "moment"
 
 export default function Profile({ userData, setuserData }: any) {
 
@@ -226,13 +228,16 @@ export default function Profile({ userData, setuserData }: any) {
 
                                     <ul className="dropdown-menu" aria-labelledby="profile-menu-dropdown">
                                         <li>
-                                            <a className="dropdown-item" href="#">Change Avatar</a>
+                                            <label htmlFor="file">
+                                                <span className="dropdown-item" aria-hidden="true">Change Avatar</span>
+                                                <input type="file" id="file" name="file" accept="image/*" style={{ display: "none" }} onChange={(val: any) => uploadAvatar(val)} />
+                                            </label>
                                         </li>
                                     </ul>
                                 </div>
 
                                 <div className="d-inline-block" id="profile-menu-dropdown" data-bs-dismiss="offcanvas" aria-label="Close">
-                                    <button type="button" className="btn btn-text btn-icon-only">
+                                    <button id="profileClose" type="button" className="btn btn-text btn-icon-only">
                                         <i className="ri-close-fill text-black-80 lh-1" style={{ fontSize: "24px" }}></i>
                                     </button>
                                 </div>
@@ -251,68 +256,52 @@ export default function Profile({ userData, setuserData }: any) {
 
                                                 <ul className="dropdown-menu" aria-labelledby="profile-menu-dropdown">
                                                     <li>
-                                                        <a className="dropdown-item" href="#">Change Avatar</a>
+                                                        <label htmlFor="file">
+                                                            <span className="dropdown-item" aria-hidden="true">Change Avatar</span>
+                                                            <input type="file" id="file" name="file" accept="image/*" style={{ display: "none" }} onChange={(val: any) => uploadAvatar(val)} />
+                                                        </label>
                                                     </li>
                                                 </ul>
                                             </div>
 
                                             <div className="d-flex justify-content-center">
                                                 <div className="d-inline-block position-relative">
-                                                    <div className="avatar-item d-flex align-items-center justify-content-center rounded-circle" style={{ width: "80px", height: "80px" }}>
-                                                        <img src="./app-assets/img/memoji/memoji-1.png" />
-                                                    </div>
+                                                    {userData.img ?
+                                                        <div className="avatar-item d-flex align-items-center justify-content-center rounded-circle" style={{ width: "80px", height: "80px" }}>
+                                                            <img src={userData.img} />
+                                                        </div> :
+                                                        <div className="avatar-item d-flex align-items-center justify-content-center rounded-circle" style={{ width: "80px", height: "80px" }}>
+                                                            <img src="./app-assets/img/memoji/memoji-1.png" />
+                                                        </div>}
 
                                                     <span className="position-absolute translate-middle badge rounded-pill bg-primary text-white border-none">
-                                                        12
+                                                        Online
                                                     </span>
                                                 </div>
                                             </div>
-
-                                            <h3 className="mt-24 mb-4">Dolores Bianca</h3>
-                                            <a href="mailto:dolores@yoda.com" className="hp-p1-body">dolores@yoda.com</a>
+                                            <h3 className="mt-24 mb-4">{userData.fullName ?? userData.username}</h3>
+                                            <a href={`mailto:${userData.email}`} className="hp-p1-body">{userData.email}</a>
                                         </div>
                                     </div>
 
                                     <div className="hp-profile-menu-body w-100 text-start mt-48 mt-lg-0">
                                         <ul className="me-n1 mx-lg-n12">
                                             <li className="mt-4 mb-16">
-                                                <a href="profile-information.html" className="active position-relative text-black-80 hp-text-color-dark-30 hp-hover-text-color-primary-1 hp-hover-text-color-dark-0 py-12 px-24 d-flex align-items-center">
+                                                <a onClick={() => {
+                                                    setTab(1);
+                                                    ($('#profileClose') as any).trigger("click");
+                                                }} className={tab === 1 ? "cursor-pointer active position-relative text-black-80 hp-text-color-dark-30 hp-hover-text-color-primary-1 hp-hover-text-color-dark-0 py-12 px-24 d-flex align-items-center" : "position-relative text-black-80 hp-text-color-dark-30 hp-hover-text-color-primary-1 hp-hover-text-color-dark-0 py-12 px-24 d-flex align-items-center cursor-pointer "} >
                                                     <i className="iconly-Curved-User me-16"></i>
                                                     <span>Personal Information</span>
-
                                                     <span className="hp-menu-item-line position-absolute opacity-0 h-100 top-0 end-0 bg-primary hp-bg-dark-0" style={{ width: "2px" }}></span>
                                                 </a>
                                             </li>
 
                                             <li className="mt-4 mb-16">
-                                                <a href="profile-notifications.html" className="position-relative text-black-80 hp-text-color-dark-30 hp-hover-text-color-primary-1 hp-hover-text-color-dark-0 py-12 px-24 d-flex align-items-center">
-                                                    <i className="iconly-Curved-Notification me-16"></i>
-                                                    <span>Notifications</span>
-
-                                                    <span className="hp-menu-item-line position-absolute opacity-0 h-100 top-0 end-0 bg-primary hp-bg-dark-0" style={{ width: "2px" }}></span>
-                                                </a>
-                                            </li>
-
-                                            <li className="mt-4 mb-16">
-                                                <a href="profile-activity.html" className="position-relative text-black-80 hp-text-color-dark-30 hp-hover-text-color-primary-1 hp-hover-text-color-dark-0 py-12 px-24 d-flex align-items-center">
-                                                    <i className="iconly-Curved-Activity me-16"></i>
-                                                    <span>Activity Monitor</span>
-
-                                                    <span className="hp-menu-item-line position-absolute opacity-0 h-100 top-0 end-0 bg-primary hp-bg-dark-0" style={{ width: "2px" }}></span>
-                                                </a>
-                                            </li>
-
-                                            <li className="mt-4 mb-16">
-                                                <a href="profile-settings.html" className="position-relative text-black-80 hp-text-color-dark-30 hp-hover-text-color-primary-1 hp-hover-text-color-dark-0 py-12 px-24 d-flex align-items-center">
-                                                    <i className="iconly-Curved-Setting me-16"></i>
-                                                    <span>Security Settings</span>
-
-                                                    <span className="hp-menu-item-line position-absolute opacity-0 h-100 top-0 end-0 bg-primary hp-bg-dark-0" style={{ width: "2px" }}></span>
-                                                </a>
-                                            </li>
-
-                                            <li className="mt-4 mb-16">
-                                                <a href="profile-password.html" className="position-relative text-black-80 hp-text-color-dark-30 hp-hover-text-color-primary-1 hp-hover-text-color-dark-0 py-12 px-24 d-flex align-items-center">
+                                                <a onClick={() => {
+                                                    setTab(2);
+                                                    ($('#profileClose') as any).trigger("click");
+                                                }} className={tab === 2 ? "cursor-pointer active position-relative text-black-80 hp-text-color-dark-30 hp-hover-text-color-primary-1 hp-hover-text-color-dark-0 py-12 px-24 d-flex align-items-center" : "position-relative text-black-80 hp-text-color-dark-30 hp-hover-text-color-primary-1 hp-hover-text-color-dark-0 py-12 px-24 d-flex align-items-center cursor-pointer "} >
                                                     <i className="iconly-Curved-Password me-16"></i>
                                                     <span>Password Change</span>
 
@@ -320,14 +309,6 @@ export default function Profile({ userData, setuserData }: any) {
                                                 </a>
                                             </li>
 
-                                            <li className="mt-4 mb-16">
-                                                <a href="profile-connect.html" className="position-relative text-black-80 hp-text-color-dark-30 hp-hover-text-color-primary-1 hp-hover-text-color-dark-0 py-12 px-24 d-flex align-items-center">
-                                                    <i className="iconly-Curved-Heart me-16"></i>
-                                                    <span>Connect with Social</span>
-
-                                                    <span className="hp-menu-item-line position-absolute opacity-0 h-100 top-0 end-0 bg-primary hp-bg-dark-0" style={{ width: "2px" }}></span>
-                                                </a>
-                                            </li>
                                         </ul>
                                     </div>
 
@@ -378,7 +359,7 @@ export default function Profile({ userData, setuserData }: any) {
                                                     </li>
                                                     <li className="mt-18">
                                                         <span className="hp-p1-body">Date of Birth</span>
-                                                        <span className="mt-0 mt-sm-4 hp-p1-body text-black-100 hp-text-color-dark-0">{userData.dateOfBirth ?? '-'}</span>
+                                                        <span className="mt-0 mt-sm-4 hp-p1-body text-black-100 hp-text-color-dark-0">{userData.dateOfBirth ? moment(userData.dateOfBirth).format('DD/MM/YYYY') : '-'}</span>
                                                     </li>
                                                     <li className="mt-18">
                                                         <span className="hp-p1-body">Address</span>
@@ -405,21 +386,18 @@ export default function Profile({ userData, setuserData }: any) {
                                                 <div className="col-12 col-sm-8 col-md-7 col-xl-5 col-xxxl-3">
                                                     <form onSubmit={submitPassword} id="submitPassword">
                                                         <div className="mb-24">
-                                                            <label htmlFor="profileOldPassword" className="form-label">Old Password :</label>
-                                                            <input type="password" className="form-control" id="profileOldPassword" name="old_password" placeholder="Password" />
+                                                            <Input label="Old Password" variant="standard" required type="password" className="border-b-1" id="profileOldPassword" name="old_password" />
                                                         </div>
 
                                                         <div className="mb-24">
-                                                            <label htmlFor="profileNewPassword" className="form-label">New Password :</label>
-                                                            <input type="password" className="form-control" id="profileNewPassword" name="password" placeholder="Password" />
+                                                            <Input label="New Password" variant="standard" required type="password" className="border-b-1" id="profileNewPassword" name="password" />
                                                         </div>
 
                                                         <div className="mb-24">
-                                                            <label htmlFor="profileConfirmPassword" className="form-label">Confirm New Password :</label>
-                                                            <input type="password" className="form-control" id="profileConfirmPassword" name="confirm_password" placeholder="Password" />
+                                                            <Input label="Confirm New Password" variant="standard" required type="password" className="border-b-1" id="profileConfirmPassword" name="confirm_password" />
                                                         </div>
 
-                                                        <button type="submit" className="btn btn-primary w-100">Change Password</button>
+                                                        <Button color="red" type="submit" className="w-100">Change Password</Button>
                                                     </form>
                                                 </div>
                                             </div>
@@ -435,7 +413,7 @@ export default function Profile({ userData, setuserData }: any) {
                 <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: "416px" }}>
                     <div className="modal-content">
                         <div className="modal-header py-16">
-                            <h5 className="modal-title" id="profileContactEditModalLabel">Contact Edit</h5>
+                            <h5 className="modal-title font-bold" id="profileContactEditModalLabel">Profile Edit</h5>
                             <button type="button" className="btn-close hp-bg-none d-flex align-items-center justify-content-center" data-bs-dismiss="modal" aria-label="Close">
                                 <i className="ri-close-line hp-text-color-dark-0 lh-1" style={{ fontSize: "24px" }}></i>
                             </button>
@@ -446,38 +424,32 @@ export default function Profile({ userData, setuserData }: any) {
                         <div className="modal-body py-48">
                             <form onSubmit={submitProfile}>
                                 <div className="row g-24">
-                                    <div className="col-12">
-                                        <label htmlFor="fullName" className="form-label">Full Name</label>
-                                        <input type="text" className="form-control" name="fullName" id="fullName" defaultValue={userData.fullName} />
+                                    <div className="col-12 -mt-2">
+                                        <Input label="Full Name" variant="standard" required type="text" className="border-b-1" name="fullName" id="fullName" defaultValue={userData.fullName} />
                                     </div>
 
                                     <div className="col-12">
-                                        <label htmlFor="username" className="form-label">Username</label>
-                                        <input type="text" className="form-control" name="username" id="username" defaultValue={userData.username} />
+                                        <Input label="Username" variant="standard" required type="text" className="border-b-1" name="username" id="username" defaultValue={userData.username} />
                                     </div>
 
                                     <div className="col-12">
-                                        <label htmlFor="email" className="form-label">Email</label>
-                                        <input type="email" className="form-control" name="email" id="email" defaultValue={userData.email} />
+                                        <Input label="Email" variant="standard" required type="email" className="border-b-1" name="email" id="email" defaultValue={userData.email} />
                                     </div>
 
                                     <div className="col-12">
-                                        <label htmlFor="dateOfBirth" className="form-label">Date of Birth</label>
-                                        <input type="date" className="form-control" name="dateOfBirth" id="dateOfBirth" defaultValue={userData.dateOfBirth} />
+                                        <Input label="Date of Birth" variant="standard" required type="date" className="border-b-1" name="dateOfBirth" id="dateOfBirth" defaultValue={userData.dateOfBirth} />
                                     </div>
 
                                     <div className="col-12">
-                                        <label htmlFor="nophone" className="form-label">Phone</label>
-                                        <input type="text" className="form-control" name="phone" id="nophone" defaultValue={userData.phone} />
+                                        <Input label="Phone" variant="standard" required type="text" className="border-b-1" name="phone" id="nophone" defaultValue={userData.phone} />
                                     </div>
 
                                     <div className="col-12">
-                                        <label htmlFor="address" className="form-label">Address</label>
-                                        <textarea name="address" id="address" className="form-control" defaultValue={userData.address}></textarea>
+                                        <Textarea label="Address" variant="standard" required name="address" id="address" className="border-b-1" defaultValue={userData.address}></Textarea>
                                     </div>
 
                                     <div className="col-6">
-                                        <button type="submit" className="btn btn-primary w-100">Edit</button>
+                                        <Button color="blue" type="submit" className=" w-100">Edit</Button>
                                     </div>
 
                                     <div className="col-6">

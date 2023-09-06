@@ -346,7 +346,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                     </table>
                     <div className="h-2" />
                 </div>
-                <div className="flex items-center gap-2 mt-3 ml-5">
+                <div className="flex flex-wrap items-center gap-2 mt-3 ml-5">
                     <button
                         className="border rounded p-1"
                         onClick={() => table.setPageIndex(0)}

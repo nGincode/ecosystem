@@ -513,7 +513,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                 </div>
                             </div>
 
-                            <div className="w-auto px-0 hp-sidebar-collapse-button hp-sidebar-hidden" data-bs-dismiss="offcanvas" aria-label="Close">
+                            <div id="menuClose" className="w-auto px-0 hp-sidebar-collapse-button hp-sidebar-hidden" data-bs-dismiss="offcanvas" aria-label="Close">
                                 <button type="button" className="btn btn-text btn-icon-only bg-transparent">
                                     <i className="ri-close-fill lh-1 hp-text-color-black-80" style={{ fontSize: "24px" }}></i>
                                 </button>
@@ -565,7 +565,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                                             return (
                                                                                 <span key={iii}>
                                                                                     <Link key={iii} href="" className="submenu-item">
-                                                                                        <span>
+                                                                                        <span >
                                                                                             <span className="submenu-item-icon">
                                                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
                                                                                                     <path d="M4.26 11.02v4.97c0 1.82 0 1.82 1.72 2.98l4.73 2.73c.71.41 1.87.41 2.58 0l4.73-2.73c1.72-1.16 1.72-1.16 1.72-2.98v-4.97c0-1.82 0-1.82-1.72-2.98l-4.73-2.73c-.71-.41-1.87-.41-2.58 0L5.98 8.04C4.26 9.2 4.26 9.2 4.26 11.02Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
@@ -581,7 +581,9 @@ export default function layout({ children = null, logOut, userData }: any) {
 
                                                                                     <ul className="submenu-children" data-level={iii}>
                                                                                         <li>
-                                                                                            <Link href={valll.link}>
+                                                                                            <Link onClick={() => {
+                                                                                                ($('#menuClose') as any).trigger("click");
+                                                                                            }} href={valll.link}>
                                                                                                 <span>{valll.label}</span>
                                                                                             </Link>
                                                                                         </li>
@@ -590,7 +592,9 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                                                 </span>)
                                                                         })}
                                                                     </> :
-                                                                        <Link href={vall.link} className={router.asPath === vall.link ? "active" : ""}>
+                                                                        <Link href={vall.link} onClick={() => {
+                                                                            ($('#menuClose') as any).trigger("click");
+                                                                        }} className={router.asPath === vall.link ? "active" : ""}>
                                                                             <div className="tooltip-item in-active" data-bs-toggle="tooltip" data-bs-placement="right" title="" data-bs-original-title={vall.label} aria-label={vall.label}></div>
                                                                             <span>
                                                                                 <span className="submenu-item-icon">
@@ -627,13 +631,17 @@ export default function layout({ children = null, logOut, userData }: any) {
 
                                             <div className="w-auto ms-8 px-0 hp-sidebar-hidden mt-4">
                                                 <span className="d-block hp-text-color-black-100 hp-text-color-dark-0 hp-p1-body lh-1">{userData.fullName ?? userData.username}</span>
-                                                <Link href="/profile" className="hp-badge-text fw-normal hp-text-color-dark-30">View Profile</Link>
+                                                <Link onClick={() => {
+                                                    ($('#menuClose') as any).trigger("click");
+                                                }} href="/profile" className="hp-badge-text fw-normal hp-text-color-dark-30">View Profile</Link>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="col hp-flex-none w-auto px-0 hp-sidebar-hidden">
-                                        <Link href="/profile">
+                                        <Link onClick={() => {
+                                            ($('#menuClose') as any).trigger("click");
+                                        }} href="/profile">
                                             <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 24 24" className="remix-icon hp-text-color-black-100 hp-text-color-dark-0" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                                                 <g>
                                                     <path fill="none" d="M0 0h24v24H0z"></path>
