@@ -7,6 +7,7 @@ const user = require("./user");
 const efaktur = require("./efaktur");
 const npwp = require("./npwp");
 const auth = require("./auth");
+const permission = require("./permission");
 
 router.get("/", (req, res) => {
   res.send("API Starting!");
@@ -19,6 +20,7 @@ router.get("/token", (req, res) => {
 
 router.use("/user", verifToken, user);
 router.use("/efaktur", verifToken, efaktur);
+router.use("/permission", verifToken, permission);
 router.use("/npwp", verifToken, npwp);
 router.use("/", auth);
 

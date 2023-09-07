@@ -393,9 +393,9 @@ export default function Efaktur({ userData, setuserData }: any) {
                                 let jumlahPPNBM = 0;
                                 let jumlahDPP = 0;
                                 dtRes.map((vallll: any) => {
-                                    jumlahDPP += Math.floor(RPtoNumber(vallll['DPP']));
-                                    jumlahPPNBM += Math.floor(RPtoNumber(vallll['PPNBM']));
-                                    jumlahPPN += Math.floor(RPtoNumber(vallll['PPN']));
+                                    jumlahDPP += Math.round(RPtoNumber(vallll['DPP']));
+                                    jumlahPPNBM += Math.round(RPtoNumber(vallll['PPNBM']));
+                                    jumlahPPN += Math.round(RPtoNumber(vallll['PPN']));
                                 });
 
                                 data.push([

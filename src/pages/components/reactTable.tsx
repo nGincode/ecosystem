@@ -7,9 +7,10 @@ import Swal from 'sweetalert2'
 import moment from "moment";
 
 
-import { Input, Textarea, Button } from "@material-tailwind/react";
+import { Input, Textarea, Button, Checkbox, IconButton } from "@material-tailwind/react";
 
 import Select from "./reactSelect";
+import Cekbox from "./cekBox";
 
 
 import {
@@ -162,6 +163,54 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                             },
                             footer: (props: any) => props.column.id,
                         })
+                    } else if (val === 'permission') {
+                        array.push({
+                            accessorKey: val,
+                            header: () => <div>{convertCamelCase(val)}</div>,
+                            cell: ({ row }: any) => {
+                                return row.original.permission.map((vall: any, i: number) => {
+                                    return (<div key={i}>
+                                        {vall.check ?
+                                            <>
+                                                {vall.data.map((map: any, ii: number) => {
+                                                    let check = false;
+                                                    let create = map.checklist.find((find: any) => find == 'create') ?
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                                                            <path fillRule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clipRule="evenodd" />
+                                                        </svg> : null;
+                                                    let edit = map.checklist.find((find: any) => find == 'edit') ?
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                                                            <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                                                            <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                                                        </svg> : null;
+                                                    let del = map.checklist.find((find: any) => find == 'delete') ?
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                        </svg> : null;
+                                                    if (create) {
+                                                        check = true;
+                                                    }
+                                                    if (edit) {
+                                                        check = true;
+                                                    }
+                                                    if (del) {
+                                                        check = true;
+                                                    }
+                                                    if (check)
+                                                        return <div key={ii} className="flex  w-full">
+                                                            <div className="w-full">{vall.label} {map.label}
+                                                                <div className="float-right w-13 flex">
+                                                                    {create}
+                                                                    {edit}
+                                                                    {del}
+                                                                </div></div>
+                                                        </div>;
+                                                })}
+                                            </> : null}</div>)
+                                })
+                            },
+                            footer: (props: any) => props.column.id,
+                        })
                     } else {
                         array.push({
                             accessorKey: val,
@@ -280,6 +329,8 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
             }
         }
     }
+
+
 
     if (data.length) {
         ($("#nophoneEdit") as any).mask("(+62) 000-0000-0000");
@@ -422,7 +473,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                             <form onSubmit={handleSubmit} id="editForm">
                                 <div className="modal-body">
                                     <div className="row gx-8">
-                                        {modalData.length ? modalData?.map((val: any, i: number) => {
+                                        {modalData ? modalData?.map((val: any, i: number) => {
 
                                             return <div className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
                                                 {
@@ -480,7 +531,62 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                        : null
+                                                                        : val.type === 'permission' ? <div>
+
+                                                                            <div className="flex mb-3">
+                                                                                <div className="w-1/2"></div>
+                                                                                <div className="w-1/6 justify-center flex">
+
+                                                                                    <IconButton color="blue" size="sm">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                                                                                            <path fillRule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clipRule="evenodd" />
+                                                                                        </svg>
+                                                                                    </IconButton>
+                                                                                </div>
+                                                                                <div className="w-1/6  justify-center flex">
+                                                                                    <IconButton color="green" size="sm">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                                                                                            <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                                                                                            <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                                                                                        </svg>
+                                                                                    </IconButton>
+                                                                                </div>
+                                                                                <div className="w-1/6  justify-center flex">
+                                                                                    <IconButton color="red" size="sm">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                                                        </svg>
+                                                                                    </IconButton>
+                                                                                </div>
+                                                                            </div>
+                                                                            {val.data.map((val: any, i: number) => {
+                                                                                return (<div key={i}>
+                                                                                    <div className="flex mt-3 font-bold">
+                                                                                        <div className="w-1/2">{val.label}</div>
+                                                                                    </div>
+                                                                                    {val.data.map((vall: any, ii: number) => {
+                                                                                        let perm = dataEdit?.permission.find((fill: any) => fill.label === val.label)?.data?.find((fil: any) => fil.name === vall.name);
+
+                                                                                        return (
+                                                                                            <div key={ii} className="flex mt-1">
+                                                                                                <div className="w-1/2 ml-2 m-auto">- {vall.label}</div>
+                                                                                                <div className="w-1/6 justify-center flex">
+                                                                                                    {perm?.checklist.find((fil: any) => fil === 'create') ?
+                                                                                                        <Cekbox color="blue" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 1} checked={true} /> : <Cekbox color="blue" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 1} />}
+                                                                                                </div>
+                                                                                                <div className="w-1/6  justify-center flex">
+                                                                                                    {perm?.checklist.find((fil: any) => fil === 'edit') ?
+                                                                                                        <Cekbox color="green" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 2} checked={true} /> : <Cekbox color="green" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 2} />}
+                                                                                                </div>
+                                                                                                <div className="w-1/6  justify-center flex">
+                                                                                                    {perm?.checklist.find((fil: any) => fil === 'delete') ?
+                                                                                                        <Cekbox color="red" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 3} checked={true} /> : <Cekbox color="red" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 3} />}
+                                                                                                </div>
+                                                                                            </div>)
+                                                                                    })}
+                                                                                </div>)
+                                                                            })}
+                                                                        </div> : null
                                                 }</div>
                                         }) : null}
                                     </div>
