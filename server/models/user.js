@@ -1,17 +1,22 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
+  class user extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      this.hasOne(models.permissionUser, {
+        as: "permissionUser",
+        foreignKey: "user_id",
+        onDelete: "cascade",
+        hooks: true,
+      });
     }
   }
-  User.init(
+  user.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -20,10 +25,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       uuid: {
         type: DataTypes.UUID,
+        unique: true,
       },
       username: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       password: {
         type: DataTypes.STRING,
@@ -32,6 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       role: {
         type: DataTypes.STRING,
@@ -64,10 +72,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "User",
-      tableName: "users",
+      modelName: "user",
+      tableName: "user",
       freezeTableName: true,
     }
   );
-  return User;
+  return user;
 };

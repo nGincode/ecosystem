@@ -157,6 +157,7 @@ const del = async (req, res) => {
 };
 
 const post = async (req, res) => {
+  const { users_id, users_uuid } = req.user;
   const {
     date,
     referensi,
@@ -203,6 +204,7 @@ const post = async (req, res) => {
     return {
       uuid: Crypto.randomUUID(),
       efaktur_id: null,
+      user_id: users_id,
       kodeBarang: val.kode,
       nama: val.name,
       hargaSatuan: val.harga,
@@ -217,6 +219,7 @@ const post = async (req, res) => {
     };
   });
   const dataFaktur = {
+    user_id: users_id,
     uuid: Crypto.randomUUID(),
     noIdentitas: noIdentitas,
     date: date,

@@ -215,6 +215,7 @@ const del = async (req, res) => {
 
 const post = async (req, res) => {
   const { name, address, phone, email } = req.body;
+  const { users_id, users_uuid } = req.user;
 
   const data = {
     uuid: Crypto.randomUUID(),
@@ -223,6 +224,7 @@ const post = async (req, res) => {
     phone: phone,
     address: address,
     email: email,
+    user_id: users_id,
   };
 
   await npwp.create(data);

@@ -393,9 +393,9 @@ export default function Efaktur({ userData, setuserData }: any) {
                                 let jumlahPPNBM = 0;
                                 let jumlahDPP = 0;
                                 dtRes.map((vallll: any) => {
-                                    jumlahDPP += Math.round(RPtoNumber(vallll['DPP']));
-                                    jumlahPPNBM += Math.round(RPtoNumber(vallll['PPNBM']));
-                                    jumlahPPN += Math.round(RPtoNumber(vallll['PPN']));
+                                    jumlahDPP += Math.floor(RPtoNumber(vallll['DPP']));
+                                    jumlahPPNBM += Math.floor(RPtoNumber(vallll['PPNBM']));
+                                    jumlahPPN += Math.floor(RPtoNumber(vallll['PPN']));
                                 });
 
                                 data.push([
@@ -837,7 +837,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                     </div>
                 </div>
                 <div className="col-12">
-                    <div className="card hp-contact-card mb-32 -mt-3">
+                    <div className="card hp-contact-card mb-15 -mt-3  shadow-md border-gray-300">
                         <div className="card-body px-0">
                             <ReactTable
                                 search={search}

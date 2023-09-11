@@ -15,7 +15,7 @@ module.exports = {
      * }], {});
      */
 
-    return queryInterface.bulkInsert("users", [
+    return queryInterface.bulkInsert("user", [
       {
         username: "fembinurilham",
         role: "admin",
@@ -37,6 +37,6 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
 
-    return queryInterface.bulkDelete("users", null, {});
+    return queryInterface.bulkDelete("user", null, {});
   },
 };

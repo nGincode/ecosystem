@@ -8,8 +8,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-
       this.hasMany(models.efakturItem, {
         as: "efakturItem",
         foreignKey: "efaktur_id",
@@ -28,6 +26,15 @@ module.exports = (sequelize, DataTypes) => {
       uuid: {
         type: DataTypes.UUID,
         allowNull: false,
+        unique: true,
+      },
+      user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "user",
+          key: "id",
+        },
       },
       noIdentitas: {
         type: DataTypes.STRING,

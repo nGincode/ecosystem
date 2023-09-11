@@ -98,10 +98,10 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
         setGlobalFilter(search);
     }, [search]);
 
-
     useEffect(() => {
         handleApi('view')
     }, [reload])
+
     const handleSubmit = (event: any) => {
         event.preventDefault();
         let dataPost = new FormData(($("#editForm") as any)[0]);
@@ -174,6 +174,11 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                             <>
                                                 {vall.data.map((map: any, ii: number) => {
                                                     let check = false;
+                                                    let view = map.checklist.find((find: any) => find == 'create') ?
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        </svg> : null;
                                                     let create = map.checklist.find((find: any) => find == 'create') ?
                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                                                             <path fillRule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clipRule="evenodd" />
@@ -187,19 +192,14 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                                         </svg> : null;
-                                                    if (create) {
-                                                        check = true;
-                                                    }
-                                                    if (edit) {
-                                                        check = true;
-                                                    }
-                                                    if (del) {
+                                                    if (view) {
                                                         check = true;
                                                     }
                                                     if (check)
                                                         return <div key={ii} className="flex  w-full">
                                                             <div className="w-full">{vall.label} {map.label}
                                                                 <div className="float-right w-13 flex">
+                                                                    {view}
                                                                     {create}
                                                                     {edit}
                                                                     {del}
@@ -474,6 +474,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                 <div className="modal-body">
                                     <div className="row gx-8">
                                         {modalData ? modalData?.map((val: any, i: number) => {
+                                            console.log(dataEdit)
 
                                             return <div className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
                                                 {
@@ -532,9 +533,17 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                                                             </div>
                                                                         </div>
                                                                         : val.type === 'permission' ? <div>
+                                                                            <input type="hidden" value={JSON.stringify(val.data)} name="format" />
 
                                                                             <div className="flex mb-3">
                                                                                 <div className="w-1/2"></div>
+                                                                                <div className="w-1/6 justify-center flex">
+                                                                                    <IconButton size="sm"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                                    </svg>
+                                                                                    </IconButton>
+                                                                                </div>
                                                                                 <div className="w-1/6 justify-center flex">
 
                                                                                     <IconButton color="blue" size="sm">
@@ -571,16 +580,16 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                                                                             <div key={ii} className="flex mt-1">
                                                                                                 <div className="w-1/2 ml-2 m-auto">- {vall.label}</div>
                                                                                                 <div className="w-1/6 justify-center flex">
-                                                                                                    {perm?.checklist.find((fil: any) => fil === 'create') ?
-                                                                                                        <Cekbox color="blue" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 1} checked={true} /> : <Cekbox color="blue" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 1} />}
+                                                                                                    <Cekbox name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 1} checked={perm?.checklist.find((fil: any) => fil === 'view') ? true : false} />
+                                                                                                </div>
+                                                                                                <div className="w-1/6 justify-center flex">
+                                                                                                    <Cekbox color="blue" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 2} checked={perm?.checklist.find((fil: any) => fil === 'create') ? true : false} />
                                                                                                 </div>
                                                                                                 <div className="w-1/6  justify-center flex">
-                                                                                                    {perm?.checklist.find((fil: any) => fil === 'edit') ?
-                                                                                                        <Cekbox color="green" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 2} checked={true} /> : <Cekbox color="green" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 2} />}
+                                                                                                    <Cekbox color="green" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 3} checked={perm?.checklist.find((fil: any) => fil === 'edit') ? true : false} />
                                                                                                 </div>
                                                                                                 <div className="w-1/6  justify-center flex">
-                                                                                                    {perm?.checklist.find((fil: any) => fil === 'delete') ?
-                                                                                                        <Cekbox color="red" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 3} checked={true} /> : <Cekbox color="red" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 3} />}
+                                                                                                    <Cekbox color="red" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 4} checked={perm?.checklist.find((fil: any) => fil === 'delete') ? true : false} />
                                                                                                 </div>
                                                                                             </div>)
                                                                                     })}
@@ -602,7 +611,10 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
             </>
         )
     } else {
-        return <div className="text-center">Not data</div>
+        return <div className="text-center w-full text-gray-500">
+            <div className="flex justify-center "><svg xmlns="http://www.w3.org/2000/svg" className="svg-icon" style={{ width: "10em", height: "10em", verticalAlign: "middle", fill: "currentColor", overflow: "hidden" }} viewBox="0 0 1024 1024" version="1.1"><path d="M672 128a32 32 0 0 1 32 32v256h54.56a32 32 0 0 1 22.496 9.248l137.44 135.872a32 32 0 0 1 9.504 22.752V896a32 32 0 0 1-32 32H448a32 32 0 0 1-32-32v-64H128a32 32 0 0 1-32-32V160a32 32 0 0 1 32-32h544z" fill="#FFFFFF" /><path d="M672 128a32 32 0 0 1 32 32v256h-32V160H128v640h288v32H128a32 32 0 0 1-32-32V160a32 32 0 0 1 32-32h544z" fill="#808FA1" /><path d="M758.56 416a32 32 0 0 1 22.496 9.248l137.44 135.872a32 32 0 0 1 9.504 22.752V896a32 32 0 0 1-32 32H448a32 32 0 0 1-32-32V448a32 32 0 0 1 32-32h310.56zM896 583.872L758.56 448H448v448h448v-312.128z" fill="#5D6D7E" /><path d="M592 352a16 16 0 0 1 2.88 31.744L592 384h-384a16 16 0 0 1-2.88-31.744L208 352h384z m-96-96a16 16 0 0 1 2.88 31.744L496 288h-288a16 16 0 0 1-2.88-31.744L208 256h288z" fill="#95A1AF" /><path d="M527.488 496a16 16 0 0 1 15.744 13.12l0.256 2.88v96a16 16 0 0 1-31.744 2.88l-0.256-2.88v-96a16 16 0 0 1 16-16z m64 0a16 16 0 0 1 15.712 13.12l0.256 2.88v96a16 16 0 0 1-31.744 2.88l-0.256-2.88v-96a16 16 0 0 1 16-16z" fill="#808FA1" /><path d="M800 704a32 32 0 0 1 32 32v64a32 32 0 0 1-32 32h-256a32 32 0 0 1-32-32v-64a32 32 0 0 1 32-32h256z m0 32h-256v64h256v-64z" fill="#32AD99" /></svg>
+            </div>
+            <div className="ml-2">No results found</div></div>
     }
 }
 

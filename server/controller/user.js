@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { hash, verify } = require("node-php-password");
-const { User } = require("../models");
+const { user, permissionUser, permission } = require("../models");
 const { Op } = require("sequelize");
 const Crypto = require("crypto");
 const moment = require("moment/moment");
@@ -9,7 +9,7 @@ const getId = async (req, res) => {
   const { users_id, users_uuid, email, username } = req.user;
   const { uuid } = req.params;
 
-  const user = await User.findOne({
+  const User = await user.findOne({
     where: { uuid: uuid },
     attributes: [
       "uuid",
@@ -23,9 +23,27 @@ const getId = async (req, res) => {
       "address",
       "status",
     ],
+    include: [
+      {
+        model: permissionUser,
+        as: "permissionUser",
+        attributes: {
+          exclude: ["id", "uuid", "user_id", "createdAt", "updatedAt"],
+        },
+        include: [
+          {
+            model: permission,
+            as: "permission",
+            attributes: {
+              exclude: ["id", "uuid", "createdAt", "updatedAt"],
+            },
+          },
+        ],
+      },
+    ],
   });
 
-  if (!user) {
+  if (!User) {
     return res.json({
       message: "User not found",
     });
@@ -33,7 +51,7 @@ const getId = async (req, res) => {
 
   res.json({
     massage: "Get data successful",
-    data: user,
+    data: User,
   });
 };
 
@@ -52,7 +70,7 @@ const putId = async (req, res) => {
   } = req.body;
   const { uuid } = req.params;
 
-  const user = await User.findOne({
+  const User = await user.findOne({
     where: { uuid: uuid },
     attributes: [
       "id",
@@ -69,7 +87,7 @@ const putId = async (req, res) => {
     ],
   });
 
-  if (!user) {
+  if (!User) {
     return res.json({
       message: "User not found",
     });
@@ -86,7 +104,7 @@ const putId = async (req, res) => {
     status: status,
   };
 
-  await user.update(data);
+  await User.update(data);
 
   res.json({
     status: 200,
@@ -98,7 +116,7 @@ const putId = async (req, res) => {
 const get = async (req, res) => {
   const { users_id, users_uuid, email, username } = req.user;
 
-  const user = await User.findAll({
+  const User = await user.findAll({
     attributes: [
       "uuid",
       "img",
@@ -113,7 +131,7 @@ const get = async (req, res) => {
     ],
   });
 
-  if (!user) {
+  if (!User) {
     return res.json({
       message: "User not found",
     });
@@ -121,14 +139,16 @@ const get = async (req, res) => {
 
   res.json({
     massage: "Get data successful",
-    data: user.map((val) => {
+    data: User.map((val) => {
       return {
         uuid: val.uuid,
         img: val.img,
         fullName: val.fullName,
         email: val.email,
         username: val.username,
-        dateOfBirth: moment(val.dateOfBirth).format("DD/MM/YYYY"),
+        dateOfBirth: val.dateOfBirth
+          ? moment(val.dateOfBirth).format("DD/MM/YYYY")
+          : "-",
         phone: val.phone,
         role: val.role,
         address: val.address,
@@ -143,11 +163,11 @@ const put = async (req, res) => {
   const { username, email, fullName, phone, address, dateOfBirth } = req.body;
   const { old_password, password, confirm_password } = req.body;
 
-  const user = await User.findOne({
+  const User = await user.findOne({
     where: { id: users_id },
   });
 
-  if (!user) {
+  if (!User) {
     return res.json({
       message: "User not found",
     });
@@ -163,7 +183,7 @@ const put = async (req, res) => {
       dateOfBirth: dateOfBirth,
     };
 
-    await user.update(data);
+    await User.update(data);
 
     const token = jwt.sign(
       {
@@ -200,7 +220,7 @@ const put = async (req, res) => {
       });
     }
 
-    const isPasswordCorrect = verify(old_password, user.password);
+    const isPasswordCorrect = verify(old_password, User.password);
     if (!isPasswordCorrect) {
       return res.status(404).json({
         massage: "Wrong Old Password",
@@ -211,7 +231,7 @@ const put = async (req, res) => {
       password: hash(password),
     };
 
-    await user.update(data);
+    await User.update(data);
 
     res.json({
       status: 200,
@@ -228,15 +248,15 @@ const put = async (req, res) => {
     );
 
     const data = {
-      username: user.username,
-      email: user.email,
-      fullName: user.fullName,
-      phone: user.phone,
-      address: user.address,
-      dateOfBirth: user.dateOfBirth,
+      username: User.username,
+      email: User.email,
+      fullName: User.fullName,
+      phone: User.phone,
+      address: User.address,
+      dateOfBirth: User.dateOfBirth,
       img: "/upload/" + users_uuid + "." + img.name.split(".")[1],
     };
-    await user.update({
+    await User.update({
       img: "/upload/" + users_uuid + "." + img.name.split(".")[1],
     });
 
@@ -255,7 +275,7 @@ const del = async (req, res) => {
   const { users_id, users_uuid } = req.user;
   const { uuid } = req.params;
 
-  const user = await User.findOne({
+  const User = await user.findOne({
     where: { uuid: uuid },
     attributes: [
       "id",
@@ -272,17 +292,17 @@ const del = async (req, res) => {
     ],
   });
 
-  if (!user) {
+  if (!User) {
     return res.json({
       message: "User not found",
     });
   }
 
-  await user.destroy();
+  await User.destroy();
 
   res.json({
     massage: "Delete successful",
-    data: user,
+    data: User,
   });
 };
 
@@ -299,11 +319,11 @@ const post = async (req, res) => {
     confirm_password,
   } = req.body;
 
-  const user = await User.findOne({
+  const User = await user.findOne({
     where: { [Op.or]: [{ username: username }, { email: email }] },
   });
 
-  if (user) {
+  if (User) {
     return res.status(400).json({
       massage: "Email or Username already used",
     });
@@ -334,7 +354,7 @@ const post = async (req, res) => {
     status: "active",
   };
 
-  await User.create(data);
+  await user.create(data);
 
   res.json({
     status: 200,

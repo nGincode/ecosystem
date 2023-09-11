@@ -79,7 +79,6 @@ export default function layout({ children = null, logOut, userData }: any) {
         ]
     }];
 
-
     return (
         <>
             <HeaderSearch />
@@ -117,53 +116,56 @@ export default function layout({ children = null, logOut, userData }: any) {
 
                             <ul>
                                 {menuData.map((val: any, i: number) => {
-                                    return (
-                                        <li key={i}>
-                                            <div className="menu-title">{val.label}</div>
-                                            <ul>
-                                                {val.option.map((vall: any, ii: number) => {
-                                                    return (
-                                                        <span key={ii}>
-                                                            {vall.dropdown ?
-                                                                <li>
-                                                                    <Link href="" className={vall.option.find((el: any) => el.link === router.asPath) ? "submenu-item  active arrow-active" : "submenu-item "}>
-                                                                        <span>
-                                                                            <span className="submenu-item-icon">
-                                                                                {vall.icon}
-                                                                            </span>
-                                                                            <span>{vall.label}</span>
-                                                                        </span>
-                                                                        <div className="menu-arrow"></div>
-                                                                    </Link>
+                                    let PermissionLabel = userData.permissionUser?.permission?.data?.find((find: any) => val.label == find.label.toUpperCase());
+                                    if (PermissionLabel?.check)
+                                        return (
+                                            <li key={i}>
+                                                <div className="menu-title">{val.label}</div>
+                                                <ul>
+                                                    {val.option.map((vall: any, ii: number) => {
+                                                        if (PermissionLabel?.data?.find((find: any) => find.label == vall.label)?.checklist?.find((find: any) => find == "view"))
+                                                            return (
+                                                                <span key={ii}>
+                                                                    {vall.dropdown ?
+                                                                        <li>
+                                                                            <Link href="" className={vall.option.find((el: any) => el.link === router.asPath) ? "submenu-item  active arrow-active" : "submenu-item "}>
+                                                                                <span>
+                                                                                    <span className="submenu-item-icon">
+                                                                                        {vall.icon}
+                                                                                    </span>
+                                                                                    <span>{vall.label}</span>
+                                                                                </span>
+                                                                                <div className="menu-arrow"></div>
+                                                                            </Link>
 
-                                                                    <ul className={vall.option.find((el: any) => el.link === router.asPath) ? "submenu-children active" : "submenu-children"} data-level={1} style={vall.option.find((el: any) => el.link === router.asPath) ? { display: "block" } : {}}>
-                                                                        {vall.option.map((valll: any, iii: number) => {
-                                                                            return (
-                                                                                <li key={iii}>
-                                                                                    <Link href={valll.link} className={router.asPath === valll.link ? "active" : ""}>
-                                                                                        <span>{valll.label}</span>
-                                                                                    </Link>
-                                                                                </li>)
-                                                                        })}
-                                                                    </ul>
-                                                                </li>
-                                                                :
-                                                                <li>
-                                                                    <Link href={vall.link} className={`${(router.asPath === vall.link ? "active" : "")}`}>
-                                                                        <div className="tooltip-item in-active" data-bs-toggle="tooltip" data-bs-placement="right" title="" data-bs-original-title={vall.label} aria-label={vall.label}></div>
-                                                                        <span>
-                                                                            <span className="submenu-item-icon">
-                                                                                {vall.icon}
-                                                                            </span>
-                                                                            <span>{vall.label}</span>
-                                                                        </span>
-                                                                    </Link>
-                                                                </li>
-                                                            }
-                                                        </span>)
-                                                })}
-                                            </ul>
-                                        </li>)
+                                                                            <ul className={vall.option.find((el: any) => el.link === router.asPath) ? "submenu-children active" : "submenu-children"} data-level={1} style={vall.option.find((el: any) => el.link === router.asPath) ? { display: "block" } : {}}>
+                                                                                {vall.option.map((valll: any, iii: number) => {
+                                                                                    return (
+                                                                                        <li key={iii}>
+                                                                                            <Link href={valll.link} className={router.asPath === valll.link ? "active" : ""}>
+                                                                                                <span>{valll.label}</span>
+                                                                                            </Link>
+                                                                                        </li>)
+                                                                                })}
+                                                                            </ul>
+                                                                        </li>
+                                                                        :
+                                                                        <li>
+                                                                            <Link href={vall.link} className={`${(router.asPath === vall.link ? "active" : "")}`}>
+                                                                                <div className="tooltip-item in-active" data-bs-toggle="tooltip" data-bs-placement="right" title="" data-bs-original-title={vall.label} aria-label={vall.label}></div>
+                                                                                <span>
+                                                                                    <span className="submenu-item-icon">
+                                                                                        {vall.icon}
+                                                                                    </span>
+                                                                                    <span>{vall.label}</span>
+                                                                                </span>
+                                                                            </Link>
+                                                                        </li>
+                                                                    }
+                                                                </span>)
+                                                    })}
+                                                </ul>
+                                            </li>)
                                 })}
 
                             </ul>

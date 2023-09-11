@@ -9,6 +9,7 @@ import axios from "axios";
 import Select from "./components/reactSelect";
 import ReactTable from "./components/reactTable";
 import DebouncedInput from "./components/debouncedInput"
+import ReactSelect from "./components/reactSelect";
 
 export default function Permission({ userData, setuserData }: any) {
     const [dataCreate, setdataCreate] = useState();
@@ -41,27 +42,37 @@ export default function Permission({ userData, setuserData }: any) {
 
     const permissionData = [
         {
+            label: 'Dashboards',
+            data: [
+                {
+                    label: 'Analytics',
+                    name: 'analytics[]',
+                    checklist: ['view', 'edit', 'delete', 'create']
+                },
+            ],
+        },
+        {
             label: 'Accounts',
             data: [
                 {
                     label: 'Users',
                     name: 'users[]',
-                    checklist: ['edit', 'delete', 'create']
+                    checklist: ['view', 'edit', 'delete', 'create']
                 },
                 {
                     label: 'Permission',
                     name: 'permission[]',
-                    checklist: ['edit', 'delete', 'create']
+                    checklist: ['view', 'edit', 'delete', 'create']
                 },
                 {
                     label: 'NPWP',
                     name: 'npwp[]',
-                    checklist: ['edit', 'delete', 'create']
+                    checklist: ['view', 'edit', 'delete', 'create']
                 },
                 {
                     label: 'E-Faktur',
                     name: 'efaktur[]',
-                    checklist: ['edit', 'delete', 'create']
+                    checklist: ['view', 'edit', 'delete', 'create']
                 }
             ],
         }
@@ -80,6 +91,15 @@ export default function Permission({ userData, setuserData }: any) {
             type: 'permission',
             required: true,
             data: permissionData
+        }, {
+            name: 'view',
+            label: 'View Data',
+            type: 'reactSelect',
+            select: [
+                { label: "All", value: "all" }, { label: "User", value: "user" }
+            ],
+            full: true,
+            required: true
         }
     ];
 
@@ -89,34 +109,29 @@ export default function Permission({ userData, setuserData }: any) {
         let data = permissionData.map((val: any) => {
             let check = false;
             let dataCheck = val.data.map((vall: any) => {
-                let create = event.target[vall.name][0].checked ? 'create' : null;
-                let edit = event.target[vall.name][1].checked ? 'edit' : null;
-                let del = event.target[vall.name][2].checked ? 'delete' : null;
-                if (create) {
-                    check = true;
-                }
-                if (edit) {
-                    check = true;
-                }
-                if (edit) {
+                let view = event.target[vall.name][0].checked ? 'view' : null;
+                let create = event.target[vall.name][1].checked ? 'create' : null;
+                let edit = event.target[vall.name][2].checked ? 'edit' : null;
+                let del = event.target[vall.name][3].checked ? 'delete' : null;
+                if (view) {
                     check = true;
                 }
                 return {
                     label: vall.label,
                     name: vall.name,
-                    checklist: [create, edit, del]
+                    checklist: [view, create, edit, del]
                 }
             });
 
             return {
                 label: val.label,
                 check: check,
-                data: dataCheck
+                data: dataCheck,
             }
         })
 
 
-        handleApi('create', { name: event.target.name.value, perm: data });
+        handleApi('create', { name: event.target.name.value, view: event.target.view_val.value, perm: data });
     };
 
     return (
@@ -176,7 +191,14 @@ export default function Permission({ userData, setuserData }: any) {
                                                 <div className="flex mb-3">
                                                     <div className="w-1/2"></div>
                                                     <div className="w-1/6 justify-center flex">
-
+                                                        <IconButton size="sm">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            </svg>
+                                                        </IconButton>
+                                                    </div>
+                                                    <div className="w-1/6 justify-center flex">
                                                         <IconButton color="blue" size="sm">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                                                                 <path fillRule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clipRule="evenodd" />
@@ -209,6 +231,10 @@ export default function Permission({ userData, setuserData }: any) {
                                                                 <div key={ii} className="flex mt-1">
                                                                     <div className="w-1/2 ml-2 m-auto">- {vall.label}</div>
                                                                     <div className="w-1/6 justify-center flex">
+                                                                        {vall.checklist.find((fil: any) => fil === 'view') ?
+                                                                            <Checkbox name={vall.name} /> : <Checkbox hidden name={vall.name} />}
+                                                                    </div>
+                                                                    <div className="w-1/6 justify-center flex">
                                                                         {vall.checklist.find((fil: any) => fil === 'create') ?
                                                                             <Checkbox color="blue" name={vall.name} /> : <Checkbox hidden name={vall.name} />}
                                                                     </div>
@@ -224,6 +250,9 @@ export default function Permission({ userData, setuserData }: any) {
                                                         })}
                                                     </div>)
                                                 })}
+                                                <div className="mb-5 mt-3">
+                                                    <ReactSelect data={[{ label: "All", value: "all" }, { label: "User", value: "user" }]} label="View Data" variant="standard" required type="text" className="border-b-1" name="view" autoComplete="" />
+                                                </div>
                                             </div>
                                         </div>
 

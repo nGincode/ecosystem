@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("npwp", {
+    await queryInterface.createTable("permission_user", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -22,27 +22,13 @@ module.exports = {
           key: "id",
         },
       },
-      npwp: {
-        type: Sequelize.STRING,
+      permission_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        unique: true,
-      },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      phone: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      email: {
-        type: Sequelize.STRING,
-        unique: true,
-      },
-      address: {
-        type: Sequelize.JSON,
-        allowNull: false,
+        references: {
+          model: "permission",
+          key: "id",
+        },
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -55,6 +41,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("npwp");
+    await queryInterface.dropTable("permission_user");
   },
 };

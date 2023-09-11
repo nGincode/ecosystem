@@ -1,22 +1,24 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class permission extends Model {
+  class permissionUser extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // this.hasMany(models.userPermission, {
-      //   as: "userPermission",
-      //   foreignKey: "permission_id",
-      //   onDelete: "cascade",
-      //   hooks: true,
-      // });
+      this.belongsTo(models.user, {
+        as: "user",
+        foreignKey: "user_id",
+      });
+      this.belongsTo(models.permission, {
+        as: "permission",
+        foreignKey: "permission_id",
+      });
     }
   }
-  permission.init(
+  permissionUser.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -36,29 +38,24 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
-      name: {
-        type: DataTypes.STRING,
+      permission_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        unique: true,
-      },
-      data: {
-        type: DataTypes.JSON,
-        allowNull: false,
-      },
-      view: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        references: {
+          model: "permission",
+          key: "id",
+        },
       },
     },
     {
       sequelize,
-      modelName: "permission",
-      tableName: "permission",
+      // modelName: "permission_user",
+      tableName: "permission_user",
       // timestamps: true,
       freezeTableName: true,
       // createdAt: "created_at",
       // updatedAt: "updated_at",
     }
   );
-  return permission;
+  return permissionUser;
 };

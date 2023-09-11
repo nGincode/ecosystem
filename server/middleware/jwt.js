@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const { user } = require("../models");
 
 const jwtProses = async (req, res, next) => {
   const token = req.headers.authorization;
@@ -13,13 +13,13 @@ const jwtProses = async (req, res, next) => {
   try {
     const data = jwt.verify(JWTToken, "fembinurilham");
 
-    const user = await User.findOne({
+    const User = await user.findOne({
       where: {
         id: data.data.users_id,
       },
     });
 
-    if (!user) {
+    if (!User) {
       return res.json({
         message: "User not found",
       });

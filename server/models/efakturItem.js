@@ -21,10 +21,20 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
+        unique: true,
       },
       uuid: {
         type: DataTypes.UUID,
         allowNull: false,
+        unique: true,
+      },
+      user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "user",
+          key: "id",
+        },
       },
       efaktur_id: {
         type: DataTypes.INTEGER,

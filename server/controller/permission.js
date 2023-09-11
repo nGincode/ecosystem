@@ -4,82 +4,66 @@ const { User, npwp, permission } = require("../models");
 const { Op } = require("sequelize");
 const Crypto = require("crypto");
 
-const getId = async (req, res) => {
-  const { users_id, users_uuid, email, username } = req.user;
-  const { uuid } = req.params;
-
-  const Npwp = await npwp.findOne({
-    where: { uuid: uuid },
-    attributes: ["uuid", "npwp", "name", "phone", "address"],
-  });
-
-  if (!Npwp) {
-    return res.json({
-      message: "NPWP not found",
-    });
-  }
-
-  res.json({
-    status: 200,
-    massage: "Get data successful",
-    data: Npwp,
-  });
-};
-
 const putId = async (req, res) => {
-  const { uuid } = req.params;
   const { users_id, users_uuid } = req.user;
-  const {
-    name,
-    phone,
-    jalan,
-    block,
-    no,
-    rt,
-    rw,
-    kec,
-    kel,
-    prov,
-    kabkot,
-    kodepos,
-    email,
-  } = req.body;
+  const { uuid } = req.params;
+  const { name, view, format } = req.body;
 
-  const Npwp = await npwp.findOne({
+  const Permission = await permission.findOne({
     where: { uuid: uuid },
   });
 
-  if (!Npwp) {
-    return res.json({
-      message: "NPWP not found",
+  if (!view) {
+    return res.status(400).json({
+      massage: "View Data required",
     });
   }
 
-  const data = {
-    npwp: req.body.npwp,
-    name: name,
-    phone: phone,
-    email: email,
-    address: {
-      jalan: jalan,
-      block: block,
-      no: no,
-      rt: rt,
-      rw: rw,
-      kec: kec,
-      kel: kel,
-      prov: prov,
-      kabkot: kabkot,
-      kodepos: kodepos,
-    },
-  };
+  if (!name) {
+    return res.status(400).json({
+      massage: "Name required",
+    });
+  }
 
-  await Npwp.update(data);
+  if (!Permission) {
+    return res.status(404).json({
+      massage: "ID not found",
+    });
+  }
+
+  let post = JSON.parse(format).map((val) => {
+    let data = [];
+    let check = false;
+    val.data.map((vall) => {
+      let find = req.body[vall.name];
+      if (find?.[0] === "true") {
+        check = true;
+      }
+      data.push({
+        name: vall.name,
+        label: vall.label,
+        checklist: [
+          find?.[0] === "true" ? "view" : null,
+          find?.[1] === "true" ? "create" : null,
+          find?.[2] === "true" ? "edit" : null,
+          find?.[3] === "true" ? "delete" : null,
+        ],
+      });
+    });
+
+    return {
+      check: check,
+      label: val.label,
+      data: data,
+    };
+  });
+
+  await Permission.update({ name: name, data: post, view: view });
 
   res.json({
     status: 200,
     massage: "Update data successful",
-    data: data,
+    data: { name: name, uuid: uuid, view: view },
   });
 };
 
@@ -99,6 +83,7 @@ const get = async (req, res) => {
       uuid: val.uuid,
       name: val.name,
       permission: val.data,
+      view: val.view,
     };
   });
 
@@ -109,92 +94,39 @@ const get = async (req, res) => {
   });
 };
 
-const put = async (req, res) => {
-  const { users_id, users_uuid } = req.user;
-  const {
-    name,
-    phone,
-    jalan,
-    block,
-    no,
-    rt,
-    rw,
-    kec,
-    kel,
-    prov,
-    kabkot,
-    kodepos,
-    email,
-  } = req.body;
-
-  const Npwp = await npwp.findOne({
-    where: { uuid: uuid },
-  });
-
-  if (!Npwp) {
-    return res.json({
-      message: "NPWP not found",
-    });
-  }
-
-  const data = {
-    npwp: req.body.npwp,
-    name: name,
-    phone: phone,
-    email: email,
-    address: {
-      jalan: jalan,
-      block: block,
-      no: no,
-      rt: rt,
-      rw: rw,
-      kec: kec,
-      kel: kel,
-      prov: prov,
-      kabkot: kabkot,
-      kodepos: kodepos,
-    },
-  };
-
-  await npwp.update(data);
-
-  res.json({
-    status: 200,
-    massage: "Update data successful",
-    data: data,
-  });
-};
-
 const del = async (req, res) => {
   const { users_id, users_uuid } = req.user;
   const { uuid } = req.params;
 
-  const Npwp = await npwp.findOne({
+  const Permission = await permission.findOne({
     where: { uuid: uuid },
-    attributes: ["id", "uuid", "npwp", "name", "phone", "address"],
+    attributes: ["id", "uuid", "name"],
   });
 
-  if (!Npwp) {
+  if (!Permission) {
     return res.json({
-      message: "NPWP not found",
+      message: "Permission not found",
     });
   }
 
-  await Npwp.destroy();
+  await Permission.destroy();
 
   res.json({
     massage: "Delete successful",
-    data: Npwp,
+    data: Permission,
   });
 };
 
 const post = async (req, res) => {
-  const { name, perm } = req.body;
+  const { users_id, users_uuid } = req.user;
+  const { name, perm, view } = req.body;
 
   const data = {
     uuid: Crypto.randomUUID(),
+    user_id: users_id,
     data: perm,
     name: name,
+    view: view,
   };
 
   await permission.create(data);
@@ -205,6 +137,9 @@ const post = async (req, res) => {
     data: data,
   });
 };
+
+const put = async (req, res) => {};
+const getId = async (req, res) => {};
 
 module.exports = {
   get,

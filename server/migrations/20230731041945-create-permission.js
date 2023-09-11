@@ -11,13 +11,28 @@ module.exports = {
       uuid: {
         type: Sequelize.UUID,
         allowNull: false,
+        unique: true,
+      },
+      user_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        unique: true,
+        references: {
+          model: "user",
+          key: "id",
+        },
       },
       name: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
       },
       data: {
         type: Sequelize.JSON,
+        allowNull: false,
+      },
+      view: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       createdAt: {

@@ -1,10 +1,10 @@
-
 import '../css/globals.css'
 
 import React, { Component, useEffect, useState, Suspense } from "react"
 import type { AppProps } from 'next/app'
 import toast, { Toaster } from 'react-hot-toast';
 import axios from "axios";
+import { useRouter } from 'next/router';
 
 if (typeof window !== "undefined") {
     (window as any).$ = require('jquery');
@@ -18,9 +18,11 @@ import Layout from './components/layout'
 import Login from "./auth/login"
 import LoadingPage from './components/loadingPage';
 import Skelaton from './components/skelaton';
+import Image from 'next/image';
 
 export default function App({ Component, pageProps }: AppProps) {
     const [userData, setuserData] = useState<any>([]);
+    const [labelRoute, setlabelRoute] = useState<any>();
     const [loadingFull, setloadingFull] = useState<any>(true);
 
     const logOut = () => {
@@ -91,6 +93,9 @@ export default function App({ Component, pageProps }: AppProps) {
         handleApi('user');
     }, []);
 
+    const router = useRouter();
+    const ComponetPermission = userData?.permissionUser?.permission?.data?.find((find: any) => find.data.filter((fn: any) => fn.name.replaceAll('[]', '').toLocaleLowerCase() == (router.asPath == '/' ? 'analytics' : router.asPath.replaceAll('/', '').toLocaleLowerCase()))?.[0]?.checklist?.[0] == 'view');
+
     return (
         <>
             <Toaster />
@@ -98,7 +103,12 @@ export default function App({ Component, pageProps }: AppProps) {
             {userData?.email ?
                 <Layout logOut={logOut} userData={userData} >
                     <Suspense fallback={<Skelaton />}>
-                        <Component userData={userData} setuserData={setuserData}  {...pageProps} />
+                        {userData.permissionUser ?
+                            <>{ComponetPermission ?
+                                <Component userData={userData} setuserData={setuserData} setlabelRoute={setlabelRoute}  {...pageProps} />
+                                : <div className='w-full text-center text-gray-700'><div className='flex justify-center'><Image src="/img/notPermission.gif" width={250} height={250} alt="notPermission" /></div>You Need Permission</div>}
+                            </>
+                            : <div className='w-full text-center text-gray-700 fixed z-50 top-0 left-0 bg-gradient-to-r from-gray-100 from-20% h-screen to-cyan-200 to-100%'><div className='flex justify-center'><Image src="/img/notPermission.gif" width={250} height={250} alt="notPermission" /></div>You Need Permission</div>}
                     </Suspense>
                 </Layout> :
                 <Login submitLogin={submitLogin} />}

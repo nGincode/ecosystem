@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { verify } = require("node-php-password");
-const { User } = require("../../models");
+const { user, permissionUser, permission } = require("../../models");
 
 module.exports = async (req, res) => {
   const { body } = req;
@@ -12,11 +12,29 @@ module.exports = async (req, res) => {
     });
   }
 
-  const user = await User.findOne({
+  const User = await user.findOne({
     where: { email: body.email },
+    include: [
+      {
+        model: permissionUser,
+        as: "permissionUser",
+        attributes: {
+          exclude: ["id", "uuid", "user_id", "createdAt", "updatedAt"],
+        },
+        include: [
+          {
+            model: permission,
+            as: "permission",
+            attributes: {
+              exclude: ["id", "uuid", "createdAt", "updatedAt"],
+            },
+          },
+        ],
+      },
+    ],
   });
 
-  if (!user) {
+  if (!User) {
     return res.json({
       status: 404,
       message: "Email not found",
@@ -30,7 +48,7 @@ module.exports = async (req, res) => {
     });
   }
 
-  const isPasswordCorrect = verify(body.password, user.password);
+  const isPasswordCorrect = verify(body.password, User.password);
   if (!isPasswordCorrect) {
     return res.json({
       status: 404,
@@ -39,17 +57,17 @@ module.exports = async (req, res) => {
   }
 
   const data = {
-    users_uuid: user.uuid,
-    users_id: user.id,
-    email: user.email,
-    username: user.username,
+    users_uuid: User.uuid,
+    users_id: User.id,
+    email: User.email,
+    username: User.username,
   };
   const token = jwt.sign({ data }, "fembinurilham");
 
   return res.json({
     status: 200,
     token,
-    client_id: user.uuid,
-    data: user,
+    client_id: User.uuid,
+    data: User,
   });
 };

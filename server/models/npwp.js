@@ -21,14 +21,25 @@ module.exports = (sequelize, DataTypes) => {
       uuid: {
         type: DataTypes.UUID,
         allowNull: false,
+        unique: true,
+      },
+      user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "user",
+          key: "id",
+        },
       },
       npwp: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       phone: {
         type: DataTypes.STRING,
