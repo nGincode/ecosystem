@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "node server/index.js",
     "lint": "next lint",
-    "update": "git pull && npm update && next build"
+    "update": "npx pm2 stop 0 && git pull && npm update && next build && npx pm2 start 0"
   },
   "dependencies": {
     "@grapecity/spread-excelio": "16.0.3",
