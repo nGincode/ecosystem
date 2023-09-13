@@ -343,121 +343,163 @@ export default function Efaktur({ userData, setuserData }: any) {
                     });
 
                     let data: any = [];
-                    let err;
-                    sampleArr.map((val: any) => {
+                    let err: any = [];
+                    sampleArr.map((val: any, ii: number) => {
                         let sub: any = val.split('_');
-                        let dtRes: any = rows.filter((vall: any, i: number) => vall.Tanggal == sub[0] && vall['No Faktur'] == sub[1]);
 
-                        dtRes.map((valll: any, i: number) => {
-                            if (!valll['Tanggal']) {
-                                err = "Tanggal ada yang belum di isi";
+
+                        let dtRes: any = rows.filter((vall: any, i: number) => {
+
+                            if (!vall['No Faktur']) {
+                                err.push("(Baris: " + (i + 2) + ") " + "No Faktur Kosong");
                             }
 
-                            if (!valll['No Faktur']) {
-                                err = "No Faktur ada yang belum di isi";
+                            if (!vall.Tanggal) {
+                                err.push("(Baris: " + (i + 2) + ") " + "Tanggal Faktur Kosong");
                             }
 
-                            if (!valll['NPWP/NIK']) {
-                                err = "NPWP/NIK ada yang belum di isi";
-                            }
+                            return vall.Tanggal == sub[0] && vall['No Faktur'] == sub[1];
+                        });
 
-                            let hargaSatuan = RPtoNumber(valll['Harga Satuan']);
-                            let jumlahBarang = RPtoNumber(valll['Jumlah Barang']);
-                            let hargaTotal = RPtoNumber(valll['Harga Total']);
-                            let diskon = RPtoNumber(valll['Diskon']);
-                            let dpp = RPtoNumber(valll['DPP']);
-                            let ppn = RPtoNumber(valll['PPN']);
-                            let tarif_ppnbm = RPtoNumber(valll['Tarif PPNBM']);
-                            let ppnbm = RPtoNumber(valll['PPNBM']);
-                            let jenis_transaksi = jenisTransaksi(valll['Jenis Transaksi']);
-                            let jenis_faktur = jenisFaktur(valll['Jeni Faktur']);
-                            let IDKet = '';
-                            if (jenis_transaksi === '08') {
-                                IDKet = IDKetTambahan08(valll['ID Keterangan Tambahan']);
-                            } else if (jenis_transaksi === '07') {
-                                IDKet = IDKetTambahan07(valll['ID Keterangan Tambahan']);
-                            }
+                        if (dtRes.length)
+                            dtRes.map((valll: any, i: number) => {
+                                if (!valll['Tanggal']) {
+                                    err.push("(Baris: " + (ii + 2) + ") " + "Tanggal Kosong");
+                                }
 
-                            let NPWPDetec = '';
-                            let NAMEDetec = '';
-                            if (valll['NPWP/NIK'].length === 15) {
-                                NPWPDetec = valll['NPWP/NIK'];
-                                NAMEDetec = valll['Nama NPWP/NIK'];
-                            } else {
-                                NPWPDetec = '000000000000000';
-                                NAMEDetec = `${valll['NPWP/NIK']}#NIK#NAMA#${valll['Nama NPWP/NIK']}`;
-                            }
+                                if (!valll['No Faktur']) {
+                                    err.push("(Baris: " + (ii + 2) + ") " + "No Faktur Kosong");
+                                }
 
-                            if (!i) {
-                                let jumlahPPN = 0;
-                                let jumlahPPNBM = 0;
-                                let jumlahDPP = 0;
-                                dtRes.map((vallll: any) => {
-                                    jumlahDPP += Math.floor(RPtoNumber(vallll['DPP']));
-                                    jumlahPPNBM += Math.floor(RPtoNumber(vallll['PPNBM']));
-                                    jumlahPPN += Math.floor(RPtoNumber(vallll['PPN']));
-                                });
+                                if (!valll['NPWP/NIK']) {
+                                    err.push("(Baris: " + (ii + 2) + ") " + "NPWP Kosong");
+                                }
 
-                                data.push([
-                                    "FK",
-                                    jenis_transaksi,
-                                    jenis_faktur,
-                                    valll['No Faktur'],
-                                    moment(valll['Tanggal'],
-                                        'YYYY/MM/DD').format('MM'),
-                                    moment(valll['Tanggal'], 'YYYY/MM/DD').format('YYYY'),
-                                    moment(valll['Tanggal'], 'YYYY/MM/DD').format('DD/MM/YYYY'),
-                                    NPWPDetec,
-                                    NAMEDetec,
-                                    valll['Alamat'],
-                                    jumlahDPP,
-                                    jumlahPPN,
-                                    jumlahPPNBM,
-                                    IDKet ?? '',
-                                    valll['FG Uang Muka'] ?? 0,
-                                    valll['Uang Muka DPP'] ?? 0,
-                                    valll['Uang Muka PPN'] ?? 0,
-                                    valll['Uang Muka PPNBM'] ?? 0,
-                                    valll['Referensi'] ?? '',
-                                    valll['Kode Dokumen Pendukung'] ?? ''
-                                ]);
-                                data.push([
-                                    "OF",
-                                    valll['Kode Barang'] ?? '',
-                                    valll['Nama Barang'],
-                                    hargaSatuan,
-                                    jumlahBarang,
-                                    hargaTotal,
-                                    diskon,
-                                    dpp,
-                                    ppn,
-                                    tarif_ppnbm,
-                                    ppnbm
-                                ])
-                            } else {
-                                data.push([
-                                    "OF",
-                                    valll['Kode Barang'] ?? '',
-                                    valll['Nama Barang'],
-                                    hargaSatuan,
-                                    jumlahBarang,
-                                    hargaTotal,
-                                    diskon,
-                                    dpp,
-                                    ppn,
-                                    tarif_ppnbm,
-                                    ppnbm
-                                ])
-                            }
-                        })
+                                if (valll['Nama Barang'].indexOf(',') >= 0) {
+                                    err.push("(Baris: " + (ii + 2) + ") " + "Nama Barang Terdapat Koma");
+                                }
+
+                                if (valll['Alamat'].indexOf(',') >= 0) {
+                                    err.push("(Baris: " + (ii + 2) + ") " + "Alamat Terdapat Koma");
+                                }
+
+                                if (valll['Nama NPWP/NIK'].indexOf(',') >= 0) {
+                                    err.push("(Baris: " + (ii + 2) + ") " + "Nama NPWP Terdapat Koma");
+                                }
+
+                                if (!valll['Jenis Faktur']) {
+                                    err.push("(Baris: " + (ii + 2) + ") " + "Janis Faktur Kosong");
+                                }
+
+                                if (!valll['Jenis Transaksi']) {
+                                    err.push("(Baris: " + (ii + 2) + ") " + "Jenis Transaksi Kosong");
+                                }
+
+
+                                let hargaSatuan = RPtoNumber(valll['Harga Satuan']);
+                                let jumlahBarang = RPtoNumber(valll['Jumlah Barang']);
+                                let hargaTotal = RPtoNumber(valll['Harga Total']);
+                                let diskon = RPtoNumber(valll['Diskon']);
+                                let dpp = RPtoNumber(valll['DPP']);
+                                let ppn = RPtoNumber(valll['PPN']);
+                                let tarif_ppnbm = RPtoNumber(valll['Tarif PPNBM']);
+                                let ppnbm = RPtoNumber(valll['PPNBM']);
+                                let jenis_transaksi = jenisTransaksi(valll['Jenis Transaksi']);
+                                let jenis_faktur = jenisFaktur(valll['Jenis Faktur']);
+                                let IDKet = '';
+                                if (jenis_transaksi === '08') {
+                                    IDKet = IDKetTambahan08(valll['ID Keterangan Tambahan']);
+                                } else if (jenis_transaksi === '07') {
+                                    IDKet = IDKetTambahan07(valll['ID Keterangan Tambahan']);
+                                }
+
+                                let NPWPDetec = '';
+                                let NAMEDetec = '';
+                                if (valll['NPWP/NIK'].length === 15) {
+                                    NPWPDetec = valll['NPWP/NIK'];
+                                    NAMEDetec = valll['Nama NPWP/NIK'];
+                                } else if (valll['NPWP/NIK'].length === 16) {
+                                    NPWPDetec = '000000000000000';
+                                    NAMEDetec = `${valll['NPWP/NIK']}#NIK#NAMA#${valll['Nama NPWP/NIK']}`;
+                                } else {
+                                    err.push("(Baris: " + (ii + 2) + ") " + "NPWP Tidak Valid");
+                                }
+
+                                if (!i) {
+                                    let jumlahPPN = 0;
+                                    let jumlahPPNBM = 0;
+                                    let jumlahDPP = 0;
+                                    dtRes.map((vallll: any) => {
+                                        jumlahDPP += Math.floor(RPtoNumber(vallll['DPP']));
+                                        jumlahPPNBM += Math.floor(RPtoNumber(vallll['PPNBM']));
+                                        jumlahPPN += Math.floor(RPtoNumber(vallll['PPN']));
+                                    });
+
+                                    data.push([
+                                        "FK",
+                                        jenis_transaksi,
+                                        jenis_faktur,
+                                        valll['No Faktur'],
+                                        moment(valll['Tanggal'],
+                                            'YYYY/MM/DD').format('MM'),
+                                        moment(valll['Tanggal'], 'YYYY/MM/DD').format('YYYY'),
+                                        moment(valll['Tanggal'], 'YYYY/MM/DD').format('DD/MM/YYYY'),
+                                        NPWPDetec,
+                                        NAMEDetec,
+                                        valll['Alamat'],
+                                        jumlahDPP,
+                                        jumlahPPN,
+                                        jumlahPPNBM,
+                                        IDKet ?? '',
+                                        valll['FG Uang Muka'] ?? 0,
+                                        valll['Uang Muka DPP'] ?? 0,
+                                        valll['Uang Muka PPN'] ?? 0,
+                                        valll['Uang Muka PPNBM'] ?? 0,
+                                        valll['Referensi'] ?? '',
+                                        valll['Kode Dokumen Pendukung'] ?? ''
+                                    ]);
+                                    data.push([
+                                        "OF",
+                                        valll['Kode Barang'] ?? '',
+                                        valll['Nama Barang'],
+                                        hargaSatuan,
+                                        jumlahBarang,
+                                        hargaTotal,
+                                        diskon,
+                                        dpp,
+                                        ppn,
+                                        tarif_ppnbm,
+                                        ppnbm
+                                    ])
+                                } else {
+                                    data.push([
+                                        "OF",
+                                        valll['Kode Barang'] ?? '',
+                                        valll['Nama Barang'],
+                                        hargaSatuan,
+                                        jumlahBarang,
+                                        hargaTotal,
+                                        diskon,
+                                        dpp,
+                                        ppn,
+                                        tarif_ppnbm,
+                                        ppnbm
+                                    ])
+                                }
+                            })
 
                     })
 
                     let arrayFinal = [...subject, ...data]
-                    if (err) {
-                        toast.error(err);
+                    if (err.length) {
+                        toast.error(err.filter((value: any, index: any, array: any) => array.indexOf(value) === index).map((val: any) => {
+                            return val + '\n'
+                        }, {
+                            duration: 6000,
+                        }));
+
                     } else {
-                        ConvertToCSV(arrayFinal)
+                        // ConvertToCSV(arrayFinal)
                     }
                 }
             }

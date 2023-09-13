@@ -80,12 +80,12 @@ export default function Npwp({ userData, setuserData }: any) {
         {
             name: 'phone',
             type: 'text',
-            id: 'nophone',
+            id: 'byphone',
             required: true
         },
         {
             name: 'email',
-            type: 'text',
+            type: 'email',
             id: 'email',
             required: false
         },
@@ -141,7 +141,7 @@ export default function Npwp({ userData, setuserData }: any) {
                         <div className="col hp-flex-none w-auto">
                             <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNew"><i className="ri-add-line remix-icon"></i> Add NPWP</Button>
                         </div>
-                        <div className="modal fade " id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" aria-hidden="true">
+                        <div className="modal fade -mt-2" id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" aria-hidden="true">
                             <div className="modal-dialog modal-xl modal-dialog-centered">
                                 <div className="modal-content">
                                     <div className="modal-header py-16 px-24">

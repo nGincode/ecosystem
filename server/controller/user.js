@@ -25,27 +25,18 @@ const getId = async (req, res) => {
     ],
     include: [
       {
-        model: permissionUser,
-        as: "permissionUser",
+        model: permission,
+        as: "permission",
         attributes: {
-          exclude: ["id", "uuid", "user_id", "createdAt", "updatedAt"],
+          exclude: ["id", "uuid", "createdAt", "updatedAt"],
         },
-        include: [
-          {
-            model: permission,
-            as: "permission",
-            attributes: {
-              exclude: ["id", "uuid", "createdAt", "updatedAt"],
-            },
-          },
-        ],
       },
     ],
   });
 
   if (!User) {
     return res.json({
-      message: "User not found",
+      massage: "User not found",
     });
   }
 
@@ -70,6 +61,14 @@ const putId = async (req, res) => {
   } = req.body;
   const { uuid } = req.params;
 
+  const Permission = await permission.findOne({ where: { name: role } });
+
+  if (!Permission) {
+    return res.status(400).json({
+      massage: "Role not valid",
+    });
+  }
+
   const User = await user.findOne({
     where: { uuid: uuid },
     attributes: [
@@ -81,16 +80,39 @@ const putId = async (req, res) => {
       "username",
       "dateOfBirth",
       "phone",
-      "role",
       "address",
       "status",
     ],
   });
 
   if (!User) {
-    return res.json({
-      message: "User not found",
+    return res.status(400).json({
+      massage: "User not found",
     });
+  }
+
+  if (User.email !== email) {
+    const Email = await user.findOne({
+      where: { email: email },
+    });
+
+    if (Email) {
+      return res.status(400).json({
+        massage: "Email already used",
+      });
+    }
+  }
+
+  if (User.username !== username) {
+    const Username = await user.findOne({
+      where: { username: username },
+    });
+
+    if (Username) {
+      return res.status(400).json({
+        massage: "Username already used",
+      });
+    }
   }
 
   const data = {
@@ -100,7 +122,7 @@ const putId = async (req, res) => {
     phone: phone,
     address: address,
     dateOfBirth: dateOfBirth,
-    role: role,
+    permission_id: Permission.id,
     status: status,
   };
 
@@ -129,14 +151,22 @@ const get = async (req, res) => {
       "address",
       "status",
     ],
+    include: [
+      {
+        model: permission,
+        as: "permission",
+        attributes: {
+          exclude: ["id", "uuid", "createdAt", "updatedAt"],
+        },
+      },
+    ],
   });
 
   if (!User) {
     return res.json({
-      message: "User not found",
+      massage: "User not found",
     });
   }
-
   res.json({
     massage: "Get data successful",
     data: User.map((val) => {
@@ -150,7 +180,7 @@ const get = async (req, res) => {
           ? moment(val.dateOfBirth).format("DD/MM/YYYY")
           : "-",
         phone: val.phone,
-        role: val.role,
+        role: val?.permission?.name,
         address: val.address,
         status: val.status,
       };
@@ -169,7 +199,7 @@ const put = async (req, res) => {
 
   if (!User) {
     return res.json({
-      message: "User not found",
+      massage: "User not found",
     });
   }
 
@@ -266,7 +296,7 @@ const put = async (req, res) => {
     });
   } else {
     return res.json({
-      message: "User not found",
+      massage: "User not found",
     });
   }
 };
@@ -294,7 +324,7 @@ const del = async (req, res) => {
 
   if (!User) {
     return res.json({
-      message: "User not found",
+      massage: "User not found",
     });
   }
 
@@ -323,9 +353,23 @@ const post = async (req, res) => {
     where: { [Op.or]: [{ username: username }, { email: email }] },
   });
 
+  const Permission = await permission.findOne({ where: { name: role } });
+
   if (User) {
     return res.status(400).json({
       massage: "Email or Username already used",
+    });
+  }
+
+  if (!role) {
+    return res.status(400).json({
+      massage: "Role required",
+    });
+  }
+
+  if (!Permission) {
+    return res.status(400).json({
+      massage: "Role not valid",
     });
   }
 
@@ -345,15 +389,14 @@ const post = async (req, res) => {
     uuid: Crypto.randomUUID(),
     username: username,
     email: email,
-    role: role,
     fullName: fullName,
     phone: phone,
     address: address,
     dateOfBirth: dateOfBirth,
     password: hash(password),
     status: "active",
+    permission_id: Permission.id,
   };
-
   await user.create(data);
 
   res.json({

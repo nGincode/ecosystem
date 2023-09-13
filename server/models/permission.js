@@ -7,14 +7,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // this.hasMany(models.userPermission, {
-      //   as: "userPermission",
-      //   foreignKey: "permission_id",
-      //   onDelete: "cascade",
-      //   hooks: true,
-      // });
-    }
+    static associate(models) {}
   }
   permission.init(
     {
@@ -31,10 +24,6 @@ module.exports = (sequelize, DataTypes) => {
       user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-          model: "user",
-          key: "id",
-        },
       },
       name: {
         type: DataTypes.STRING,

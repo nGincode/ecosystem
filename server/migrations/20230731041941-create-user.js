@@ -12,6 +12,10 @@ module.exports = {
         type: Sequelize.UUID,
         unique: true,
       },
+      permission_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       username: {
         type: Sequelize.STRING,
         allowNull: false,

@@ -18,7 +18,7 @@ module.exports = {
     return queryInterface.bulkInsert("user", [
       {
         username: "fembinurilham",
-        role: "admin",
+        permission_id: 1,
         status: "active",
         email: "fembinurilham@gmail.com",
         password: Password.hash("fni91199"),

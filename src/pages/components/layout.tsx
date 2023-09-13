@@ -116,7 +116,7 @@ export default function layout({ children = null, logOut, userData }: any) {
 
                             <ul>
                                 {menuData.map((val: any, i: number) => {
-                                    let PermissionLabel = userData.permissionUser?.permission?.data?.find((find: any) => val.label == find.label.toUpperCase());
+                                    let PermissionLabel = userData.permission?.data?.find((find: any) => val.label == find.label.toUpperCase());
                                     if (PermissionLabel?.check)
                                         return (
                                             <li key={i}>
@@ -563,62 +563,65 @@ export default function layout({ children = null, logOut, userData }: any) {
 
                                     <ul>
                                         {menuData.map((val: any, i: number) => {
-                                            return (
-                                                <li key={i}>
-                                                    <div className="menu-title">{val.label}</div>
-                                                    <ul>
-                                                        {val.option.map((vall: any, ii: number) => {
-                                                            return (
-                                                                <li key={ii}>
-                                                                    {vall.dropdown ? <>
-                                                                        {vall.option.map((valll: any, iii: number) => {
-                                                                            return (
-                                                                                <span key={iii}>
-                                                                                    <Link key={iii} href="" className="submenu-item">
-                                                                                        <span >
-                                                                                            <span className="submenu-item-icon">
-                                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
-                                                                                                    <path d="M4.26 11.02v4.97c0 1.82 0 1.82 1.72 2.98l4.73 2.73c.71.41 1.87.41 2.58 0l4.73-2.73c1.72-1.16 1.72-1.16 1.72-2.98v-4.97c0-1.82 0-1.82-1.72-2.98l-4.73-2.73c-.71-.41-1.87-.41-2.58 0L5.98 8.04C4.26 9.2 4.26 9.2 4.26 11.02Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                                                                                                    <path d="M17.5 7.63V5c0-2-1-3-3-3h-5c-2 0-3 1-3 3v2.56M12.63 10.99l.57.89c.09.14.29.28.44.32l1.02.26c.63.16.8.7.39 1.2l-.67.81c-.1.13-.18.36-.17.52l.06 1.05c.04.65-.42.98-1.02.74l-.98-.39a.863.863 0 0 0-.55 0l-.98.39c-.6.24-1.06-.1-1.02-.74l.06-1.05c.01-.16-.07-.4-.17-.52l-.67-.81c-.41-.5-.24-1.04.39-1.2l1.02-.26c.16-.04.36-.19.44-.32l.57-.89c.36-.54.92-.54 1.27 0Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                                                                                                </svg>
-                                                                                            </span>
+                                            let PermissionLabel = userData.permission?.data?.find((find: any) => val.label == find.label.toUpperCase());
+                                            if (PermissionLabel?.check)
+                                                return (
+                                                    <li key={i}>
+                                                        <div className="menu-title">{val.label}</div>
+                                                        <ul>
+                                                            {val.option.map((vall: any, ii: number) => {
+                                                                if (PermissionLabel?.data?.find((find: any) => find.label == vall.label)?.checklist?.find((find: any) => find == "view"))
+                                                                    return (
+                                                                        <li key={ii}>
+                                                                            {vall.dropdown ? <>
+                                                                                {vall.option.map((valll: any, iii: number) => {
+                                                                                    return (
+                                                                                        <span key={iii}>
+                                                                                            <Link key={iii} href="" className="submenu-item">
+                                                                                                <span >
+                                                                                                    <span className="submenu-item-icon">
+                                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                                                                                            <path d="M4.26 11.02v4.97c0 1.82 0 1.82 1.72 2.98l4.73 2.73c.71.41 1.87.41 2.58 0l4.73-2.73c1.72-1.16 1.72-1.16 1.72-2.98v-4.97c0-1.82 0-1.82-1.72-2.98l-4.73-2.73c-.71-.41-1.87-.41-2.58 0L5.98 8.04C4.26 9.2 4.26 9.2 4.26 11.02Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                                                                                                            <path d="M17.5 7.63V5c0-2-1-3-3-3h-5c-2 0-3 1-3 3v2.56M12.63 10.99l.57.89c.09.14.29.28.44.32l1.02.26c.63.16.8.7.39 1.2l-.67.81c-.1.13-.18.36-.17.52l.06 1.05c.04.65-.42.98-1.02.74l-.98-.39a.863.863 0 0 0-.55 0l-.98.39c-.6.24-1.06-.1-1.02-.74l.06-1.05c.01-.16-.07-.4-.17-.52l-.67-.81c-.41-.5-.24-1.04.39-1.2l1.02-.26c.16-.04.36-.19.44-.32l.57-.89c.36-.54.92-.54 1.27 0Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                                                                                                        </svg>
+                                                                                                    </span>
 
-                                                                                            <span>{valll.label}</span>
+                                                                                                    <span>{valll.label}</span>
+                                                                                                </span>
+
+                                                                                                <div className="menu-arrow"></div>
+                                                                                            </Link>
+
+                                                                                            <ul className="submenu-children" data-level={iii}>
+                                                                                                <li>
+                                                                                                    <Link onClick={() => {
+                                                                                                        ($('#menuClose') as any).trigger("click");
+                                                                                                    }} href={valll.link}>
+                                                                                                        <span>{valll.label}</span>
+                                                                                                    </Link>
+                                                                                                </li>
+
+                                                                                            </ul>
+                                                                                        </span>)
+                                                                                })}
+                                                                            </> :
+                                                                                <Link href={vall.link} onClick={() => {
+                                                                                    ($('#menuClose') as any).trigger("click");
+                                                                                }} className={router.asPath === vall.link ? "active" : ""}>
+                                                                                    <div className="tooltip-item in-active" data-bs-toggle="tooltip" data-bs-placement="right" title="" data-bs-original-title={vall.label} aria-label={vall.label}></div>
+                                                                                    <span>
+                                                                                        <span className="submenu-item-icon">
+                                                                                            {vall.icon}
                                                                                         </span>
 
-                                                                                        <div className="menu-arrow"></div>
-                                                                                    </Link>
-
-                                                                                    <ul className="submenu-children" data-level={iii}>
-                                                                                        <li>
-                                                                                            <Link onClick={() => {
-                                                                                                ($('#menuClose') as any).trigger("click");
-                                                                                            }} href={valll.link}>
-                                                                                                <span>{valll.label}</span>
-                                                                                            </Link>
-                                                                                        </li>
-
-                                                                                    </ul>
-                                                                                </span>)
-                                                                        })}
-                                                                    </> :
-                                                                        <Link href={vall.link} onClick={() => {
-                                                                            ($('#menuClose') as any).trigger("click");
-                                                                        }} className={router.asPath === vall.link ? "active" : ""}>
-                                                                            <div className="tooltip-item in-active" data-bs-toggle="tooltip" data-bs-placement="right" title="" data-bs-original-title={vall.label} aria-label={vall.label}></div>
-                                                                            <span>
-                                                                                <span className="submenu-item-icon">
-                                                                                    {vall.icon}
-                                                                                </span>
-
-                                                                                <span>{vall.label}</span>
-                                                                            </span>
-                                                                        </Link>
-                                                                    }
-                                                                </li>)
-                                                        })}
-                                                    </ul>
-                                                </li>)
+                                                                                        <span>{vall.label}</span>
+                                                                                    </span>
+                                                                                </Link>
+                                                                            }
+                                                                        </li>)
+                                                            })}
+                                                        </ul>
+                                                    </li>)
                                         })}
                                     </ul>
                                 </div>

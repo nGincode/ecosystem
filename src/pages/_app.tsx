@@ -94,16 +94,16 @@ export default function App({ Component, pageProps }: AppProps) {
     }, []);
 
     const router = useRouter();
-    const ComponetPermission = userData?.permissionUser?.permission?.data?.find((find: any) => find.data.filter((fn: any) => fn.name.replaceAll('[]', '').toLocaleLowerCase() == (router.asPath == '/' ? 'analytics' : router.asPath.replaceAll('/', '').toLocaleLowerCase()))?.[0]?.checklist?.[0] == 'view');
+    const ComponetPermission = router.asPath == '/profile' ? true : userData?.permission?.data?.find((find: any) => find.data.filter((fn: any) => fn.name.replaceAll('[]', '').toLocaleLowerCase() == (router.asPath == '/' ? 'analytics' : router.asPath.replaceAll('/', '').toLocaleLowerCase()))?.[0]?.checklist?.[0] == 'view') ? true : false;
 
     return (
         <>
-            <Toaster />
+            <Toaster position="top-right" />
             <LoadingPage process={loadingFull} />
             {userData?.email ?
                 <Layout logOut={logOut} userData={userData} >
                     <Suspense fallback={<Skelaton />}>
-                        {userData.permissionUser ?
+                        {userData.permission ?
                             <>{ComponetPermission ?
                                 <Component userData={userData} setuserData={setuserData} setlabelRoute={setlabelRoute}  {...pageProps} />
                                 : <div className='w-full text-center text-gray-700'><div className='flex justify-center'><Image src="/img/notPermission.gif" width={250} height={250} alt="notPermission" /></div>You Need Permission</div>}

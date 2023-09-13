@@ -45,9 +45,24 @@ const putId = async (req, res) => {
     email,
   } = req.body;
 
+  if (req.body.npwp.length < 15 || req.body.npwp.length > 16) {
+    return res.status(400).json({
+      massage: "NPWP/NIK Not Valid",
+    });
+  }
+
   const Npwp = await npwp.findOne({
     where: { uuid: uuid },
   });
+
+  if (req.body.npwp !== Npwp.npwp) {
+    const cekNPWP = await npwp.findOne({ where: { npwp: req.body.npwp } });
+    if (cekNPWP) {
+      return res.status(400).json({
+        massage: "NPWP has been used",
+      });
+    }
+  }
 
   if (!Npwp) {
     return res.json({
@@ -216,6 +231,20 @@ const del = async (req, res) => {
 const post = async (req, res) => {
   const { name, address, phone, email } = req.body;
   const { users_id, users_uuid } = req.user;
+
+  if (req.body.npwp.length < 15 || req.body.npwp.length > 16) {
+    return res.status(400).json({
+      massage: "NPWP/NIK Not Valid",
+    });
+  }
+
+  const cekNPWP = await npwp.findOne({ where: { npwp: req.body.npwp } });
+
+  if (cekNPWP) {
+    return res.status(400).json({
+      massage: "NPWP has been used",
+    });
+  }
 
   const data = {
     uuid: Crypto.randomUUID(),

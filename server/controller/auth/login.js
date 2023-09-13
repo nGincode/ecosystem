@@ -16,20 +16,11 @@ module.exports = async (req, res) => {
     where: { email: body.email },
     include: [
       {
-        model: permissionUser,
-        as: "permissionUser",
+        model: permission,
+        as: "permission",
         attributes: {
-          exclude: ["id", "uuid", "user_id", "createdAt", "updatedAt"],
+          exclude: ["id", "uuid", "createdAt", "updatedAt"],
         },
-        include: [
-          {
-            model: permission,
-            as: "permission",
-            attributes: {
-              exclude: ["id", "uuid", "createdAt", "updatedAt"],
-            },
-          },
-        ],
       },
     ],
   });

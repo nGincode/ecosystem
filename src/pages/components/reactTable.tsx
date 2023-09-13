@@ -38,6 +38,7 @@ import {
     rankItem,
     compareItems,
 } from '@tanstack/match-sorter-utils'
+import Image from "next/image";
 
 
 declare module '@tanstack/table-core' {
@@ -174,7 +175,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                             <>
                                                 {vall.data.map((map: any, ii: number) => {
                                                     let check = false;
-                                                    let view = map.checklist.find((find: any) => find == 'create') ?
+                                                    let view = map.checklist.find((find: any) => find == 'view') ?
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -474,7 +475,6 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                 <div className="modal-body">
                                     <div className="row gx-8">
                                         {modalData ? modalData?.map((val: any, i: number) => {
-                                            console.log(dataEdit)
 
                                             return <div className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
                                                 {
@@ -612,9 +612,9 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
         )
     } else {
         return <div className="text-center w-full text-gray-500">
-            <div className="flex justify-center "><svg xmlns="http://www.w3.org/2000/svg" className="svg-icon" style={{ width: "10em", height: "10em", verticalAlign: "middle", fill: "currentColor", overflow: "hidden" }} viewBox="0 0 1024 1024" version="1.1"><path d="M672 128a32 32 0 0 1 32 32v256h54.56a32 32 0 0 1 22.496 9.248l137.44 135.872a32 32 0 0 1 9.504 22.752V896a32 32 0 0 1-32 32H448a32 32 0 0 1-32-32v-64H128a32 32 0 0 1-32-32V160a32 32 0 0 1 32-32h544z" fill="#FFFFFF" /><path d="M672 128a32 32 0 0 1 32 32v256h-32V160H128v640h288v32H128a32 32 0 0 1-32-32V160a32 32 0 0 1 32-32h544z" fill="#808FA1" /><path d="M758.56 416a32 32 0 0 1 22.496 9.248l137.44 135.872a32 32 0 0 1 9.504 22.752V896a32 32 0 0 1-32 32H448a32 32 0 0 1-32-32V448a32 32 0 0 1 32-32h310.56zM896 583.872L758.56 448H448v448h448v-312.128z" fill="#5D6D7E" /><path d="M592 352a16 16 0 0 1 2.88 31.744L592 384h-384a16 16 0 0 1-2.88-31.744L208 352h384z m-96-96a16 16 0 0 1 2.88 31.744L496 288h-288a16 16 0 0 1-2.88-31.744L208 256h288z" fill="#95A1AF" /><path d="M527.488 496a16 16 0 0 1 15.744 13.12l0.256 2.88v96a16 16 0 0 1-31.744 2.88l-0.256-2.88v-96a16 16 0 0 1 16-16z m64 0a16 16 0 0 1 15.712 13.12l0.256 2.88v96a16 16 0 0 1-31.744 2.88l-0.256-2.88v-96a16 16 0 0 1 16-16z" fill="#808FA1" /><path d="M800 704a32 32 0 0 1 32 32v64a32 32 0 0 1-32 32h-256a32 32 0 0 1-32-32v-64a32 32 0 0 1 32-32h256z m0 32h-256v64h256v-64z" fill="#32AD99" /></svg>
-            </div>
-            <div className="ml-2">No results found</div></div>
+            <div className="flex justify-center -mt-10 -mb-7 ">
+                <Image src="/img/noResult.gif" width={200} height={200} alt="noResult" /> </div>
+            <div className="text-lg">No results found</div></div>
     }
 }
 

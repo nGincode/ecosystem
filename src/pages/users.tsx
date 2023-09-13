@@ -13,6 +13,8 @@ import { Input, Textarea, Button } from "@material-tailwind/react";
 export default function Users({ userData, setuserData }: any) {
     const [dataCreate, setdataCreate] = useState();
     const [search, setsearch] = useState('');
+    const [dataPermission, setdataPermission] = useState([]);
+
 
     const handleApi = async (url: any, data: any = null) => {
         if (url === 'create_user') {
@@ -64,6 +66,28 @@ export default function Users({ userData, setuserData }: any) {
 
     };
 
+    useEffect(() => {
+        const handleApi = async (url: any, data: any = null) => {
+            if (url === 'view_permission') {
+                try {
+                    await axios({
+                        method: "GET",
+                        url: "/api/permission",
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    }).then((res: any) => {
+                        setdataPermission(res.data.data.map((val: any, i: number) => { return { label: val.name, value: val.name } }));
+                    });
+                } catch (error: any) {
+                    toast.error(error.response.data.massage);
+                }
+            }
+        }
+        handleApi('view_permission')
+    }, []);
+
+
 
     return (
         <>
@@ -100,7 +124,7 @@ export default function Users({ userData, setuserData }: any) {
                         <div className="col hp-flex-none w-auto">
                             <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNewUser"><i className="ri-add-line remix-icon"></i> Add Users</Button>
                         </div>
-                        <div className="modal fade" id="addNewUser" tabIndex={-1} aria-labelledby="addNewUserLabel" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
+                        <div className="modal fade -mt-2" id="addNewUser" tabIndex={-1} aria-labelledby="addNewUserLabel" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
                             <div className="modal-dialog modal-dialog-centered">
                                 <div className="modal-content">
                                     <div className="modal-header py-16 px-24">
@@ -112,73 +136,72 @@ export default function Users({ userData, setuserData }: any) {
 
                                     <div className="divider m-0"></div>
 
-                                    <form onSubmit={submitUsers} id="formCreate">
-                                        <div className="modal-body">
-                                            <div className="row gx-8">
-                                                <div className="col-12 col-md-6">
-                                                    <div className="mb-24">
-                                                        <Input type="text" required variant="standard" className="border-b-1" name="fullName" label="Full Name" id="name" />
+                                    {dataPermission.length ?
+                                        <form onSubmit={submitUsers} id="formCreate">
+                                            <div className="modal-body">
+                                                <div className="row gx-8">
+                                                    <div className="col-12 col-md-6">
+                                                        <div className="mb-24">
+                                                            <Input type="text" required variant="standard" className="border-b-1" name="fullName" label="Full Name" id="name" />
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                                <div className="col-12 col-md-6">
-                                                    <div className="mb-24">
-                                                        <Input type="text" required variant="standard" className="border-b-1" name="username" label="Username" id="username" />
+                                                    <div className="col-12 col-md-6">
+                                                        <div className="mb-24">
+                                                            <Input type="text" required variant="standard" className="border-b-1" name="username" label="Username" id="username" />
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                                <div className="col-12 col-md-6">
-                                                    <div className="mb-24">
-                                                        <Input type="email" required variant="standard" className="border-b-1" name="email" label="Email" id="email" />
+                                                    <div className="col-12 col-md-6">
+                                                        <div className="mb-24">
+                                                            <Input type="email" required variant="standard" className="border-b-1" name="email" label="Email" id="email" />
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                                <div className="col-12 col-md-6">
-                                                    <div className="mb-24">
-                                                        <Input type="text" required variant="standard" className="border-b-1" name="phone" label="Phone" id="nophone" />
+                                                    <div className="col-12 col-md-6">
+                                                        <div className="mb-24">
+                                                            <Input type="text" required variant="standard" className="border-b-1" name="phone" label="Phone" id="nophone" />
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                                <div className="col-12 col-md-6">
-                                                    <div className="mb-24">
-                                                        <Input type="date" required variant="standard" className="border-b-1" name="dateOfBirth" label="Date Of Birth" id="dateOfBirth" />
+                                                    <div className="col-12 col-md-6">
+                                                        <div className="mb-24">
+                                                            <Input type="date" required variant="standard" className="border-b-1" name="dateOfBirth" label="Date Of Birth" id="dateOfBirth" />
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                                <div className="col-12 col-md-6">
-                                                    <div className="mb-24">
-                                                        <Select variant="standard" required={true} label="Role" name="role" id="role" data={[
-                                                            { value: 'admin', label: 'Admin' },
-                                                            { value: 'staff', label: 'Staff' }
-                                                        ]} />
+                                                    <div className="col-12 col-md-6">
+                                                        <div className="mb-24">
+                                                            <Select variant="standard" required={true} label="Role" name="role" id="role" data={dataPermission} />
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                                <div className="col-12">
-                                                    <div className="mb-24">
-                                                        <Textarea required variant="standard" className="border-b-1" id="address" label="Address" name="address"></Textarea>
+                                                    <div className="col-12">
+                                                        <div className="mb-24">
+                                                            <Textarea required variant="standard" className="border-b-1" id="address" label="Address" name="address"></Textarea>
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                                <div className="col-12 col-md-6">
-                                                    <div className="mb-24">
-                                                        <Input required type="password" autoComplete="" variant="standard" className="border-b-1" name="password" label="Password" id="password" />
+                                                    <div className="col-12 col-md-6">
+                                                        <div className="mb-24">
+                                                            <Input required type="password" autoComplete="" variant="standard" className="border-b-1" name="password" label="Password" id="password" />
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                                <div className="col-12 col-md-6">
-                                                    <div className="mb-24">
-                                                        <Input required type="password" autoComplete="" variant="standard" className="border-b-1" name="confirm_password" label="Confirm Password" id="confirm_password" />
+                                                    <div className="col-12 col-md-6">
+                                                        <div className="mb-24">
+                                                            <Input required type="password" autoComplete="" variant="standard" className="border-b-1" name="confirm_password" label="Confirm Password" id="confirm_password" />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div className="modal-footer pt-0 px-24 pb-24">
-                                            <div className="divider"></div>
-                                            <Button type="submit" className="w-full" color="blue">Submit</Button>
-                                        </div>
-                                    </form>
+                                            <div className="modal-footer pt-0 px-24 pb-24">
+                                                <div className="divider"></div>
+                                                <Button type="submit" className="w-full" color="blue">Submit</Button>
+                                            </div>
+                                        </form> : <div className="text-center font-semibold my-3">
+                                            Make permission first</div>}
                                 </div>
                             </div>
                         </div>
@@ -230,10 +253,7 @@ export default function Users({ userData, setuserData }: any) {
                                         name: 'role',
                                         type: 'reactSelect',
                                         id: 'roleEdit',
-                                        select: [
-                                            { value: 'admin', label: 'Admin' },
-                                            { value: 'staff', label: 'Staff' }
-                                        ],
+                                        select: dataPermission,
                                         required: true
                                     },
                                     {

@@ -170,7 +170,7 @@ export default function Permission({ userData, setuserData }: any) {
                         <div className="col hp-flex-none w-auto">
                             <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNew"><i className="ri-add-line remix-icon"></i> Add {Subject}</Button>
                         </div>
-                        <div className="modal fade " id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" aria-hidden="true">
+                        <div className="modal fade -mt-2 " id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" aria-hidden="true">
                             <div className="modal-dialog modal-xl modal-dialog-centered">
                                 <div className="modal-content">
                                     <div className="modal-header py-16 px-24">

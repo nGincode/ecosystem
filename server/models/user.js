@@ -8,11 +8,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.hasOne(models.permissionUser, {
-        as: "permissionUser",
-        foreignKey: "user_id",
-        onDelete: "cascade",
-        hooks: true,
+      this.belongsTo(models.permission, {
+        as: "permission",
+        foreignKey: "permission_id",
       });
     }
   }
@@ -25,6 +23,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       uuid: {
         type: DataTypes.UUID,
+        unique: true,
+      },
+      permission_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
         unique: true,
       },
       username: {
@@ -40,10 +43,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
-      },
-      role: {
-        type: DataTypes.STRING,
-        allowNull: false,
       },
       fullName: {
         type: DataTypes.STRING,

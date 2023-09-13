@@ -13,6 +13,15 @@ const putId = async (req, res) => {
     where: { uuid: uuid },
   });
 
+  if (Permission.name !== name) {
+    const dtPermission = await permission.findOne({ where: { name: name } });
+    if (dtPermission) {
+      return res.status(400).json({
+        massage: "Name already exists",
+      });
+    }
+  }
+
   if (!view) {
     return res.status(400).json({
       massage: "View Data required",
@@ -120,6 +129,13 @@ const del = async (req, res) => {
 const post = async (req, res) => {
   const { users_id, users_uuid } = req.user;
   const { name, perm, view } = req.body;
+
+  const dtPermission = await permission.findOne({ where: { name: name } });
+  if (dtPermission) {
+    return res.status(400).json({
+      massage: "Name already exists",
+    });
+  }
 
   const data = {
     uuid: Crypto.randomUUID(),
