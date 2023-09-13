@@ -10,12 +10,14 @@
     "publish": "npx pm2 stop 0 && git pull && npm update && next build && npx pm2 start 0"
   },
   "dependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@grapecity/spread-excelio": "16.0.3",
     "@grapecity/spread-sheets-react": "^16.2.0",
     "@material-tailwind/react": "^2.1.1",
     "@tanstack/match-sorter-utils": "^8.8.4",
     "@tanstack/react-table": "^8.9.3",
     "@types/jquery": "^3.5.16",
+    "@types/lodash": "^4.14.196",
     "@types/node": "20.4.5",
     "@types/react": "18.2.17",
     "@types/react-dom": "18.2.7",
@@ -36,11 +38,14 @@
     "jquery-validation": "^1.19.5",
     "jsdom": "^22.1.0",
     "jsonwebtoken": "^9.0.1",
+    "lodash": "^4.17.21",
     "metismenu": "^3.0.7",
     "moment": "^2.29.4",
+    "morgan": "^1.10.0",
     "mysql2": "^3.5.2",
     "next": "13.4.12",
     "node-php-password": "^0.1.2",
+    "nodemon": "^3.0.1",
     "perfect-scrollbar": "^1.5.5",
     "postcss": "8.4.27",
     "react": "18.2.0",
@@ -50,15 +55,10 @@
     "react-hot-toast": "^2.4.1",
     "react-select": "^5.7.4",
     "sequelize": "^6.32.1",
-    "sweetalert2": "^11.6.13",
+    "sequelize-cli": "^6.6.1",
+    "sweetalert2": "11.4.8",
     "tailwindcss": "3.3.3",
     "typescript": "5.1.6",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz",
-    "@faker-js/faker": "^7.6.0",
-    "@types/lodash": "^4.14.196",
-    "lodash": "^4.17.21",
-    "morgan": "^1.10.0",
-    "nodemon": "^3.0.1",
-    "sequelize-cli": "^6.6.1"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz"
   }
 }
