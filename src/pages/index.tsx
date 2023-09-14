@@ -14,8 +14,6 @@ export default function Index({ userData, setuserData }: any) {
     }, []);
 
 
-
-
     return (
         <div className="row mb-32 g-32">
             <div className="col flex-grow-1 overflow-hidden">

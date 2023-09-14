@@ -86,7 +86,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                 <div className=" hp-bg-color-black-20delete hp-sidebar hp-bg-color-dark-90 border-end border-black-40 hp-border-color-dark-80">
                     <div className="hp-sidebar-container">
                         <div className="hp-sidebar-header-menu">
-                            <div className="row justify-content-between align-items-end mx-0">
+                            <div className="row justify-content-between align-items-center mx-0">
                                 <div className="w-auto px-0 hp-sidebar-collapse-button hp-sidebar-visible">
                                     <div className="hp-cursor-pointer">
                                         <svg width="8" height="15" viewBox="0 0 8 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -99,7 +99,12 @@ export default function layout({ children = null, logOut, userData }: any) {
                                 <div className="w-auto px-0">
                                     <div className="hp-header-logo d-flex align-items-center">
                                         <div className="position-relative font-bold text-center">
-                                            Eco System
+                                            <img className="hp-logo hp-sidebar-visible hp-dark-none" src="/img/logo.png" alt="logo" />
+                                            <img className="hp-logo hp-sidebar-visible hp-dark-block" src="/img/logo.png" alt="logo" />
+                                            <img className="hp-logo hp-sidebar-hidden hp-dir-none hp-dark-none  h-14" src="/img/logo.png" alt="logo" />
+                                            <img className="hp-logo hp-sidebar-hidden hp-dir-none hp-dark-block  h-14" src="/img/logo.png" alt="logo" />
+                                            <img className="hp-logo hp-sidebar-hidden hp-dir-block hp-dark-none  h-14" src="/img/logo.png" alt="logo" />
+                                            <img className="hp-logo hp-sidebar-hidden hp-dir-block hp-dark-block h-14" src="/img/logo.png" alt="logo" />
                                         </div>
                                     </div>
                                 </div>
@@ -518,7 +523,8 @@ export default function layout({ children = null, logOut, userData }: any) {
                             <div className="w-auto px-0">
                                 <div className="hp-header-logo d-flex align-items-center">
                                     <div className="position-relative font-bold text-center">
-                                        Eco System
+                                        <img className="hp-logo" src="/img/logo.png" alt="logo" />
+
                                     </div>
                                 </div>
                             </div>
@@ -533,7 +539,8 @@ export default function layout({ children = null, logOut, userData }: any) {
                         <div className="hp-sidebar hp-bg-color-black-20 hp-bg-color-dark-90 border-end border-black-40 hp-border-color-dark-80">
                             <div className="hp-sidebar-container">
                                 <div className="hp-sidebar-header-menu">
-                                    <div className="row justify-content-between align-items-end mx-0">
+
+                                    <div className="row justify-content-between align-items-center mx-0">
                                         <div className="w-auto px-0 hp-sidebar-collapse-button hp-sidebar-visible">
                                             <div className="hp-cursor-pointer">
                                                 <svg width="8" height="15" viewBox="0 0 8 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -546,7 +553,12 @@ export default function layout({ children = null, logOut, userData }: any) {
                                         <div className="w-auto px-0">
                                             <div className="hp-header-logo d-flex align-items-center">
                                                 <div className="position-relative font-bold text-center">
-                                                    Eco System
+                                                    <img className="hp-logo hp-sidebar-visible hp-dark-none" src="/img/logo.png" alt="logo" />
+                                                    <img className="hp-logo hp-sidebar-visible hp-dark-block" src="/img/logo.png" alt="logo" />
+                                                    <img className="hp-logo hp-sidebar-hidden hp-dir-none hp-dark-none  h-14" src="/img/logo.png" alt="logo" />
+                                                    <img className="hp-logo hp-sidebar-hidden hp-dir-none hp-dark-block  h-14" src="/img/logo.png" alt="logo" />
+                                                    <img className="hp-logo hp-sidebar-hidden hp-dir-block hp-dark-none  h-14" src="/img/logo.png" alt="logo" />
+                                                    <img className="hp-logo hp-sidebar-hidden hp-dir-block hp-dark-block h-14" src="/img/logo.png" alt="logo" />
                                                 </div>
                                             </div>
                                         </div>

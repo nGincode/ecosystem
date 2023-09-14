@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-sync-scripts */
 /* eslint-disable @next/next/no-css-tags */
 import { Html, Head, Main, NextScript } from 'next/document'
-import Script from 'next/script'
 
 export default function Document() {
     return (
         <Html lang="en">
             <Head>
+                <link rel="icon" href="/img/logo.png" />
                 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
                 <link rel="stylesheet" type="text/css" href="/app-assets/css/plugin/swiper-bundle.min.css" />
                 <link rel="stylesheet" type="text/css" href="/app-assets/icons/iconly/index.min.css" />

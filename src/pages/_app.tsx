@@ -95,6 +95,20 @@ export default function App({ Component, pageProps }: AppProps) {
     const router = useRouter();
     const ComponetPermission = router.asPath == '/profile' ? true : userData?.permission?.data?.find((find: any) => find.data.filter((fn: any) => fn.name.replaceAll('[]', '').toLocaleLowerCase() == (router.asPath == '/' ? 'analytics' : router.asPath.replaceAll('/', '').toLocaleLowerCase()))?.[0]?.checklist?.[0] == 'view') ? true : false;
 
+    if (router.asPath == '/' && !ComponetPermission) {
+        let acc = '';
+        userData?.permission?.data?.map((find: any) => {
+            find.data.find((fnd: any) => {
+                if (fnd.checklist[0]) {
+                    if (!acc)
+                        acc = fnd.name.replaceAll('[]', '');
+                }
+            })
+        })
+        if (acc) {
+            router.push(acc);
+        }
+    }
     return (
         <>
             <Toaster position="top-right" />
