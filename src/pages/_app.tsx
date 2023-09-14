@@ -17,12 +17,11 @@ if (typeof window !== "undefined") {
 import Layout from './components/layout'
 import Login from "./auth/login"
 import LoadingPage from './components/loadingPage';
-import Skelaton from './components/skelaton';
 import Image from 'next/image';
+
 
 export default function App({ Component, pageProps }: AppProps) {
     const [userData, setuserData] = useState<any>([]);
-    const [labelRoute, setlabelRoute] = useState<any>();
     const [loadingFull, setloadingFull] = useState<any>(true);
 
     const logOut = () => {
@@ -102,14 +101,14 @@ export default function App({ Component, pageProps }: AppProps) {
             <LoadingPage process={loadingFull} />
             {userData?.email ?
                 <Layout logOut={logOut} userData={userData} >
-                    <Suspense fallback={<Skelaton />}>
-                        {userData.permission ?
-                            <>{ComponetPermission ?
-                                <Component userData={userData} setuserData={setuserData} setlabelRoute={setlabelRoute}  {...pageProps} />
-                                : <div className='w-full text-center text-gray-700'><div className='flex justify-center'><Image src="/img/notPermission.gif" width={250} height={250} alt="notPermission" /></div>You Need Permission</div>}
+                    {userData.permission ?
+                        <>{ComponetPermission ?
+                            <>
+                                <Component userData={userData} setuserData={setuserData}  {...pageProps} />
                             </>
-                            : <div className='w-full text-center text-gray-700 fixed z-50 top-0 left-0 bg-gradient-to-r from-gray-100 from-20% h-screen to-cyan-200 to-100%'><div className='flex justify-center'><Image src="/img/notPermission.gif" width={250} height={250} alt="notPermission" /></div>You Need Permission</div>}
-                    </Suspense>
+                            : <div className='w-full text-center text-gray-700'><div className='flex justify-center'><Image src="/img/notPermission.gif" width={250} height={250} alt="notPermission" /></div>You Need Permission</div>}
+                        </>
+                        : <div className='w-full text-center text-gray-700 fixed z-50 top-0 left-0 bg-gradient-to-r from-gray-100 from-20% h-screen to-cyan-200 to-100%'><div className='flex justify-center'><Image src="/img/notPermission.gif" width={250} height={250} alt="notPermission" /></div>You Need Permission</div>}
                 </Layout> :
                 <Login submitLogin={submitLogin} />}
 

@@ -5,14 +5,9 @@ import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
 import Swal from 'sweetalert2'
 import moment from "moment";
-
-
 import { Input, Textarea, Button, Checkbox, IconButton } from "@material-tailwind/react";
-
 import Select from "./reactSelect";
 import Cekbox from "./cekBox";
-
-
 import {
     Column,
     Table,
@@ -32,15 +27,12 @@ import {
     flexRender,
     FilterFns,
 } from '@tanstack/react-table'
-
 import {
     RankingInfo,
     rankItem,
     compareItems,
 } from '@tanstack/match-sorter-utils'
 import Image from "next/image";
-
-
 declare module '@tanstack/table-core' {
     interface FilterFns {
         fuzzy: FilterFn<unknown>
@@ -93,7 +85,9 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
     const [data, setdata] = useState<any>([]);
     const [pageActive, setpageActive] = useState<any>();
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-    const [globalFilter, setGlobalFilter] = useState('')
+    const [globalFilter, setGlobalFilter] = useState('');
+    const [loading, setloading] = useState(true);
+
 
     useEffect(() => {
         setGlobalFilter(search);
@@ -323,6 +317,9 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                 }).then((res: any) => {
                     setdata(res.data.data)
                     if (pageActive) table.setPageIndex(pageActive);
+                    setTimeout(() => {
+                        setloading(false);
+                    }, 100);
                 });
             } catch (error: any) {
                 // toast.error(error.response.data.massage);
@@ -332,6 +329,15 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
     }
 
 
+    if (loading) {
+        return (<div className="animate-pulse mx-5">
+            <div className="h-4 bg-gray-200 mt-3 mb-6 rounded"></div>
+            <div className="h-4 bg-gray-300 mb-6 rounded"></div>
+            <div className="h-4 bg-gray-200 mb-6 rounded"></div>
+            <div className="h-4 bg-gray-300 mb-6 rounded"></div>
+            <div className="h-4 bg-gray-200 mb-6 rounded"></div>
+        </div>)
+    }
 
     if (data.length) {
         ($("#nophoneEdit") as any).mask("(+62) 000-0000-0000");
@@ -611,10 +617,11 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
             </>
         )
     } else {
-        return <div className="text-center w-full text-gray-500">
+        return (<div className="text-center w-full text-gray-500">
             <div className="flex justify-center -mt-10 -mb-7 ">
                 <Image src="/img/noResult.gif" width={200} height={200} alt="noResult" /> </div>
-            <div className="text-lg">No results found</div></div>
+            <div className="text-lg">No results found</div></div>)
+
     }
 }
 
