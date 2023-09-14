@@ -9,19 +9,17 @@ import {
     TabPanel,
     IconButton
 } from "@material-tailwind/react";
+import Image from "next/image";
 
 export default function login({ submitLogin }: any) {
 
     return (
 
-        <div className="row hp-authentication-page overflow-hidden">
-            <div className="hp-bg-black-20 hp-bg-color-dark-90 col-lg-6 col-12">
+        <div className="row hp-authentication-page ">
+            <div className=" hp-bg-black-20 hp-bg-color-dark-90 col-lg-6 col-12 d-none d-lg-block">
                 <div className="row hp-image-row h-100 px-8 px-sm-16 px-md-0 pb-32 pb-sm-0 pt-32 pt-md-0">
                     <div className="hp-logo-item m-16 m-sm-32 m-md-64 w-auto px-0 col-12">
                         <div className="hp-header-logo d-flex align-items-center">
-                            <h1 className="position-relative text-5xl font-bold">
-                                EcoSystem
-                            </h1>
                         </div>
                     </div>
 
@@ -31,10 +29,6 @@ export default function login({ submitLogin }: any) {
                                 <img className="hp-dark-none m-auto w-100" src="/app-assets/img/pages/authentication/authentication-bg.svg" alt="Background Image" />
                                 <img className="hp-dark-block m-auto w-100" src="/app-assets/img/pages/authentication/authentication-bg-dark.svg" alt="Background Image" />
                             </div>
-
-                            <div className="hp-text-item text-center col-xl-9 col-12">
-                                <h2 className="hp-text-color-black-100 hp-text-color-dark-0 mx-16 mx-lg-0 mb-16 text-xl"> Very good works are waiting for you </h2>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -43,10 +37,10 @@ export default function login({ submitLogin }: any) {
             <div className="col-12 col-lg-6 py-sm-64 py-lg-0">
                 <div className="row align-items-center justify-content-center h-100 mx-4 mx-sm-n32">
                     <div className="col-12 col-md-9 col-xl-7 col-xxxl-5 px-8 px-sm-0 pt-24 pb-48">
-                        <h1 className="mb-sm-24 font-bold text-5xl mb-5">Login</h1>
-                        <p className="mt-sm-8 mt-sm-0 text-black-60">Welcome back, please login to your account.</p>
-
-                        <form className="mt-16 mt-sm-32 mb-8" onSubmit={submitLogin}>
+                        <div className="flex justify-center w-full mb-5 ">
+                            <Image src="/img/logo.png" width={150} height={150} alt="logo" />
+                        </div>
+                        <form className=" mt-sm-32 mb-8" onSubmit={submitLogin}>
                             <div className="mb-18">
                                 <Input label="Email" variant="standard" required type="email" className="border-b-1" name="email" id="email" />
                             </div>
@@ -80,16 +74,6 @@ export default function login({ submitLogin }: any) {
 
                         <div className="mt-48 mt-sm-96 col-12">
                             <p className="hp-p1-body text-center hp-text-color-black-60 mb-8"> Copyright EcoSystem </p>
-
-                            <div className="row align-items-center justify-content-center mx-n8">
-                                <div className="w-auto hp-flex-none px-8 col">
-                                    <a className="hp-text-color-black-80 hp-text-color-dark-40"> Privacy Policy </a>
-                                </div>
-
-                                <div className="w-auto hp-flex-none px-8 col">
-                                    <a className="hp-text-color-black-80 hp-text-color-dark-40"> Term of use </a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
