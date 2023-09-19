@@ -11,6 +11,15 @@ export default function Profile({ userData, setuserData }: any) {
 
     const [tab, setTab] = useState(1);
 
+    const convertFileToBase64 = (file: any) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+        });
+    }
+
     const handleApi = async (url: any, data: any = null) => {
         if (url === 'create_user') {
             try {
@@ -51,12 +60,11 @@ export default function Profile({ userData, setuserData }: any) {
             }
         } else if (url === 'avatar') {
             try {
-                const formData = new FormData();
-                formData.append("img", data, data.name);
+                const file = await convertFileToBase64(data);
                 await axios({
                     method: "PUT",
                     url: "/api/user",
-                    data: formData,
+                    data: { files: file },
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         Authorization: `Bearer ${localStorage.getItem("token")}`

@@ -653,15 +653,15 @@ export default function Efaktur({ userData, setuserData }: any) {
         return tmpArr2;
         // return Array.from(new Set(arr));
     }
-    
-const convertFileToBase64  = (file:any) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-  });
-}
+
+    const convertFileToBase64 = (file: any) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+        });
+    }
 
     const pdfRead = async (val: any) => {
         const files = val.target.files;
@@ -681,11 +681,11 @@ const convertFileToBase64  = (file:any) => {
                         let nama: any = array?.[10];
                         let noFak: any = array?.[9];
                         let ttd: any = array?.[43];
-                        
-const file = await convertFileToBase64(files[index]);
-    
+
+                        const file = await convertFileToBase64(files[index]);
+
                         if (nama ? 1 : 0 & noFak ? 1 : 0 & ttd ? 1 : 0) {
-                            data.push({files:file, nama: String(nama['str']).replaceAll('Nama : ', ''), noFaktur: String(noFak['str']).replaceAll('Kode dan Nomor Seri Faktur Pajak : ', '').replaceAll('.', '').replaceAll('-', ''), ttd: String(ttd['str']) });
+                            data.push({ files: file, nama: String(nama['str']).replaceAll('Nama : ', ''), noFaktur: String(noFak['str']).replaceAll('Kode dan Nomor Seri Faktur Pajak : ', '').replaceAll('.', '').replaceAll('-', ''), ttd: String(ttd['str']) });
                         } else {
                             err.push(`File ${files.length > 1 ? index + 1 : ''} Tidak Terdeteksi Nama dan No Faktur`);
                         }
@@ -706,7 +706,7 @@ const file = await convertFileToBase64(files[index]);
             if (data.length) {
                 console.log(data)
                 // handleApi('proof', arrayUnique(data));
-                handleApi('proof',data);
+                handleApi('proof', data);
             }
 
         } else {

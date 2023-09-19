@@ -190,11 +190,30 @@ const get = async (req, res) => {
 
 const put = async (req, res) => {
   const { users_id, users_uuid } = req.user;
-  const { username, email, fullName, phone, address, dateOfBirth } = req.body;
-  const { old_password, password, confirm_password } = req.body;
+  const {
+    username,
+    email,
+    fullName,
+    phone,
+    address,
+    dateOfBirth,
+    files,
+    old_password,
+    password,
+    confirm_password,
+  } = req.body;
 
   const User = await user.findOne({
     where: { id: users_id },
+    include: [
+      {
+        model: permission,
+        as: "permission",
+        attributes: {
+          exclude: ["id", "uuid", "createdAt", "updatedAt"],
+        },
+      },
+    ],
   });
 
   if (!User) {
@@ -267,14 +286,14 @@ const put = async (req, res) => {
       status: 200,
       massage: "Update password successful",
     });
-  } else if (req.files) {
-    const { img } = req.files;
-    img.mv(
-      __dirname +
-        "../../../public/upload/" +
-        users_uuid +
-        "." +
-        img.name.split(".")[1]
+  } else if (files) {
+    const type = files.split(";")[0].split("/")[1];
+    require("fs").writeFile(
+      __dirname + `/../../public/upload/profile/${users_uuid}.${type}`,
+      new Buffer.from(files.replace(/^data:image\/\w+;base64,/, ""), "base64"),
+      (err) => {
+        console.log(err);
+      }
     );
 
     const data = {
@@ -284,10 +303,11 @@ const put = async (req, res) => {
       phone: User.phone,
       address: User.address,
       dateOfBirth: User.dateOfBirth,
-      img: "/upload/" + users_uuid + "." + img.name.split(".")[1],
+      permission: User.permission,
+      img: "/upload/profile/" + users_uuid + "." + type,
     };
     await User.update({
-      img: "/upload/" + users_uuid + "." + img.name.split(".")[1],
+      img: "/upload/profile/" + users_uuid + "." + type,
     });
 
     return res.json({
