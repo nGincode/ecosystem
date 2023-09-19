@@ -266,7 +266,9 @@ const proof = async (req, res) => {
         req.body[index].files.replace(/^data:application\/\w+;base64,/, ""),
         "base64"
       ),
-      (err) => {}
+      (err) => {
+        console.log(err);
+      }
     );
 
     data.push(Efaktur);
