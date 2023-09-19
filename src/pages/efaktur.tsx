@@ -2,7 +2,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import React, { Component, useEffect, useState, useMemo } from "react"
-import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import Link from "next/link";
 
 import toast, { Toaster } from 'react-hot-toast';
@@ -16,9 +15,9 @@ import {
     Tab,
     TabPanel,
 } from "@material-tailwind/react";
-
-
 import { read, utils, writeFile } from 'xlsx';
+import * as PDFJS from 'pdfjs-dist';
+PDFJS.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS.version}/pdf.worker.js`;
 
 // import * as GC from '@grapecity/spread-sheets';
 // import ExcelIO from "@grapecity/spread-excelio";
@@ -28,7 +27,8 @@ import { read, utils, writeFile } from 'xlsx';
 import Select from "./components/reactSelect";
 import ReactTable from "./components/reactTable";
 import SelectFem from "./components/selectFem";
-import DebouncedInput from "./components/debouncedInput"
+import DebouncedInput from "./components/debouncedInput";
+
 
 export default function Efaktur({ userData, setuserData }: any) {
     const [dataCreate, setdataCreate] = useState();
@@ -132,6 +132,25 @@ export default function Efaktur({ userData, setuserData }: any) {
             } catch (error: any) {
                 toast.error(error.response.data.massage);
             }
+        } else if (url === 'proof') {
+            try {
+                await axios({
+                    method: "POST",
+                    url: '/api/efaktur/proof',
+                    data: data,
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                }).then((res: any) => {
+                    // toast.success(arrayUnique(data).map((val: any) => `No Faktur : ${val.noFaktur} Berhasil\n`), {
+                    //     duration: 6000,
+                    // });
+
+                    console.log(res.data)
+                });
+            } catch (error: any) {
+                toast.error(error.response.data.massage);
+            }
         }
     }
 
@@ -140,7 +159,7 @@ export default function Efaktur({ userData, setuserData }: any) {
         let noIdentitas = '';
         let nameIdentitas = '';
         let addressIdentitas = '';
-        console.log(event.target.detail_val.value)
+
         if (!event.target.detail_val.value) {
             return toast.error('Detail Transaksi Harus Terisi')
         }
@@ -217,7 +236,6 @@ export default function Efaktur({ userData, setuserData }: any) {
 
             }
 
-            console.log(itemFaktur.filter((val: any) => val.name))
 
             const data = {
                 typeIdentitas: tabIdentitas,
@@ -233,7 +251,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                 item: itemFaktur
             };
 
-            // handleApi('create', data);
+            handleApi('create', data);
         } else if (event.target['name[]'].value) {
             let itemFaktur = [{
                 name: event.target['name[]'].value ?? null,
@@ -246,8 +264,6 @@ export default function Efaktur({ userData, setuserData }: any) {
                 ppnbm: event.target['ppnbm[]'].value ?? null,
                 tarif_ppnbm: event.target['tarif_ppnbm[]'].value ?? null,
             }];
-
-            console.log(itemFaktur.filter((val: any) => val.name).length)
 
             const data = {
                 noIdentitas: noIdentitas,
@@ -262,7 +278,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                 item: itemFaktur
             };
 
-            // handleApi('create', data);
+            handleApi('create', data);
         } else {
             return toast.error('Item Faktur Harus Terisi')
         }
@@ -544,7 +560,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                         }));
 
                     } else {
-                        // ConvertToCSV(arrayFinal)
+                        ConvertToCSV(arrayFinal)
                     }
                 }
             }
@@ -611,6 +627,96 @@ export default function Efaktur({ userData, setuserData }: any) {
             })
     }
 
+    const arrayUnique = (inputArr: any) => {
+        let key: any = ''
+        let tmpArr2: any = [];
+        let val: any = ''
+        const _arraySearch = (needle: any, haystack: any) => {
+            let fkey = ''
+            for (fkey in haystack) {
+                if (haystack.hasOwnProperty(fkey)) {
+                    if ((haystack[fkey] + '') === (needle + '')) {
+                        return fkey
+                    }
+                }
+            }
+            return false
+        }
+        for (key in inputArr) {
+            if (inputArr.hasOwnProperty(key)) {
+                val = inputArr[key]
+                if (_arraySearch(val, tmpArr2) === false) {
+                    tmpArr2.push(val);
+                }
+            }
+        }
+        return tmpArr2;
+        // return Array.from(new Set(arr));
+    }
+    
+const convertFileToBase64  = (file:any) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+  });
+}
+
+    const pdfRead = async (val: any) => {
+        const files = val.target.files;
+        if (files.length) {
+            let data: any = [];
+            let err: any = []
+            for (let index = 0; index < files.length; index++) {
+                if ('application/pdf' === files[0].type) {
+                    const pdf = await PDFJS.getDocument(URL.createObjectURL(files[index])).promise;
+
+                    const pageList = await Promise.all(Array.from({ length: pdf.numPages }, (_, i) => pdf.getPage(i + 1)));
+
+                    const textList = await Promise.all(pageList.map((p) => p.getTextContent()));
+
+                    const array = textList?.[0]?.items;
+                    if (array.length === 52) {
+                        let nama: any = array?.[10];
+                        let noFak: any = array?.[9];
+                        let ttd: any = array?.[43];
+                        
+const file = await convertFileToBase64(files[index]);
+    
+                        if (nama ? 1 : 0 & noFak ? 1 : 0 & ttd ? 1 : 0) {
+                            data.push({files:file, nama: String(nama['str']).replaceAll('Nama : ', ''), noFaktur: String(noFak['str']).replaceAll('Kode dan Nomor Seri Faktur Pajak : ', '').replaceAll('.', '').replaceAll('-', ''), ttd: String(ttd['str']) });
+                        } else {
+                            err.push(`File ${files.length > 1 ? index + 1 : ''} Tidak Terdeteksi Nama dan No Faktur`);
+                        }
+                    } else {
+                        err.push(`File ${files.length > 1 ? index + 1 : ''} Format PDF Salah`);
+                    }
+                } else {
+                    err.push(`File ${files.length > 1 ? index + 1 : ''} Format bukan .pdf`);
+                }
+
+            }
+            if (err.length) {
+                toast.error(err.map((val: any) => `${val}\n`), {
+                    duration: 6000,
+                });
+            }
+
+            if (data.length) {
+                console.log(data)
+                // handleApi('proof', arrayUnique(data));
+                handleApi('proof',data);
+            }
+
+        } else {
+            toast.error(`File tidak terdeteksi`);
+        }
+
+        val.target.value = '';
+    }
+
+
     return (
         <>
             <div className="row mb-32 gy-32">
@@ -620,7 +726,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb">
                                     <li className="breadcrumb-item">
-                                        <a href="index.html">Home</a>
+                                        <Link href="/">Home</Link>
                                     </li>
                                     <li className="breadcrumb-item active">
                                         {Subject}
@@ -941,7 +1047,31 @@ export default function Efaktur({ userData, setuserData }: any) {
                     </div>
                 </div>
                 <div className="col-12">
-                    <div className="card hp-contact-card mb-32 -mt-3 shadow-md">
+                    <div className="card hp-contact-card mb-15 -mt-3 shadow-md">
+                        <div className="card-body px-0 text-center">
+                            <label htmlFor="pdf">
+                                <span className="dropdown-item text-center rounded-lg" aria-hidden="true">Checklist Faktur PDF Etax
+                                    <div className="flex justify-center mt-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" height="50px" width="50px" version="1.1" id="Layer_1" viewBox="0 0 496 496">
+                                            <g>
+                                                <g>
+                                                    <g>
+                                                        <path d="M416,248V116.688L299.312,0H0v496h416v-96h80V248H416z M304,27.312L388.688,112H304V27.312z M400,480H16V16h272v112h112     v120h-16v16h-5.336l-28.352-21.264L328,198.112V144h-45.416L264,190.464V216l5.752,24h-84.304l-9.64,48.192l10.528,42.12     L160,352.6V336H32v128h128v-90.448l30.664-25.944l1.584,6.328L211.056,392h152.256l8-8H384v16h16V480z M280,215.016v-21.48     L293.416,160H312v41.888l25.688,51.376L373.336,280H384v88h-19.312l-8,8H220.944l-13.4-26.792L192.192,287.8l6.36-31.8h91.696     L280,215.016z M75.72,432h15.208L144,387.096V448H48v-96h96v14.136L85.072,416H84.28l-13.624-20.44l-13.312,8.872L75.72,432z      M480,384h-80V264h80V384z" />
+                                                        <path d="M160,69.552l37.168-31.448L186.84,25.888L160,48.6V32H32v128h128V69.552z M144,62.136L85.072,112H84.28L70.656,91.56     l-13.312,8.872L75.72,128h15.208L144,83.096V144H48V48h96V62.136z" />
+                                                        <path d="M160,221.552l37.168-31.448l-10.328-12.216L160,200.6V184H32v128h128V221.552z M144,214.136L85.072,264H84.28     l-13.624-20.44l-13.312,8.872L75.72,280h15.208L144,235.096V296H48v-96h96V214.136z" />
+                                                    </g>
+                                                </g>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                </span>
+                                <input type="file" id="pdf" style={{ display: "none" }} accept='application/pdf' multiple onChange={(val: any) => pdfRead(val)} />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-12">
+                    <div className="card hp-contact-card mb-15 -mt-3 shadow-md">
                         <div className="card-body px-0 text-center">
                             <label htmlFor="file">
                                 <span className="dropdown-item text-center rounded-lg" aria-hidden="true">Convert fomat Excel to ETax Import

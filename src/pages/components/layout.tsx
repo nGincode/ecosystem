@@ -456,7 +456,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                     <div className="rounded hp-bg-black-0 hp-bg-dark-100 px-18 py-24">
                                                         <span className="d-block h5 hp-text-color-black-100 hp-text-color-dark-0 mb-16">Profile Settings</span>
 
-                                                        <a href="profile-information.html" className="hp-p1-body fw-medium hp-hover-text-color-primary-2">View Profile</a>
+                                                        <Link href="/profile" className="hp-p1-body fw-medium hp-hover-text-color-primary-2">View Profile</Link>
 
                                                         <div className="divider mt-18 mb-16"></div>
 

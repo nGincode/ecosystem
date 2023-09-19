@@ -10,6 +10,7 @@ import Select from "./components/reactSelect";
 import ReactTable from "./components/reactTable";
 import DebouncedInput from "./components/debouncedInput"
 import ReactSelect from "./components/reactSelect";
+import Link from "next/link";
 
 export default function Permission({ userData, setuserData }: any) {
     const [dataCreate, setdataCreate] = useState();
@@ -143,7 +144,7 @@ export default function Permission({ userData, setuserData }: any) {
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb">
                                     <li className="breadcrumb-item">
-                                        <a href="index.html">Home</a>
+                                        <Link href="/">Home</Link>
                                     </li>
                                     <li className="breadcrumb-item active">
                                         {Subject}

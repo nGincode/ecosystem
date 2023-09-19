@@ -81,7 +81,7 @@ const get = async (req, res) => {
     return {
       uuid: val.uuid,
       date: moment(val.date).format("DD/MM/YYYY"),
-      noFaktur: val.transaction + val.noFaktur,
+      noFaktur: val.noFaktur,
       noIdentitas:
         val.noIdentitas + (val.noIdentitas.length == 15 ? " (NPWP)" : " (NIK)"),
       nameIdentitas: val.nameIdentitas,
@@ -253,6 +253,28 @@ const post = async (req, res) => {
   });
 };
 
+const proof = async (req, res) => {
+  let data = [];
+  for (let index = 0; index < req.body.length; index++) {
+    const Efaktur = await efaktur.findOne({
+      where: { noFaktur: req.body[index].noFaktur },
+    });
+
+    require("fs").writeFile(
+      __dirname + `../../../public/upload/efaktur/${Efaktur.noFaktur}.pdf`,
+      new Buffer.from(
+        req.body[index].files.replace(/^data:application\/\w+;base64,/, ""),
+        "base64"
+      ),
+      (err) => {}
+    );
+
+    data.push(Efaktur);
+  }
+
+  res.json(req.body);
+};
+
 module.exports = {
   get,
   put,
@@ -260,4 +282,5 @@ module.exports = {
   del,
   getId,
   putId,
+  proof,
 };

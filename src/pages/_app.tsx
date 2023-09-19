@@ -5,6 +5,7 @@ import type { AppProps } from 'next/app'
 import toast, { Toaster } from 'react-hot-toast';
 import axios from "axios";
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 if (typeof window !== "undefined") {
     (window as any).$ = require('jquery');
@@ -17,7 +18,6 @@ if (typeof window !== "undefined") {
 import Layout from './components/layout'
 import Login from "./auth/login"
 import LoadingPage from './components/loadingPage';
-import Image from 'next/image';
 
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -109,6 +109,7 @@ export default function App({ Component, pageProps }: AppProps) {
             router.push(acc);
         }
     }
+
     return (
         <>
             <Toaster position="top-right" />

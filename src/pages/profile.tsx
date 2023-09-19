@@ -5,6 +5,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { Input, Textarea, Button } from "@material-tailwind/react";
 import axios from "axios";
 import moment from "moment"
+import Link from "next/link";
 
 export default function Profile({ userData, setuserData }: any) {
 
@@ -124,7 +125,7 @@ export default function Profile({ userData, setuserData }: any) {
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb">
                                     <li className="breadcrumb-item">
-                                        <a href="index.html">Home</a>
+                                        <Link href="/">Home</Link>
                                     </li>
                                     <li className="breadcrumb-item active">
                                         Profile

@@ -9,6 +9,7 @@ import axios from "axios";
 import Select from "./components/reactSelect";
 import ReactTable from "./components/reactTable";
 import DebouncedInput from "./components/debouncedInput"
+import Link from "next/link";
 
 export default function Npwp({ userData, setuserData }: any) {
     const [dataCreate, setdataCreate] = useState();
@@ -114,7 +115,7 @@ export default function Npwp({ userData, setuserData }: any) {
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb">
                                     <li className="breadcrumb-item">
-                                        <a href="index.html">Home</a>
+                                        <Link href="/">Home</Link>
                                     </li>
                                     <li className="breadcrumb-item active">
                                         {Subject}
