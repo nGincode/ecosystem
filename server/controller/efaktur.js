@@ -261,7 +261,7 @@ const proof = async (req, res) => {
     });
 
     require("fs").writeFile(
-      __dirname + `../../../public/upload/efaktur/${Efaktur.noFaktur}.pdf`,
+      __dirname + `/../../public/upload/efaktur/${Efaktur.noFaktur}.pdf`,
       new Buffer.from(
         req.body[index].files.replace(/^data:application\/\w+;base64,/, ""),
         "base64"
