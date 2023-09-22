@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { user } = require("../models");
+const { user, permission } = require("../models");
 
 const jwtProses = async (req, res, next) => {
   const token = req.headers.authorization;
@@ -17,7 +17,24 @@ const jwtProses = async (req, res, next) => {
       where: {
         id: data.data.users_id,
       },
+      include: [
+        {
+          model: permission,
+          as: "permission",
+          attributes: {
+            exclude: ["id", "uuid", "createdAt", "updatedAt"],
+          },
+        },
+      ],
     });
+
+    const dataNew = {
+      users_uuid: User.uuid,
+      users_id: User.id,
+      email: User.email,
+      username: User.username,
+      permission: User.permission,
+    };
 
     if (!User) {
       return res.json({
@@ -25,7 +42,7 @@ const jwtProses = async (req, res, next) => {
       });
     }
 
-    req.user = data.data;
+    req.user = dataNew;
 
     next();
   } catch (err) {

@@ -64,6 +64,7 @@ export default function App({ Component, pageProps }: AppProps) {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }
                     }).then((res) => {
+                        console.log(res.data.data);
                         setuserData(res.data.data);
                         setloadingFull(false);
                     });

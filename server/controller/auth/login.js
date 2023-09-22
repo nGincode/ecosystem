@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { verify } = require("node-php-password");
-const { user, permissionUser, permission } = require("../../models");
+const { user, permission } = require("../../models");
 
 module.exports = async (req, res) => {
   const { body } = req;
@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
     });
   }
 
-  if (!user.status === "active") {
+  if (!User.status === "active") {
     return res.json({
       status: 404,
       message: "Account not active",
@@ -52,6 +52,7 @@ module.exports = async (req, res) => {
     users_id: User.id,
     email: User.email,
     username: User.username,
+    permission: User.permission,
   };
   const token = jwt.sign({ data }, "fembinurilham");
 

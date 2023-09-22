@@ -178,7 +178,7 @@ export default function Profile({ userData, setuserData }: any) {
                                         <div className="d-inline-block position-relative">
                                             {userData.img ?
                                                 <div className="avatar-item d-flex align-items-center justify-content-center rounded-circle" style={{ width: "80px", height: "80px" }}>
-                                                    <img src={userData.img} />
+                                                    <img src={userData.img} className="object-cover rounded-full w-20 h-20" />
                                                 </div> :
                                                 <div className="avatar-item d-flex align-items-center justify-content-center rounded-circle" style={{ width: "80px", height: "80px" }}>
                                                     <img src="./app-assets/img/memoji/memoji-1.png" />

@@ -348,6 +348,10 @@ const del = async (req, res) => {
     });
   }
 
+  require("fs").unlink(__dirname + `/../../public${User.img}`, (err) => {
+    console.log(err);
+  });
+
   await User.destroy();
 
   res.json({

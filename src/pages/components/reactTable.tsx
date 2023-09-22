@@ -5,9 +5,12 @@ import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
 import Swal from 'sweetalert2'
 import moment from "moment";
-import { Input, Textarea, Button, Checkbox, IconButton } from "@material-tailwind/react";
+import { Input, Textarea, Button, Checkbox, IconButton, Badge } from "@material-tailwind/react";
+import numeral from "numeral";
+
 import Select from "./reactSelect";
 import Cekbox from "./cekBox";
+
 import {
     Column,
     Table,
@@ -127,95 +130,248 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
     let array: any = [];
     if (data?.[0]) {
         Object.keys(data[0]).map((val: any, i: number) => {
-            if (val !== 'uuid') {
-                if (val !== 'addressJson') {
-                    if (val === 'img') {
-                        array.push({
-                            id: 'img',
-                            header: () => null,
-                            cell: ({ row }: any) => {
-                                if (row.original.img) {
-                                    return <div className="avatar-item avatar-lg d-flex align-items-center justify-content-center bg-primary-4 hp-bg-dark-primary text-primary hp-text-color-dark-0 rounded-circle"><img src={row.original.img} alt={row.original.name} />
-                                    </div>
+            if (val == 'uuid' || val == 'addressJson' || val == 'itemJson') { } else {
+                if (val === 'img') {
+                    array.push({
+                        id: 'img',
+                        header: () => null,
+                        cell: ({ row }: any) => {
+                            if (row.original.img) {
+                                return <div className="avatar-item avatar-lg d-flex align-items-center justify-content-center bg-primary-4 hp-bg-dark-primary text-primary hp-text-color-dark-0 rounded-circle"><img src={row.original.img} className=" object-cover rounded-full w-12 h-12" alt={row.original.name} />
+                                </div>
+                            } else {
+                                return <div className="avatar-item avatar-lg d-flex align-items-center justify-content-center bg-primary-4 hp-bg-dark-primary text-primary hp-text-color-dark-0 rounded-circle">{(row.original.name ?? row.original.username).substring(0, 2)}</div>
+                            }
+                        },
+                        footer: (props: any) => props.column.id,
+                    })
+                } else if (val === 'status') {
+                    array.push({
+                        accessorKey: val,
+                        header: () => <div>{convertCamelCase(val)}</div>,
+                        cell: ({ row }: any) => {
+                            if (row.original.status === 'active') {
+                                return <div className="badge bg-success-4 hp-bg-dark-success text-success border-success">active</div>
+                            } else if (row.original.status === 'pending') {
+                                return <div className="badge bg-warning-4 hp-bg-dark-warning text-warning border-warning">pending</div>
+                            } else if (row.original.status === 'inactive') {
+                                return <div className="badge bg-danger-4 hp-bg-dark-danger text-danger border-danger">inactive</div>
+                            }
+                        },
+                        footer: (props: any) => props.column.id,
+                    })
+                } else if (val === 'permission') {
+                    array.push({
+                        accessorKey: val,
+                        header: () => <div>{convertCamelCase(val)}</div>,
+                        cell: ({ row }: any) => {
+                            return row.original.permission.map((vall: any, i: number) => {
+                                return (<div key={i}>
+                                    {vall.check ?
+                                        <>
+                                            {vall.data.map((map: any, ii: number) => {
+                                                let check = false;
+                                                let view = map.checklist.find((find: any) => find == 'view') ?
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    </svg> : null;
+                                                let create = map.checklist.find((find: any) => find == 'create') ?
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-blue-600">
+                                                        <path fillRule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clipRule="evenodd" />
+                                                    </svg> : null;
+                                                let edit = map.checklist.find((find: any) => find == 'edit') ?
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-green-600">
+                                                        <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                                                        <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                                                    </svg> : null;
+                                                let del = map.checklist.find((find: any) => find == 'delete') ?
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-red-600">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                    </svg> : null;
+                                                if (view) {
+                                                    check = true;
+                                                }
+                                                if (check)
+                                                    return <div key={ii} className="flex  w-full">
+                                                        <div className="w-full">{vall.label} {map.label}
+                                                            <div className="float-right w-13 flex">
+                                                                {view}
+                                                                {create}
+                                                                {edit}
+                                                                {del}
+                                                            </div></div>
+                                                    </div>;
+                                            })}
+                                        </> : null}</div>)
+                            })
+                        },
+                        footer: (props: any) => props.column.id,
+                    })
+                } else if (val === 'ceklist') {
+                    array.push({
+                        id: 'ceklist',
+                        header: () => null,
+                        cell: ({ row }: any) => {
+                            if (row.original.ceklist)
+                                if (row.original.ceklist === true) {
+                                    return <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-green-900">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                    </svg>;
                                 } else {
-                                    return <div className="avatar-item avatar-lg d-flex align-items-center justify-content-center bg-primary-4 hp-bg-dark-primary text-primary hp-text-color-dark-0 rounded-circle">{(row.original.name ?? row.original.username).substring(0, 2)}</div>
+                                    return <a href={row.original.ceklist} target="_blank" className="flex"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-green-900">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                    </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3 -ml-5 h-3" viewBox="0 0 24 24" fill="none">
+                                            <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg></a>;
                                 }
-                            },
-                            footer: (props: any) => props.column.id,
-                        })
-                    } else if (val === 'status') {
-                        array.push({
-                            accessorKey: val,
-                            header: () => <div>{convertCamelCase(val)}</div>,
-                            cell: ({ row }: any) => {
-                                if (row.original.status === 'active') {
-                                    return <div className="badge bg-success-4 hp-bg-dark-success text-success border-success">active</div>
-                                } else if (row.original.status === 'pending') {
-                                    return <div className="badge bg-warning-4 hp-bg-dark-warning text-warning border-warning">pending</div>
-                                } else if (row.original.status === 'inactive') {
-                                    return <div className="badge bg-danger-4 hp-bg-dark-danger text-danger border-danger">inactive</div>
+                        },
+                        footer: (props: any) => props.column.id,
+                    })
+                } else if (val === 'item') {
+                    array.push({
+                        accessorKey: val,
+                        header: () => <div>Item</div>,
+                        cell: (info: any) => {
+                            return <>
+                                <div data-bs-toggle="modal" data-bs-target={`#modalItem_${info.row.original.uuid}`} className="cursor-pointer">
+                                    <Button size="sm" color="green" variant="text">{info.getValue()}</Button>
+                                </div>
+                                <div className="modal fade" id={`modalItem_${info.row.original.uuid}`} tabIndex={-1} aria-hidden="true">
+                                    <div className="modal-dialog modal-xl modal-dialog-centered">
+                                        <div className="modal-content" >
+                                            <div className="modal-header py-16 px-24">
+                                                <h5 className="modal-title font-bold" >Data No Faktur : {info.row.original.noFaktur}</h5>
+                                                <button type="button" className="btn-close hp-bg-none d-flex align-items-center justify-content-center" data-bs-dismiss="modal" aria-label="Close">
+                                                    <i className="ri-close-line hp-text-color-dark-0 lh-1" style={{ fontSize: "24px" }}></i>
+                                                </button>
+                                            </div>
+
+                                            <div className="divider m-0"></div>
+
+                                            <div className="overflow-auto">
+                                                <table className="table align-middle table-hover ">
+                                                    <thead>
+                                                        <tr>
+                                                            <td>Kode Barang</td>
+                                                            <td>Nama</td>
+                                                            <td>Harga</td>
+                                                            <td>Jumlah</td>
+                                                            <td>Total</td>
+                                                            <td>Diskon</td>
+                                                            <td>DPP</td>
+                                                            <td>PPN</td>
+                                                            <td>Tarif PPNBM</td>
+                                                            <td>PPNBM</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {info.row.original.itemJson.map((val: any, i: number) => {
+                                                            return <tr key={i}>
+                                                                <td>{val.kodeBarang}</td>
+                                                                <td>{val.nama}</td>
+                                                                <td>{numeral(val.hargaSatuan).format('0,0')}</td>
+                                                                <td>{val.jumlahBarang}</td>
+                                                                <td>{numeral(val.hargaTotal).format('0,0')}</td>
+                                                                <td>{numeral(val.diskon).format('0,0')}</td>
+                                                                <td>{numeral(val.DPP).format('0,0')}</td>
+                                                                <td>{numeral(val.PPN).format('0,0')}</td>
+                                                                <td>{numeral(val.tarifPPNBM ?? 0).format('0,0')}</td>
+                                                                <td>{numeral(val.PPNBM).format('0,0')}</td>
+                                                            </tr>
+                                                        })}
+                                                        <tr className="bg-gray-200">
+                                                            <td>Total :</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td >
+                                                                {numeral(info.row.original.itemJson?.reduce((a: any, b: any) => { return a + Number(b.jumlahBarang) }, 0)).format('0,0')}
+                                                            </td>
+                                                            <td >
+                                                                {numeral(info.row.original.itemJson?.reduce((a: any, b: any) => { return a + Number(b.hargaTotal) }, 0)).format('0,0')}
+                                                            </td>
+                                                            <td >
+                                                                {numeral(info.row.original.itemJson?.reduce((a: any, b: any) => { return a + Number(b.diskon) }, 0)).format('0,0')}
+                                                            </td>
+                                                            <td >
+                                                                {numeral(info.row.original.itemJson?.reduce((a: any, b: any) => { return a + Number(b.DPP) }, 0)).format('0,0')}
+                                                            </td>
+                                                            <td >
+                                                                {numeral(info.row.original.itemJson?.reduce((a: any, b: any) => { return a + Number(b.PPN) }, 0)).format('0,0')}
+                                                            </td>
+                                                            <td >
+                                                                {numeral(info.row.original.itemJson?.reduce((a: any, b: any) => { return a + Number(b.tarifPPNBM) }, 0)).format('0,0')}
+                                                            </td>
+                                                            <td >
+                                                                {numeral(info.row.original.itemJson?.reduce((a: any, b: any) => { return a + Number(b.PPNBM) }, 0)).format('0,0')}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <Button className="m-3" data-bs-dismiss="modal" aria-label="Close">Close</Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        },
+                        footer: (props: any) => props.column.id,
+                    })
+                } else if (val === 'check') {
+                    array.push({
+                        id: 'check',
+                        header: (info: any) => {
+                            return <Checkbox type="checkbox" id="checkALl" onChange={(res: any) => {
+                                var checkboxes = (document.querySelectorAll('input[type="checkbox"]') as any);
+                                if (res.target.checked) {
+                                    for (var i = 0; i < checkboxes.length; i++) {
+                                        if (checkboxes[i].type == 'checkbox')
+                                            checkboxes[i].checked = true;
+                                    }
+                                } else {
+                                    for (var i = 0; i < checkboxes.length; i++) {
+                                        if (checkboxes[i].type == 'checkbox')
+                                            checkboxes[i].checked = false;
+                                    }
                                 }
-                            },
-                            footer: (props: any) => props.column.id,
-                        })
-                    } else if (val === 'permission') {
-                        array.push({
-                            accessorKey: val,
-                            header: () => <div>{convertCamelCase(val)}</div>,
-                            cell: ({ row }: any) => {
-                                return row.original.permission.map((vall: any, i: number) => {
-                                    return (<div key={i}>
-                                        {vall.check ?
-                                            <>
-                                                {vall.data.map((map: any, ii: number) => {
-                                                    let check = false;
-                                                    let view = map.checklist.find((find: any) => find == 'view') ?
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                        </svg> : null;
-                                                    let create = map.checklist.find((find: any) => find == 'create') ?
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                                                            <path fillRule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clipRule="evenodd" />
-                                                        </svg> : null;
-                                                    let edit = map.checklist.find((find: any) => find == 'edit') ?
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                                                            <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
-                                                            <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
-                                                        </svg> : null;
-                                                    let del = map.checklist.find((find: any) => find == 'delete') ?
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                        </svg> : null;
-                                                    if (view) {
-                                                        check = true;
-                                                    }
-                                                    if (check)
-                                                        return <div key={ii} className="flex  w-full">
-                                                            <div className="w-full">{vall.label} {map.label}
-                                                                <div className="float-right w-13 flex">
-                                                                    {view}
-                                                                    {create}
-                                                                    {edit}
-                                                                    {del}
-                                                                </div></div>
-                                                        </div>;
-                                                })}
-                                            </> : null}</div>)
-                                })
-                            },
-                            footer: (props: any) => props.column.id,
-                        })
-                    } else {
-                        array.push({
-                            accessorKey: val,
-                            header: () => <div>{val === "npwp" ? "NPWP" : convertCamelCase(val)}</div>,
-                            cell: (info: any) => info.getValue() ?? '-',
-                            footer: (props: any) => props.column.id,
-                        })
-                    }
+                            }} />
+                        }
+                        ,
+                        cell: ({ row }: any) => {
+                            return <div className="flex">
+                                {row.original.check.checkbox ? <Checkbox id={`checkItem_${row.original.uuid}`} /> : null}
+                                {row.original.check.ceklist ?
+                                    <>
+                                        {row.original.check.ceklist === '' ? <div className="mt-2"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-green-900">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg></div> :
+                                            <a href={row.original.check.ceklist} target="_blank" className="flex mt-3">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-green-900">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="w-3 -ml-5 h-3" viewBox="0 0 24 24" fill="none">
+                                                    <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                    <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                            </a>}
+                                    </> : null}
+                            </div>;
+
+                        },
+                        footer: (props: any) => props.column.id,
+                    })
+                } else {
+                    array.push({
+                        accessorKey: val,
+                        header: () => <div>{val === "npwp" ? "NPWP" : convertCamelCase(val)}</div>,
+                        cell: (info: any) => info.getValue() ? info.getValue().length > 35 ? `${info.getValue()}`.substring(0, 35) + '...' : info.getValue() : '-',
+                        footer: (props: any) => props.column.id,
+                    })
                 }
             }
+
         });
     }
 
@@ -344,7 +500,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
         return (
             <>
                 <div className="table-responsive">
-                    <table className="table align-middle table-hover table-borderless">
+                    <table className="table align-middle table-hover  text-sm -mb-2">
                         <thead>
                             {table.getHeaderGroups().map(headerGroup => (
                                 <tr key={headerGroup.id}>
@@ -356,7 +512,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                                         <div
                                                             {...{
                                                                 className: header.column.getCanSort()
-                                                                    ? 'cursor-pointer select-none text-center'
+                                                                    ? 'cursor-pointer select-none text-center flex justify-center'
                                                                     : '',
                                                                 onClick: header.column.getToggleSortingHandler(),
                                                             }}
@@ -366,12 +522,18 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                                                 header.getContext()
                                                             )}
                                                             {{
-                                                                asc: ' 🔼',
-                                                                desc: ' 🔽',
+                                                                asc: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75" />
+                                                                </svg>
+                                                                ,
+                                                                desc: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m0 0l6.75-6.75M12 19.5l-6.75-6.75" />
+                                                                </svg>
+                                                                ,
                                                             }[header.column.getIsSorted() as string] ?? null}
                                                         </div>
                                                         {header.column.getCanFilter() ? (
-                                                            <div className="mt-2">
+                                                            <div className="mt-2 text-sm">
                                                                 <Filter column={header.column} table={table} />
                                                             </div>
                                                         ) : null}
@@ -386,7 +548,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                         <tbody>
                             {table.getRowModel().rows.map(row => {
                                 return (
-                                    <tr key={row.id}>
+                                    <tr key={row.id} className={row.original?.ceklist ? "bg-green-100" : ""}>
                                         {row.getVisibleCells().map(cell => {
                                             return (
                                                 <td key={cell.id}>

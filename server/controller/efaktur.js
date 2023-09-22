@@ -1,6 +1,7 @@
 const { User, npwp, efaktur, efakturItem } = require("../models");
 const moment = require("moment/moment");
 const Crypto = require("crypto");
+const numeral = require("numeral");
 
 const getId = async (req, res) => {
   const { users_id, users_uuid, email, username } = req.user;
@@ -55,21 +56,41 @@ const putId = async (req, res) => {
 };
 
 const get = async (req, res) => {
-  const { users_id, users_uuid, email, username } = req.user;
+  const { users_id, users_uuid, email, username, permission } = req.user;
 
-  const EFAKTUR = await efaktur.findAll({
-    include: [
-      {
-        model: efakturItem,
-        as: "efakturItem",
-        attributes: {
-          exclude: ["id"],
+  let EFAKTUR;
+  if (permission.view === "all") {
+    EFAKTUR = await efaktur.findAll({
+      include: [
+        {
+          model: efakturItem,
+          as: "efakturItem",
+          attributes: {
+            exclude: ["id"],
+          },
         },
+      ],
+      attributes: { exclude: ["id"] },
+      order: [["id", "DESC"]],
+    });
+  } else {
+    EFAKTUR = await efaktur.findAll({
+      where: {
+        user_id: users_id,
       },
-    ],
-    attributes: { exclude: ["id"] },
-    order: [["id", "DESC"]],
-  });
+      include: [
+        {
+          model: efakturItem,
+          as: "efakturItem",
+          attributes: {
+            exclude: ["id"],
+          },
+        },
+      ],
+      attributes: { exclude: ["id"] },
+      order: [["id", "DESC"]],
+    });
+  }
 
   if (!EFAKTUR) {
     return res.json({
@@ -79,16 +100,26 @@ const get = async (req, res) => {
 
   const data = EFAKTUR.map((val) => {
     return {
+      // check: { checkbox: true, ceklist: val.proof },
+      ceklist: val.proof,
       uuid: val.uuid,
-      date: moment(val.date).format("DD/MM/YYYY"),
-      noFaktur: val.noFaktur,
+      date: moment(val.date).format("DD MMM YYYY"),
+      nameIdentitas: val.nameIdentitas,
+      noFaktur:
+        val.noFaktur.slice(0, 3) +
+        "." +
+        val.noFaktur.slice(3, 6) +
+        "-" +
+        val.noFaktur.slice(6, 8) +
+        "." +
+        val.noFaktur.slice(8),
       noIdentitas:
         val.noIdentitas + (val.noIdentitas.length == 15 ? " (NPWP)" : " (NIK)"),
-      nameIdentitas: val.nameIdentitas,
-      DPP: val.jumlahDPP,
-      PPN: val.jumlahPPN,
-      PPNBM: val.jumlahPPNBM,
-      totalItem: val.efakturItem.length,
+      DPP: numeral(val.jumlahDPP).format("0,0"),
+      PPN: numeral(val.jumlahPPN).format("0,0"),
+      PPNBM: numeral(val.jumlahPPNBM).format("0,0"),
+      item: val.efakturItem.length + " Item",
+      itemJson: val.efakturItem,
     };
   });
 
@@ -148,7 +179,16 @@ const del = async (req, res) => {
     });
   }
 
-  await EFAKTUR.destroy();
+  if (EFAKTUR) {
+    require("fs").unlink(
+      __dirname + `/../../public/upload/efaktur/${EFAKTUR.noFaktur}.pdf`,
+      (err) => {
+        console.log(err);
+      }
+    );
+
+    await EFAKTUR.destroy();
+  }
 
   res.json({
     massage: "Delete successful",
@@ -170,111 +210,314 @@ const post = async (req, res) => {
     nameIdentitas,
     typeIdentitas,
     keterangan_tambahan,
+    excel,
   } = req.body;
 
-  let valAddress;
-  let valNameIdentitas;
-  if (typeIdentitas === "NPWP") {
-    const Npwp = await npwp.findOne({
-      where: { npwp: noIdentitas },
-      attributes: ["uuid", "fullName", "address"],
+  if (excel) {
+    let fk = [];
+    for (let i = 0; i < excel.length; i++) {
+      const val = excel[i];
+      if (i > 2) {
+        let nameIdentitas;
+        let noIdentitas;
+        if (val[0] === "FK") {
+          if (val[8].length > 15) {
+            let split = val[8].split("#");
+            nameIdentitas = split[3];
+            noIdentitas = split[0];
+          } else {
+            nameIdentitas = val[8];
+            noIdentitas = val[7];
+          }
+          const dataFaktur = {
+            user_id: users_id,
+            uuid: Crypto.randomUUID(),
+            transaction: val[1],
+            jenis_faktur: val[2],
+            noFaktur: val[1] + "0" + val[3],
+            date: moment(val[6], "DD/MM/YYYY").format("YYYY-MM-DD"),
+            noIdentitas: noIdentitas,
+            nameIdentitas: nameIdentitas,
+            address: val[9],
+            jumlahDPP: val[10],
+            jumlahPPN: val[11],
+            jumlahPPNBM: val[12],
+            IDKeteranganTambahan: val[13] !== "" ? val[13] : null,
+            FGUangMuka: val[14],
+            uangMukaDPP: val[15],
+            uangMukaPPN: val[16],
+            uangMukaPPNBM: val[17],
+            referensi: val[18] !== "" ? val[18] : null,
+          };
+
+          const dataEfaktur = await efaktur.create(dataFaktur);
+          fk = dataEfaktur;
+        } else if (val[0] === "OF") {
+          const dataFakturIt = {
+            uuid: Crypto.randomUUID(),
+            efaktur_id: fk.id,
+            user_id: users_id,
+            kodeBarang: val[1],
+            nama: val[2],
+            hargaSatuan: val[3],
+            jumlahBarang: val[4],
+            hargaTotal: val[5],
+            diskon: val[6],
+            DPP: val[7],
+            PPN: val[8],
+            tarifPPN: val[9],
+            PPNBM: val[10],
+          };
+          await efakturItem.create(dataFakturIt);
+        }
+      }
+    }
+    res.json({
+      status: 200,
+      massage: "Create successful",
+      data: fk,
     });
-    if (!Npwp) {
-      return res.json({
-        status: 400,
-        massage: "NPWP in database not found",
+  } else {
+    let valAddress;
+    let valNameIdentitas;
+    if (typeIdentitas === "NPWP") {
+      const Npwp = await npwp.findOne({
+        where: { npwp: noIdentitas },
+        attributes: ["uuid", "fullName", "address"],
       });
+      if (!Npwp) {
+        return res.json({
+          status: 400,
+          massage: "NPWP in database not found",
+        });
+      }
+
+      valAddress = Npwp.address;
+      valNameIdentitas = Npwp.name;
+    } else {
+      valAddress = addressIdentitas;
+      valNameIdentitas = nameIdentitas;
     }
 
-    valAddress = Npwp.address;
-    valNameIdentitas = Npwp.name;
-  } else {
-    valAddress = addressIdentitas;
-    valNameIdentitas = addressIdentitas;
-  }
+    let jumlahDPP = 0;
+    let jumlahPPNBM = 0;
+    let jumlahPPN = 0;
+    let itemFaktur = item.map((val) => {
+      jumlahDPP += Number(val.dpp);
+      jumlahPPN += Number(val.ppn);
+      jumlahPPNBM += Number(val.ppnbm);
 
-  let jumlahDPP = 0;
-  let jumlahPPNBM = 0;
-  let jumlahPPN = 0;
-  let itemFaktur = item.map((val) => {
-    jumlahDPP += Number(val.dpp);
-    jumlahPPN += Number(val.ppn);
-    jumlahPPNBM += Number(val.ppnbm);
-
-    return {
-      uuid: Crypto.randomUUID(),
-      efaktur_id: null,
+      return {
+        uuid: Crypto.randomUUID(),
+        efaktur_id: null,
+        user_id: users_id,
+        kodeBarang: val.kode,
+        nama: val.name,
+        hargaSatuan: val.harga,
+        jumlahBarang: val.qty,
+        hargaTotal: Number(val.qty) * Number(val.harga),
+        diskon: val.diskon !== "" || !val.diskon ? 0 : val.diskon,
+        DPP: val.dpp !== "" || !val.diskon ? 0 : val.dpp,
+        PPN: val.ppn !== "" || !val.ppn ? 0 : val.ppn,
+        tarifPPN:
+          val.tarif_ppnbm !== "" || !val.tarif_ppnbm ? 0 : val.tarif_ppnbm,
+        PPNBM: val.ppnbm !== "" || !val.ppnbm ? 0 : val.ppnbm,
+      };
+    });
+    const dataFaktur = {
       user_id: users_id,
-      kodeBarang: val.kode,
-      nama: val.name,
-      hargaSatuan: val.harga,
-      jumlahBarang: val.qty,
-      hargaTotal: Number(val.qty) * Number(val.harga),
-      diskon: val.diskon !== "" || !val.diskon ? 0 : val.diskon,
-      DPP: val.dpp !== "" || !val.diskon ? 0 : val.dpp,
-      PPN: val.ppn !== "" || !val.ppn ? 0 : val.ppn,
-      tarifPPN:
-        val.tarif_ppnbm !== "" || !val.tarif_ppnbm ? 0 : val.tarif_ppnbm,
-      PPNBM: val.ppnbm !== "" || !val.ppnbm ? 0 : val.ppnbm,
+      uuid: Crypto.randomUUID(),
+      noIdentitas: noIdentitas,
+      date: date,
+      transaction: detail,
+      jenis_faktur: jenis,
+      referensi: referensi !== "" || !referensi ? null : referensi,
+      noFaktur: noFaktur,
+      address: valAddress,
+      nameIdentitas: valNameIdentitas,
+      jumlahDPP: jumlahDPP,
+      jumlahPPNBM: jumlahPPNBM,
+      jumlahPPN: jumlahPPN,
+      IDKeteranganTambahan: keterangan_tambahan,
+      FGUangMuka: 0,
+      uangMukaDPP: 0,
+      uangMukaPPN: 0,
+      uangMukaPPNBM: 0,
     };
-  });
-  const dataFaktur = {
-    user_id: users_id,
-    uuid: Crypto.randomUUID(),
-    noIdentitas: noIdentitas,
-    date: date,
-    transaction: detail,
-    jenis_faktur: jenis,
-    referensi: referensi !== "" || !referensi ? null : referensi,
-    noFaktur: noFaktur,
-    address: valAddress,
-    nameIdentitas: valNameIdentitas,
-    jumlahDPP: jumlahDPP,
-    jumlahPPNBM: jumlahPPNBM,
-    jumlahPPN: jumlahPPN,
-    IDKeteranganTambahan: keterangan_tambahan,
-    FGUangMuka: 0,
-    uangMukaDPP: 0,
-    uangMukaPPN: 0,
-    uangMukaPPNBM: 0,
-  };
 
-  const dataEfaktur = await efaktur.create(dataFaktur);
-  let postItemFaktur = itemFaktur.map((val) => {
-    val.efaktur_id = dataEfaktur.id;
-    return val;
-  });
-  const efakturItemData = await efakturItem.bulkCreate(postItemFaktur);
+    const dataEfaktur = await efaktur.create(dataFaktur);
+    let postItemFaktur = itemFaktur.map((val) => {
+      val.efaktur_id = dataEfaktur.id;
+      return val;
+    });
+    const efakturItemData = await efakturItem.bulkCreate(postItemFaktur);
 
-  res.json({
-    status: 200,
-    massage: "Create successful",
-    data: { dataFaktur, efakturItem: efakturItemData },
-  });
+    res.json({
+      status: 200,
+      massage: "Create successful",
+      data: { dataFaktur, efakturItem: efakturItemData },
+    });
+  }
 };
 
 const proof = async (req, res) => {
-  let data = [];
+  let success = [];
+  let error = [];
   for (let index = 0; index < req.body.length; index++) {
     const Efaktur = await efaktur.findOne({
       where: { noFaktur: req.body[index].noFaktur },
     });
 
-    require("fs").writeFile(
-      __dirname + `/../../public/upload/efaktur/${Efaktur.noFaktur}.pdf`,
-      new Buffer.from(
-        req.body[index].files.replace(/^data:application\/\w+;base64,/, ""),
-        "base64"
-      ),
-      (err) => {
-        console.log(err);
-      }
-    );
+    if (Efaktur) {
+      require("fs").writeFile(
+        __dirname + `/../../public/upload/efaktur/${Efaktur.noFaktur}.pdf`,
+        new Buffer.from(
+          req.body[index].files.replace(/^data:application\/\w+;base64,/, ""),
+          "base64"
+        ),
+        (err) => {
+          console.log(err);
+        }
+      );
 
-    data.push(Efaktur);
+      await Efaktur.update({
+        proof: `/upload/efaktur/${Efaktur.noFaktur}.pdf`,
+      });
+
+      success.push({ Efaktur: Efaktur.noFaktur });
+    } else {
+      error.push({ Efaktur: req.body[index].noFaktur });
+    }
   }
 
-  res.json(req.body);
+  res.json({ success: success, error: error });
+};
+
+const exprt = async (req, res) => {
+  let data = [];
+  const subject = [
+    [
+      "FK",
+      "KD_JENIS_TRANSAKSI",
+      "FG_PENGGANTI",
+      "NOMOR_FAKTUR",
+      "MASA_PAJAK",
+      "TAHUN_PAJAK",
+      "TANGGAL_FAKTUR",
+      "NPWP",
+      "NAMA",
+      "ALAMAT_LENGKAP",
+      "JUMLAH_DPP",
+      "JUMLAH_PPN",
+      "JUMLAH_PPNBM",
+      "ID_KETERANGAN_TAMBAHAN",
+      "FG_UANG_MUKA",
+      "UANG_MUKA_DPP",
+      "UANG_MUKA_PPN",
+      "UANG_MUKA_PPNBM",
+      "REFERENSI",
+      "KODE_DOKUMEN_PENDUKUNG",
+    ],
+    [
+      "LT",
+      "NPWP",
+      "NAMA",
+      "JALAN",
+      "BLOK",
+      "NOMOR",
+      "RT",
+      "RW",
+      "KECAMATAN",
+      "KELURAHAN",
+      "KABUPATEN",
+      "PROPINSI",
+      "KODE_POS",
+      "NOMOR_TELEPON",
+    ],
+    [
+      "OF",
+      "KODE_OBJEK",
+      "NAMA",
+      "HARGA_SATUAN",
+      "JUMLAH_BARANG",
+      "HARGA_TOTAL",
+      "DISKON",
+      "DPP",
+      "PPN",
+      "TARIF_PPNBM",
+      "PPNBM",
+    ],
+  ];
+
+  const Efaktur = await efaktur.findAll({
+    where: {
+      proof: null,
+    },
+    include: [
+      {
+        model: efakturItem,
+        as: "efakturItem",
+        attributes: {
+          exclude: ["id"],
+        },
+      },
+    ],
+  });
+
+  Efaktur.map((val, i) => {
+    let noId;
+    let nameId;
+    if (val.noIdentitas.length === 16) {
+      noId = "000000000000000";
+      nameId = `${val.noIdentitas}#NIK#NAMA#${val.nameIdentitas}`;
+    } else if (val.noIdentitas.length === 15) {
+      noId = val.noIdentitas;
+      nameId = val.nameIdentitas;
+    } else {
+      return res.status(500).json({ massage: "No Identitas Tidak Valid" });
+    }
+
+    data.push([
+      "FK",
+      val.transaction,
+      val.jenis_faktur,
+      val.noFaktur,
+      moment(val.date, "YYYY-MM-DD").format("MM"),
+      moment(val.date, "YYYY-MM-DD").format("YYYY"),
+      moment(val.date, "YYYY-MM-DD").format("DD/MM/YYYY"),
+      noId,
+      nameId,
+      val.address,
+      val.jumlahDPP,
+      val.jumlahPPN,
+      val.jumlahPPNBM,
+      val.IDKeteranganTambahan ?? "",
+      val.FGUangMuka,
+      val.uangMukaDPP,
+      val.uangMukaPPN,
+      val.uangMukaPPNBM,
+      val.referensi ?? "",
+      val.uangMukaDPP,
+      "",
+    ]);
+
+    val.efakturItem.map((vall, ii) => {
+      data.push([
+        "OF",
+        vall.kodeBarang,
+        vall.nama,
+        vall.hargaSatuan,
+        vall.jumlahBarang,
+        vall.hargaTotal,
+        vall.diskon,
+        vall.DPP,
+        vall.PPN,
+        vall.tarifPPNBM ?? "0",
+        vall.PPNBM,
+      ]);
+    });
+  });
+  res.json([...subject, ...data]);
 };
 
 module.exports = {
@@ -285,4 +528,5 @@ module.exports = {
   getId,
   putId,
   proof,
+  exprt,
 };

@@ -184,7 +184,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                     <div className="w-auto px-0">
                                         {userData.img ?
                                             <div className="avatar-item bg-primary-4 d-flex align-items-center justify-content-center rounded-circle" style={{ width: "48px", height: "48px" }}>
-                                                <img src={userData.img} height="100%" className="hp-img-cover" />
+                                                <img src={userData.img} height="100%" className="hp-img-cover object-cover rounded-full w-12 h-12" />
                                             </div>
                                             :
                                             <div className="avatar-item d-flex align-items-center justify-content-center avatar-lg hp-bg-primary-4 hp-text-color-primary-1 rounded-circle">
@@ -444,7 +444,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                     <div className="rounded-3 overflow-hidden m-4 d-flex">
                                                         {userData.img ?
                                                             <div className="avatar-item hp-bg-info-4 d-flex" style={{ width: "32px", height: "32px" }}>
-                                                                <img src={userData.img} />
+                                                                <img src={userData.img} className="object-cover rounded-md w-10 h-10" />
                                                             </div> :
                                                             <div className="avatar-item d-flex align-items-center justify-content-center hp-bg-primary-4 hp-text-color-primary-1 rounded">
                                                                 <i className="iconly-Curved-User"></i>
@@ -646,7 +646,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                             <div className="w-auto px-0">
                                                 {userData.img ?
                                                     <div className="avatar-item bg-primary-4 d-flex align-items-center justify-content-center rounded-circle" style={{ width: "48px", height: "48px" }}>
-                                                        <img src={userData.img} height="100%" className="hp-img-cover" />
+                                                        <img src={userData.img} height="100%" className="hp-img-cover object-cover rounded-full w-12 h-12" />
                                                     </div>
                                                     :
                                                     <div className="avatar-item d-flex align-items-center justify-content-center avatar-lg hp-bg-primary-4 hp-text-color-primary-1 rounded-circle">

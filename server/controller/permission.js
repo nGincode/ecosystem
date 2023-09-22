@@ -78,8 +78,18 @@ const putId = async (req, res) => {
 
 const get = async (req, res) => {
   const { users_id, users_uuid, email, username } = req.user;
+  const userPermission = req.user.permission;
 
-  const Permission = await permission.findAll();
+  let Permission;
+  if (userPermission.view === "all") {
+    Permission = await permission.findAll();
+  } else {
+    Permission = await permission.findAll({
+      where: {
+        user_id: users_id,
+      },
+    });
+  }
 
   if (!Permission) {
     return res.json({

@@ -99,11 +99,21 @@ const putId = async (req, res) => {
 };
 
 const get = async (req, res) => {
-  const { users_id, users_uuid, email, username } = req.user;
+  const { users_id, users_uuid, email, username, permission } = req.user;
 
-  const Npwp = await npwp.findAll({
-    attributes: ["uuid", "npwp", "name", "phone", "address"],
-  });
+  let Npwp;
+  if (permission.view === "all") {
+    Npwp = await npwp.findAll({
+      attributes: ["uuid", "npwp", "name", "phone", "address"],
+    });
+  } else {
+    Npwp = await npwp.findAll({
+      where: {
+        user_id: users_id,
+      },
+      attributes: ["uuid", "npwp", "name", "phone", "address"],
+    });
+  }
 
   if (!Npwp) {
     return res.json({
