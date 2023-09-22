@@ -18,8 +18,6 @@ import {
 import { read, utils, writeFile } from 'xlsx';
 import * as PDFJS from 'pdfjs-dist';
 PDFJS.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS.version}/pdf.worker.js`;
-import FingerprintJS from '@fingerprintjs/fingerprintjs'
-const fpPromise = FingerprintJS.load()
 
 // import * as GC from '@grapecity/spread-sheets';
 // import ExcelIO from "@grapecity/spread-excelio";
@@ -98,7 +96,7 @@ export default function Efaktur({ userData, setuserData }: any) {
     const [itemInputEfak, setitemInputEfak] = useState<any>([{ delete: false }]);
     const URLAPI = "/api/efaktur";
     const Subject = "E-Faktur";
-    
+
 
 
     const handleApi = async (url: any, data: any = null) => {
@@ -121,12 +119,6 @@ export default function Efaktur({ userData, setuserData }: any) {
                 toast.error(error.response.data.massage);
             }
         } else if (url === 'view_npwp') {
-            
-    const fp = await fpPromise;
-    const result = await fp.get();
-    const visitor = result.visitorId;
-
-console.log(visitor);
             try {
                 await axios({
                     method: "GET",

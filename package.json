@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
-    "@fingerprintjs/fingerprintjs": "^4.1.0",
     "@grapecity/spread-excelio": "16.0.3",
     "@grapecity/spread-sheets-react": "^16.2.0",
     "@material-tailwind/react": "^2.1.1",
