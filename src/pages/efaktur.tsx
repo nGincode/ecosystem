@@ -101,6 +101,7 @@ export default function Efaktur({ userData, setuserData }: any) {
 
     const handleApi = async (url: any, data: any = null) => {
         if (url === 'create') {
+            data.company_id = JSON.parse(localStorage.getItem('companyActive') as string)?.value;
             try {
                 await axios({
                     method: "POST",
@@ -122,7 +123,7 @@ export default function Efaktur({ userData, setuserData }: any) {
             try {
                 await axios({
                     method: "GET",
-                    url: '/api/npwp',
+                    url: '/api/npwp?company_id=' + JSON.parse(localStorage.getItem('companyActive') as string)?.value,
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
@@ -260,6 +261,7 @@ export default function Efaktur({ userData, setuserData }: any) {
 
 
             const data = {
+                company_id: JSON.parse(localStorage.getItem('companyActive') as string)?.value,
                 typeIdentitas: tabIdentitas,
                 noIdentitas: noIdentitas,
                 nameIdentitas: nameIdentitas,
@@ -288,6 +290,7 @@ export default function Efaktur({ userData, setuserData }: any) {
             }];
 
             const data = {
+                company_id: JSON.parse(localStorage.getItem('companyActive') as string)?.value,
                 noIdentitas: noIdentitas,
                 nameIdentitas: nameIdentitas,
                 addressIdentitas: addressIdentitas,

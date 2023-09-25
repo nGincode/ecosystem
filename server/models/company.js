@@ -1,26 +1,21 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class user extends Model {
+  class company extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.belongsTo(models.permission, {
-        as: "permission",
-        foreignKey: "permission_id",
-      });
-
-      this.belongsToMany(models.company, {
+      this.belongsToMany(models.user, {
         through: "company_user",
-        as: "company",
-        foreignKey: "user_id",
+        as: "user",
+        foreignKey: "company_id",
       });
     }
   }
-  user.init(
+  company.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -29,58 +24,44 @@ module.exports = (sequelize, DataTypes) => {
       },
       uuid: {
         type: DataTypes.UUID,
-        unique: true,
-      },
-      permission_id: {
-        type: DataTypes.INTEGER,
         allowNull: false,
         unique: true,
       },
-      username: {
+      user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      npwp: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
       },
-      password: {
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      phone: {
         type: DataTypes.STRING,
         allowNull: false,
       },
       email: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      fullName: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      phone: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      dateOfBirth: {
-        type: DataTypes.DATEONLY,
-        allowNull: true,
       },
       address: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      img: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      status: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: false,
       },
     },
     {
       sequelize,
-      modelName: "user",
-      tableName: "user",
+      modelName: "company",
+      tableName: "company",
+      // timestamps: true,
       freezeTableName: true,
+      // createdAt: "created_at",
+      // updatedAt: "updated_at",
     }
   );
-  return user;
+  return company;
 };

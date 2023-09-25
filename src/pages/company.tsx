@@ -11,11 +11,33 @@ import ReactTable from "./components/reactTable";
 import DebouncedInput from "./components/debouncedInput"
 import Link from "next/link";
 
-export default function Npwp({ userData, setuserData }: any) {
+export default function Company({ userData, setuserData }: any) {
     const [dataCreate, setdataCreate] = useState();
+    const [userNullCom, setuserNullCom] = useState();
     const [search, setsearch] = useState('');
-    const URL = "/api/npwp";
-    const Subject = "NPWP";
+    const URL = "/api/company";
+    const Subject = "Company";
+
+    useEffect(() => {
+        const handleApiFirst = async (url: any, data: any = null) => {
+            if (url === 'view') {
+                try {
+                    await axios({
+                        method: "GET",
+                        url: "/api/company?dataUser=1",
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    }).then((res: any) => {
+                        setuserNullCom(res.data.data)
+                    });
+                } catch (error: any) {
+                    toast.error(error.response.data.massage);
+                }
+            }
+        }
+        handleApiFirst('view');
+    }, [])
 
     const handleApi = async (url: any, data: any = null) => {
         if (url === 'create') {
@@ -59,8 +81,7 @@ export default function Npwp({ userData, setuserData }: any) {
             npwp: event.target.npwp.value,
             name: event.target.name.value,
             phone: event.target.phone.value,
-            address: address,
-            company_id: JSON.parse(localStorage.getItem('companyActive') as string)?.value
+            address: address
         };
 
         handleApi('create', data);
@@ -95,7 +116,15 @@ export default function Npwp({ userData, setuserData }: any) {
             full: true,
             type: 'address',
             required: true
-        }
+        },
+        {
+            type: 'selectMulti',
+            name: 'users[]',
+            label: 'Users',
+            full: true,
+            require: true,
+            select: userNullCom,
+        },
     ];
 
     const convertCamelCase = (text: any) => {
@@ -141,7 +170,7 @@ export default function Npwp({ userData, setuserData }: any) {
                         </div>
 
                         <div className="col hp-flex-none w-auto">
-                            <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNew"><i className="ri-add-line remix-icon"></i> Add NPWP</Button>
+                            <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNew"><i className="ri-add-line remix-icon"></i> Add {Subject}</Button>
                         </div>
                         <div className="modal fade -mt-2" id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" aria-hidden="true">
                             <div className="modal-dialog modal-xl modal-dialog-centered">
@@ -187,8 +216,20 @@ export default function Npwp({ userData, setuserData }: any) {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-
-                                                                    : null
+                                                                    : val.type === 'selectMulti' ?
+                                                                        <div className="mb-24">
+                                                                            <label className="form-label font-normal">
+                                                                                {convertCamelCase(val.label ?? val.name)}
+                                                                                <span className="text-danger">*</span>
+                                                                            </label>
+                                                                            <Select
+                                                                                multi={true}
+                                                                                name={val.name}
+                                                                                data={userNullCom}
+                                                                                required={val.required}
+                                                                            />
+                                                                        </div>
+                                                                        : null
                                                         }</div>
                                                 }) : null}
                                             </div>
@@ -210,10 +251,10 @@ export default function Npwp({ userData, setuserData }: any) {
                             <ReactTable
                                 search={search}
                                 action={{
-                                    edit: '/api/npwp/',
-                                    delete: '/api/npwp/'
+                                    edit: URL,
+                                    delete: URL
                                 }}
-                                urlFatch={'/api/npwp'}
+                                urlFatch={URL}
                                 modalData={modalData}
                                 Subject={Subject}
                                 reload={dataCreate}

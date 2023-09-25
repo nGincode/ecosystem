@@ -362,6 +362,17 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                         },
                         footer: (props: any) => props.column.id,
                     })
+                } else if (val === 'userCompany') {
+                    array.push({
+                        accessorKey: val,
+                        header: () => <div>Users</div>,
+                        cell: (info: any) => {
+                            return <div className="text-xs">{info.getValue().map((v: any, ii: number) => {
+                                return v.fullName + ', '
+                            })}</div>
+                        },
+                        footer: (props: any) => props.column.id,
+                    })
                 } else {
                     array.push({
                         accessorKey: val,
@@ -430,6 +441,9 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
     }, [table.getState().columnFilters[0]?.id])
 
     const handleApi = async (type: any, urlData: any = null, uuid: any = null, dataPost: any = null) => {
+        if (dataPost !== null) {
+            dataPost.company_id = JSON.parse(localStorage.getItem('companyActive') as string)?.value;
+        }
         if (type === 'edit') {
             try {
                 await axios({
@@ -466,11 +480,12 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
             try {
                 await axios({
                     method: "GET",
-                    url: urlFatch,
+                    url: urlFatch + "?company_id=" + JSON.parse(localStorage.getItem('companyActive') as string)?.value,
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 }).then((res: any) => {
+                    console.log(res.data.data)
                     setdata(res.data.data)
                     if (pageActive) table.setPageIndex(pageActive);
                     setTimeout(() => {
@@ -643,6 +658,9 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                 <div className="modal-body">
                                     <div className="row gx-8">
                                         {modalData ? modalData?.map((val: any, i: number) => {
+                                            let userCompany = dataEdit?.userCompany?.map((mp: any) => {
+                                                return { label: mp.fullName, value: mp.uuid }
+                                            });
 
                                             return <div className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
                                                 {
@@ -763,7 +781,22 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                                                                     })}
                                                                                 </div>)
                                                                             })}
-                                                                        </div> : null
+                                                                        </div> :
+                                                                            val.type === 'selectMulti' ?
+                                                                                <div className="mb-24">
+                                                                                    <label className="form-label font-normal">
+                                                                                        {convertCamelCase(val.label ?? val.name)}
+                                                                                        <span className="text-danger">*</span>
+                                                                                    </label>
+                                                                                    <Select
+                                                                                        multi={true}
+                                                                                        name={val.name}
+                                                                                        data={userCompany ? [...userCompany, ...val.select] : val.select}
+                                                                                        required={val.required}
+                                                                                        defaultValue={userCompany}
+                                                                                    />
+                                                                                </div>
+                                                                                : null
                                                 }</div>
                                         }) : null}
                                     </div>

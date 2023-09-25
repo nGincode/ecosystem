@@ -6,6 +6,7 @@ const verifToken = require("../middleware/jwt");
 const user = require("./user");
 const efaktur = require("./efaktur");
 const npwp = require("./npwp");
+const company = require("./company");
 const auth = require("./auth");
 const permission = require("./permission");
 
@@ -22,6 +23,7 @@ router.use("/user", verifToken, user);
 router.use("/efaktur", verifToken, efaktur);
 router.use("/permission", verifToken, permission);
 router.use("/npwp", verifToken, npwp);
+router.use("/company", verifToken, company);
 router.use("/", auth);
 
 module.exports = router;

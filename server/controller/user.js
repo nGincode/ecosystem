@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { hash, verify } = require("node-php-password");
-const { user, permissionUser, permission } = require("../models");
+const { user, permissionUser, permission, company } = require("../models");
 const { Op } = require("sequelize");
 const Crypto = require("crypto");
 const moment = require("moment/moment");
@@ -30,6 +30,10 @@ const getId = async (req, res) => {
         attributes: {
           exclude: ["id", "uuid", "createdAt", "updatedAt"],
         },
+      },
+      {
+        model: company,
+        as: "company",
       },
     ],
   });
@@ -82,6 +86,19 @@ const putId = async (req, res) => {
       "phone",
       "address",
       "status",
+    ],
+    include: [
+      {
+        model: permission,
+        as: "permission",
+        attributes: {
+          exclude: ["id", "uuid", "createdAt", "updatedAt"],
+        },
+      },
+      {
+        model: company,
+        as: "company",
+      },
     ],
   });
 
@@ -159,6 +176,10 @@ const get = async (req, res) => {
           exclude: ["id", "uuid", "createdAt", "updatedAt"],
         },
       },
+      {
+        model: company,
+        as: "company",
+      },
     ],
   });
 
@@ -177,7 +198,7 @@ const get = async (req, res) => {
         email: val.email,
         username: val.username,
         dateOfBirth: val.dateOfBirth
-          ? moment(val.dateOfBirth).format("DD/MM/YYYY")
+          ? moment(val.dateOfBirth).format("DD MMM YYYY")
           : "-",
         phone: val.phone,
         role: val?.permission?.name,
@@ -213,6 +234,10 @@ const put = async (req, res) => {
           exclude: ["id", "uuid", "createdAt", "updatedAt"],
         },
       },
+      {
+        model: company,
+        as: "company",
+      },
     ],
   });
 
@@ -241,6 +266,8 @@ const put = async (req, res) => {
           users_id: users_id,
           email: email,
           username: username,
+          permission: User.permission,
+          company: User.company,
         },
       },
       "fembinurilham"
@@ -304,6 +331,7 @@ const put = async (req, res) => {
       address: User.address,
       dateOfBirth: User.dateOfBirth,
       permission: User.permission,
+      company: User.company,
       img: "/upload/profile/" + users_uuid + "." + type,
     };
     await User.update({
@@ -375,6 +403,19 @@ const post = async (req, res) => {
 
   const User = await user.findOne({
     where: { [Op.or]: [{ username: username }, { email: email }] },
+    include: [
+      {
+        model: permission,
+        as: "permission",
+        attributes: {
+          exclude: ["id", "uuid", "createdAt", "updatedAt"],
+        },
+      },
+      {
+        model: company,
+        as: "company",
+      },
+    ],
   });
 
   const Permission = await permission.findOne({ where: { name: role } });

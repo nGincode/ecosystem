@@ -1,4 +1,4 @@
-const { User, npwp, efaktur, efakturItem } = require("../models");
+const { user, npwp, efaktur, efakturItem, company } = require("../models");
 const moment = require("moment/moment");
 const Crypto = require("crypto");
 const numeral = require("numeral");
@@ -57,10 +57,29 @@ const putId = async (req, res) => {
 
 const get = async (req, res) => {
   const { users_id, users_uuid, email, username, permission } = req.user;
+  const { company_id } = req.query;
+
+  if (!company_id) {
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
+  const Company = await company.findOne({
+    where: {
+      uuid: company_id,
+    },
+  });
+
+  if (!Company) {
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
 
   let EFAKTUR;
   if (permission.view === "all") {
     EFAKTUR = await efaktur.findAll({
+      where: { company_id: Company.id },
       include: [
         {
           model: efakturItem,
@@ -77,6 +96,7 @@ const get = async (req, res) => {
     EFAKTUR = await efaktur.findAll({
       where: {
         user_id: users_id,
+        company_id: Company.id,
       },
       include: [
         {
@@ -211,7 +231,25 @@ const post = async (req, res) => {
     typeIdentitas,
     keterangan_tambahan,
     excel,
+    company_id,
   } = req.body;
+
+  if (!company_id) {
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
+  const Company = await company.findOne({
+    where: {
+      uuid: company_id,
+    },
+  });
+
+  if (!Company) {
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
 
   if (excel) {
     let fk = [];
@@ -230,6 +268,7 @@ const post = async (req, res) => {
             noIdentitas = val[7];
           }
           const dataFaktur = {
+            company_id: Company.id,
             user_id: users_id,
             uuid: Crypto.randomUUID(),
             transaction: val[1],
@@ -254,6 +293,7 @@ const post = async (req, res) => {
           fk = dataEfaktur;
         } else if (val[0] === "OF") {
           const dataFakturIt = {
+            company_id: Company.id,
             uuid: Crypto.randomUUID(),
             efaktur_id: fk.id,
             user_id: users_id,
@@ -308,6 +348,7 @@ const post = async (req, res) => {
       jumlahPPNBM += Number(val.ppnbm);
 
       return {
+        company_id: Company.id,
         uuid: Crypto.randomUUID(),
         efaktur_id: null,
         user_id: users_id,
@@ -325,6 +366,7 @@ const post = async (req, res) => {
       };
     });
     const dataFaktur = {
+      company_id: Company.id,
       user_id: users_id,
       uuid: Crypto.randomUUID(),
       noIdentitas: noIdentitas,

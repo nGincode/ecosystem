@@ -17,6 +17,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      company_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       efaktur_id: {
         type: Sequelize.INTEGER,
         allowNull: false,

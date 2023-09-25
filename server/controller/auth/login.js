@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { verify } = require("node-php-password");
-const { user, permission } = require("../../models");
+const { user, permission, company } = require("../../models");
 
 module.exports = async (req, res) => {
   const { body } = req;
@@ -21,6 +21,10 @@ module.exports = async (req, res) => {
         attributes: {
           exclude: ["id", "uuid", "createdAt", "updatedAt"],
         },
+      },
+      {
+        model: company,
+        as: "company",
       },
     ],
   });
@@ -53,6 +57,7 @@ module.exports = async (req, res) => {
     email: User.email,
     username: User.username,
     permission: User.permission,
+    company: User.company,
   };
   const token = jwt.sign({ data }, "fembinurilham");
 

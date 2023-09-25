@@ -28,13 +28,13 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
       },
+      company_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-          model: "user",
-          key: "id",
-        },
       },
       efaktur_id: {
         type: DataTypes.INTEGER,

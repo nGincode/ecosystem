@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("npwp", {
+    await queryInterface.createTable("company", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -14,10 +14,6 @@ module.exports = {
         unique: true,
       },
       user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      company_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
@@ -54,6 +50,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("npwp");
+    await queryInterface.dropTable("company");
   },
 };

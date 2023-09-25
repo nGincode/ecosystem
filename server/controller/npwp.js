@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { hash, verify } = require("node-php-password");
-const { User, npwp } = require("../models");
+const { User, npwp, company } = require("../models");
 const { Op } = require("sequelize");
 const Crypto = require("crypto");
 
@@ -100,16 +100,36 @@ const putId = async (req, res) => {
 
 const get = async (req, res) => {
   const { users_id, users_uuid, email, username, permission } = req.user;
+  const { company_id } = req.query;
+
+  if (!company_id) {
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
+  const Company = await company.findOne({
+    where: {
+      uuid: company_id,
+    },
+  });
+
+  if (!Company) {
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
 
   let Npwp;
   if (permission.view === "all") {
     Npwp = await npwp.findAll({
+      where: { company_id: Company.id },
       attributes: ["uuid", "npwp", "name", "phone", "address"],
     });
   } else {
     Npwp = await npwp.findAll({
       where: {
         user_id: users_id,
+        company_id: Company.id,
       },
       attributes: ["uuid", "npwp", "name", "phone", "address"],
     });
@@ -175,11 +195,24 @@ const put = async (req, res) => {
     kabkot,
     kodepos,
     email,
+    company_id,
   } = req.body;
 
   const Npwp = await npwp.findOne({
     where: { uuid: uuid },
   });
+
+  const Company = await company.findOne({
+    where: {
+      uuid: company_id,
+    },
+  });
+
+  if (!Company) {
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
 
   if (!Npwp) {
     return res.json({
@@ -204,6 +237,7 @@ const put = async (req, res) => {
       kabkot: kabkot,
       kodepos: kodepos,
     },
+    company_id: Company.id,
   };
 
   await npwp.update(data);
@@ -239,7 +273,7 @@ const del = async (req, res) => {
 };
 
 const post = async (req, res) => {
-  const { name, address, phone, email } = req.body;
+  const { name, address, phone, email, company_id } = req.body;
   const { users_id, users_uuid } = req.user;
 
   if (req.body.npwp.length < 15 || req.body.npwp.length > 16) {
@@ -256,6 +290,18 @@ const post = async (req, res) => {
     });
   }
 
+  const Company = await company.findOne({
+    where: {
+      uuid: company_id,
+    },
+  });
+
+  if (!Company) {
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
+
   const data = {
     uuid: Crypto.randomUUID(),
     npwp: req.body.npwp,
@@ -264,6 +310,7 @@ const post = async (req, res) => {
     address: address,
     email: email,
     user_id: users_id,
+    company_id: Company.id,
   };
 
   await npwp.create(data);

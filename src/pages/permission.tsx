@@ -66,6 +66,11 @@ export default function Permission({ userData, setuserData }: any) {
                     checklist: ['view', 'edit', 'delete', 'create']
                 },
                 {
+                    label: 'Company',
+                    name: 'company[]',
+                    checklist: ['view', 'edit', 'delete', 'create']
+                },
+                {
                     label: 'NPWP',
                     name: 'npwp[]',
                     checklist: ['view', 'edit', 'delete', 'create']
