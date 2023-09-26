@@ -10,6 +10,7 @@ import Select from "./components/reactSelect";
 import ReactTable from "./components/reactTable";
 import DebouncedInput from "./components/debouncedInput"
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Npwp({ userData, setuserData }: any) {
     const [dataCreate, setdataCreate] = useState();
@@ -127,100 +128,114 @@ export default function Npwp({ userData, setuserData }: any) {
                     </div>
                 </div>
 
-                <div className="col-12 mt-10">
-                    <div className="row g-16 align-items-center justify-content-end">
-                        <div className="col-12 col-md-6 col-xl-4">
-                            <div className="input-group align-items-center">
-                                <DebouncedInput
-                                    value={search ?? ''}
-                                    onChange={value => setsearch(String(value))}
-                                    className="form-control ps-8"
-                                    placeholder="Search all columns..."
-                                />
+                {JSON.parse(localStorage.getItem('companyActive') as string)?.value && userData.length ? <>
+                    <div className="col-12 mt-10">
+                        <div className="row g-16 align-items-center justify-content-end">
+                            <div className="col-12 col-md-6 col-xl-4">
+                                <div className="input-group align-items-center">
+                                    <DebouncedInput
+                                        value={search ?? ''}
+                                        onChange={value => setsearch(String(value))}
+                                        className="form-control ps-8"
+                                        placeholder="Search all columns..."
+                                    />
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="col hp-flex-none w-auto">
-                            <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNew"><i className="ri-add-line remix-icon"></i> Add NPWP</Button>
-                        </div>
-                        <div className="modal fade -mt-2" id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" aria-hidden="true">
-                            <div className="modal-dialog modal-xl modal-dialog-centered">
-                                <div className="modal-content">
-                                    <div className="modal-header py-16 px-24">
-                                        <h5 className="modal-title font-bold" id="addNewLabel">Add {Subject}</h5>
-                                        <button type="button" className="btn-close hp-bg-none d-flex align-items-center justify-content-center" data-bs-dismiss="modal" aria-label="Close">
-                                            <i className="ri-close-line hp-text-color-dark-0 lh-1" style={{ fontSize: "24px" }}></i>
-                                        </button>
-                                    </div>
+                            <div className="col hp-flex-none w-auto">
+                                <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNew"><i className="ri-add-line remix-icon"></i> Add NPWP</Button>
+                            </div>
+                            <div className="modal fade -mt-2" id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" aria-hidden="true">
+                                <div className="modal-dialog modal-xl modal-dialog-centered">
+                                    <div className="modal-content">
+                                        <div className="modal-header py-16 px-24">
+                                            <h5 className="modal-title font-bold" id="addNewLabel">Add {Subject}</h5>
+                                            <button type="button" className="btn-close hp-bg-none d-flex align-items-center justify-content-center" data-bs-dismiss="modal" aria-label="Close">
+                                                <i className="ri-close-line hp-text-color-dark-0 lh-1" style={{ fontSize: "24px" }}></i>
+                                            </button>
+                                        </div>
 
-                                    <div className="divider m-0"></div>
+                                        <div className="divider m-0"></div>
 
-                                    <form onSubmit={submitAdd} id="formCreate">
-                                        <div className="modal-body">
-                                            <div className="row gx-8">
-                                                {modalData.length ? modalData?.map((val: any, i: number) => {
-                                                    return <div className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
-                                                        {
-                                                            val.type === 'text' || val.type === 'number' || val.type === 'email' || val.type === 'date' ?
-                                                                <div className="mb-24">
-                                                                    <Input type={val.type} required={val.required} variant="standard" className="border-b-1" label={val.label ?? val.name === 'npwp' ? "NPWP" : convertCamelCase(val.label ?? val.name)} name={val.name} id={val.id} />
-                                                                </div>
-                                                                : val.type === 'address' ?
-                                                                    <div className="w-full">
-                                                                        <div className="mb-3">
-                                                                            <div className="border-1 border-gray-500 p-2 rounded-lg shadow-sm">
-                                                                                <label className="-mt-5 absolute bg-white px-1 text-gray-500">Address</label>
-                                                                                <div className="xl:flex">
-                                                                                    <div className="mt-3 w-full"><Input required name='jalan' className="border-b-1" type="text" variant="standard" label="Jalan" /></div>
-                                                                                    <div className="mt-3 w-full"><Input required name='block' className="border-b-1" type="text" variant="standard" label="Block" /></div>
-                                                                                    <div className="mt-3 w-full"><Input required name='no' className="border-b-1" type="number" variant="standard" label="No" /></div>
-                                                                                    <div className="mt-3 w-full"><Input required name='rt' className="border-b-1" type="number" variant="standard" label="RT" /></div>
-                                                                                    <div className="mt-3 w-full"><Input required name='rw' className="border-b-1" type="number" variant="standard" label="RW" /></div>
-                                                                                </div>
-                                                                                <div className="xl:flex">
-                                                                                    <div className="mt-3 w-full"><Input required name='kec' className="border-b-1" type="text" variant="standard" label="Kecamatan" /></div>
-                                                                                    <div className="mt-3 w-full"><Input required name='kel' className="border-b-1" type="text" variant="standard" label="Keluarahan" /></div>
-                                                                                    <div className="mt-3 w-full"><Input required name='prov' className="border-b-1" type="text" variant="standard" label="Provinsi" /></div>
-                                                                                    <div className="mt-3 w-full"><Input required name='kabkot' className="border-b-1" type="text" variant="standard" label="Kabupaten/Kota" /></div>
-                                                                                    <div className="mt-3 w-full"><Input required name='kodepos' className="border-b-1" type="number" variant="standard" label="Kode POS" /></div>
+                                        <form onSubmit={submitAdd} id="formCreate">
+                                            <div className="modal-body">
+                                                <div className="row gx-8">
+                                                    {modalData.length ? modalData?.map((val: any, i: number) => {
+                                                        return <div className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
+                                                            {
+                                                                val.type === 'text' || val.type === 'number' || val.type === 'email' || val.type === 'date' ?
+                                                                    <div className="mb-24">
+                                                                        <Input type={val.type} required={val.required} variant="standard" className="border-b-1" label={val.label ?? val.name === 'npwp' ? "NPWP" : convertCamelCase(val.label ?? val.name)} name={val.name} id={val.id} />
+                                                                    </div>
+                                                                    : val.type === 'address' ?
+                                                                        <div className="w-full">
+                                                                            <div className="mb-3">
+                                                                                <div className="border-1 border-gray-500 p-2 rounded-lg shadow-sm">
+                                                                                    <label className="-mt-5 absolute bg-white px-1 text-gray-500">Address</label>
+                                                                                    <div className="xl:flex">
+                                                                                        <div className="mt-3 w-full"><Input required name='jalan' className="border-b-1" type="text" variant="standard" label="Jalan" /></div>
+                                                                                        <div className="mt-3 w-full"><Input required name='block' className="border-b-1" type="text" variant="standard" label="Block" /></div>
+                                                                                        <div className="mt-3 w-full"><Input required name='no' className="border-b-1" type="number" variant="standard" label="No" /></div>
+                                                                                        <div className="mt-3 w-full"><Input required name='rt' className="border-b-1" type="number" variant="standard" label="RT" /></div>
+                                                                                        <div className="mt-3 w-full"><Input required name='rw' className="border-b-1" type="number" variant="standard" label="RW" /></div>
+                                                                                    </div>
+                                                                                    <div className="xl:flex">
+                                                                                        <div className="mt-3 w-full"><Input required name='kec' className="border-b-1" type="text" variant="standard" label="Kecamatan" /></div>
+                                                                                        <div className="mt-3 w-full"><Input required name='kel' className="border-b-1" type="text" variant="standard" label="Keluarahan" /></div>
+                                                                                        <div className="mt-3 w-full"><Input required name='prov' className="border-b-1" type="text" variant="standard" label="Provinsi" /></div>
+                                                                                        <div className="mt-3 w-full"><Input required name='kabkot' className="border-b-1" type="text" variant="standard" label="Kabupaten/Kota" /></div>
+                                                                                        <div className="mt-3 w-full"><Input required name='kodepos' className="border-b-1" type="number" variant="standard" label="Kode POS" /></div>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
 
-                                                                    : null
-                                                        }</div>
-                                                }) : null}
+                                                                        : null
+                                                            }</div>
+                                                    }) : null}
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div className="modal-footer pt-0 px-24 pb-24">
-                                            <div className="divider"></div>
-                                            <Button type="submit" className="w-full" color="blue">Submit</Button>
-                                        </div>
-                                    </form>
+                                            <div className="modal-footer pt-0 px-24 pb-24">
+                                                <div className="divider"></div>
+                                                <Button type="submit" className="w-full" color="blue">Submit</Button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="col-12">
-                    <div className="card hp-contact-card mb-32 -mt-3 shadow-md">
-                        <div className="card-body px-0 ">
-                            <ReactTable
-                                search={search}
-                                action={{
-                                    edit: '/api/npwp/',
-                                    delete: '/api/npwp/'
-                                }}
-                                urlFatch={'/api/npwp'}
-                                modalData={modalData}
-                                Subject={Subject}
-                                reload={dataCreate}
-                            />
+                    <div className="col-12">
+                        <div className="card hp-contact-card mb-32 -mt-3 shadow-md">
+                            <div className="card-body px-0 ">
+                                <ReactTable
+                                    search={search}
+                                    action={{
+                                        edit: '/api/npwp/',
+                                        delete: '/api/npwp/'
+                                    }}
+                                    urlFatch={'/api/npwp'}
+                                    modalData={modalData}
+                                    Subject={Subject}
+                                    reload={dataCreate}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
+                </> : <>
+                    <div className="col-12">
+                        <div className="card hp-contact-card mb-15 -mt-3 shadow-md">
+                            <div className="card-body px-0 text-center flex justify-center flex-wrap">
+                                <div className="text-center w-full text-gray-500">
+                                    <div className="flex justify-center -mt-10 -mb-7 ">
+                                        <Image src="/img/noResult.gif" width={200} height={200} alt="noResult" /> </div>
+                                    <div className="text-lg">Requires company data</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </>}
             </div >
         </>
     )
