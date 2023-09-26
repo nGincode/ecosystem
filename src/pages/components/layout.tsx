@@ -183,8 +183,9 @@ export default function layout({ children = null, logOut, userData }: any) {
                         </div>
 
                         <ReactSelect
+                            label={JSON.parse(localStorage.getItem('companyActive') as string)?.value ? "" : "Company Select..."}
                             data={userData.company?.map((val: any) => { return { label: val.name, value: val.uuid } })}
-                            defaultValue={userData.company?.map((val: any) => { return { label: val.name, value: val.uuid } }).find((val: any) => val.value === JSON.parse(localStorage.getItem('companyActive') as string).value)}
+                            defaultValue={userData.company?.map((val: any) => { return { label: val.name, value: val.uuid } }).find((val: any) => val.value === JSON.parse(localStorage.getItem('companyActive') as string)?.value)}
                             setSearchValue={(vall: any) => {
                                 localStorage.setItem('companyActive', JSON.stringify(userData.company?.map((val: any) => { return { label: val.name, value: val.uuid } }).find((val: any) => val.value === vall)));
                                 location.reload();
@@ -654,12 +655,15 @@ export default function layout({ children = null, logOut, userData }: any) {
                                 </div>
 
                                 <ReactSelect
+                                    label={JSON.parse(localStorage.getItem('companyActive') as string)?.value ? "" : "Company Select..."}
                                     data={userData.company?.map((val: any) => { return { label: val.name, value: val.uuid } })}
-                                    defaultValue={userData.company?.map((val: any) => { return { label: val.name, value: val.uuid } }).find((val: any) => val.value === JSON.parse(localStorage.getItem('companyActive') as string).value)}
+                                    defaultValue={userData.company?.map((val: any) => { return { label: val.name, value: val.uuid } }).find((val: any) => val.value === JSON.parse(localStorage.getItem('companyActive') as string)?.value)}
                                     setSearchValue={(vall: any) => {
                                         localStorage.setItem('companyActive', JSON.stringify(userData.company?.map((val: any) => { return { label: val.name, value: val.uuid } }).find((val: any) => val.value === vall)));
                                         location.reload();
-                                    }} />
+                                    }}
+
+                                />
                                 <div className="row justify-content-between align-items-center hp-sidebar-footer mx-0 hp-bg-color-dark-90">
                                     <div className="divider border-black-40 hp-border-color-dark-70 hp-sidebar-hidden mt-0 px-0"></div>
 

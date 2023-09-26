@@ -252,6 +252,27 @@ const post = async (req, res) => {
   }
 
   if (excel) {
+    let err = "";
+    for (let i = 0; i < excel.length; i++) {
+      const val = excel[i];
+      if (i > 2) {
+        if (val[0] === "FK") {
+          const NoFakturCek = await efaktur.findOne({
+            where: { noFaktur: val[1] + "0" + val[3] },
+          });
+
+          if (NoFakturCek) {
+            err = err + "No Faktur Duplicate :" + NoFakturCek.noFaktur + "\n";
+          }
+        }
+      }
+    }
+    if (err.length) {
+      return res.status(400).json({
+        massage: err,
+      });
+    }
+
     let fk = [];
     for (let i = 0; i < excel.length; i++) {
       const val = excel[i];
@@ -267,6 +288,7 @@ const post = async (req, res) => {
             nameIdentitas = val[8];
             noIdentitas = val[7];
           }
+
           const dataFaktur = {
             company_id: Company.id,
             user_id: users_id,
@@ -315,7 +337,6 @@ const post = async (req, res) => {
     res.json({
       status: 200,
       massage: "Create successful",
-      data: fk,
     });
   } else {
     let valAddress;
@@ -323,7 +344,7 @@ const post = async (req, res) => {
     if (typeIdentitas === "NPWP") {
       const Npwp = await npwp.findOne({
         where: { npwp: noIdentitas },
-        attributes: ["uuid", "fullName", "address"],
+        attributes: ["uuid", "name", "address"],
       });
       if (!Npwp) {
         return res.json({
@@ -332,7 +353,26 @@ const post = async (req, res) => {
         });
       }
 
-      valAddress = Npwp.address;
+      valAddress =
+        Npwp.address.jalan +
+        " " +
+        Npwp.address.block +
+        " " +
+        Npwp.address.no +
+        " " +
+        Npwp.address.rt +
+        " " +
+        Npwp.address.rw +
+        " " +
+        Npwp.address.kel +
+        " " +
+        Npwp.address.kec +
+        " " +
+        Npwp.address.kabkot +
+        " " +
+        Npwp.address.prov +
+        " " +
+        Npwp.address.kodepos;
       valNameIdentitas = Npwp.name;
     } else {
       valAddress = addressIdentitas;
@@ -357,12 +397,12 @@ const post = async (req, res) => {
         hargaSatuan: val.harga,
         jumlahBarang: val.qty,
         hargaTotal: Number(val.qty) * Number(val.harga),
-        diskon: val.diskon !== "" || !val.diskon ? 0 : val.diskon,
-        DPP: val.dpp !== "" || !val.diskon ? 0 : val.dpp,
-        PPN: val.ppn !== "" || !val.ppn ? 0 : val.ppn,
+        diskon: val.diskon === "" || !val.diskon ? 0 : val.diskon,
+        DPP: val.dpp === "" || !val.diskon ? 0 : val.dpp,
+        PPN: val.ppn === "" || !val.ppn ? 0 : val.ppn,
         tarifPPN:
-          val.tarif_ppnbm !== "" || !val.tarif_ppnbm ? 0 : val.tarif_ppnbm,
-        PPNBM: val.ppnbm !== "" || !val.ppnbm ? 0 : val.ppnbm,
+          val.tarif_ppnbm === "" || !val.tarif_ppnbm ? 0 : val.tarif_ppnbm,
+        PPNBM: val.ppnbm === "" || !val.ppnbm ? 0 : val.ppnbm,
       };
     });
     const dataFaktur = {

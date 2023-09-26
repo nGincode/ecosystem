@@ -24,9 +24,15 @@ export default function ReactSelect({
     datapost,
     setSearchValue,
     required,
-    label }: any) {
+    label,
+    mergeDataValue
+}: any) {
     if (defaultValue && multi) {
-        var dataSelect: any = [...defaultValue].concat(data);
+        if (mergeDataValue) {
+            var dataSelect: any = [...defaultValue].concat(data);
+        } else {
+            var dataSelect: any = data;
+        }
     } else {
         var dataSelect: any = data;
     }

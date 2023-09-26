@@ -18,6 +18,7 @@ import {
 import { read, utils, writeFile } from 'xlsx';
 import * as PDFJS from 'pdfjs-dist';
 PDFJS.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS.version}/pdf.worker.js`;
+import Swal from "sweetalert2";
 
 // import * as GC from '@grapecity/spread-sheets';
 // import ExcelIO from "@grapecity/spread-excelio";
@@ -95,7 +96,7 @@ export default function Efaktur({ userData, setuserData }: any) {
     const [npwp, setnpwp] = useState([]);
     const [tabIdentitas, settabIdentitas] = useState('');
     const [itemInputEfak, setitemInputEfak] = useState<any>([{ delete: false }]);
-    const URLAPI = "/api/efaktur";
+    const URLAPI = "/api/efaktur/";
     const Subject = "E-Faktur";
 
 
@@ -112,17 +113,18 @@ export default function Efaktur({ userData, setuserData }: any) {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 }).then((res: any) => {
-                    setdataCreate(res.data.data);
+                    setdataCreate(res.data.status);
                     toast.success(res.data.massage);
                     ($('.btn-close') as any).trigger("click");
                     (document.getElementById('formCreate') as HTMLFormElement).reset();
+
                 });
             } catch (error: any) {
                 toast.error(error.response.data.massage);
             }
         } else if (url === 'view_npwp') {
             let companyActive = JSON.parse(localStorage.getItem('companyActive') as string)?.value;
-            if (userData.length && companyActive) {
+            if (userData.company.length && companyActive) {
                 try {
                     await axios({
                         method: "GET",
@@ -345,7 +347,7 @@ export default function Efaktur({ userData, setuserData }: any) {
 
         var pom = document.createElement('a');
         pom.href = url;
-        pom.setAttribute('download', 'e-faktur by Ecosystem.csv');
+        pom.setAttribute('download', (JSON.parse(localStorage.getItem('companyActive') as string)?.label) + '_EcosystemApp.csv');
         pom.click();
     }
 
@@ -613,7 +615,7 @@ export default function Efaktur({ userData, setuserData }: any) {
 
                     })
 
-                    let arrayFinal = [...subject, ...data]
+                    let arrayFinal = [...subject, ...data];
                     if (err.length) {
                         toast.error(err.filter((value: any, index: any, array: any) => array.indexOf(value) === index).map((val: any) => {
                             return val + '\n'
@@ -625,7 +627,18 @@ export default function Efaktur({ userData, setuserData }: any) {
                         if (convert) {
                             ConvertToCSV(arrayFinal);
                         } else {
-                            handleApi('create', { excel: arrayFinal });
+                            Swal.fire({
+                                icon: "info",
+                                title: "Import data !!!",
+                                text: `Are you sure want to import data to ${JSON.parse(localStorage.getItem('companyActive') as string)?.label ?? ""} ?`,
+                                showCancelButton: true,
+                                cancelButtonColor: "#686868",
+                                confirmButtonText: "Import",
+                            }).then((result: any) => {
+                                if (result.isConfirmed) {
+                                    handleApi('create', { excel: arrayFinal });
+                                }
+                            });
                         }
                     }
                 }
@@ -804,7 +817,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                     </div>
                 </div>
 
-                {JSON.parse(localStorage.getItem('companyActive') as string)?.value && userData.length ? <>
+                {JSON.parse(localStorage.getItem('companyActive') as string)?.value && userData.company.length ? <>
                     <div className="col-12 mt-10">
                         <div className="row g-16 align-items-center justify-content-end">
                             <div className="col-12 col-md-6 col-xl-4">
@@ -1484,7 +1497,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                                 <div className="text-center w-full text-gray-500">
                                     <div className="flex justify-center -mt-10 -mb-7 ">
                                         <Image src="/img/noResult.gif" width={200} height={200} alt="noResult" /> </div>
-                                    <div className="text-lg">Requires company data</div>
+                                    <div className="text-lg">{!userData.company.length ? "Requires company data" : !JSON.parse(localStorage.getItem('companyActive') as string)?.value ? "Please select company" : null}</div>
                                 </div>
                             </div>
                         </div>

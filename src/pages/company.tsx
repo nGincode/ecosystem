@@ -15,7 +15,7 @@ export default function Company({ userData, setuserData }: any) {
     const [dataCreate, setdataCreate] = useState();
     const [userNullCom, setuserNullCom] = useState();
     const [search, setsearch] = useState('');
-    const URL = "/api/company";
+    const URL = "/api/company/";
     const Subject = "Company";
 
     useEffect(() => {
@@ -119,7 +119,7 @@ export default function Company({ userData, setuserData }: any) {
         },
         {
             type: 'selectMulti',
-            name: 'users[]',
+            name: 'users',
             label: 'Users',
             full: true,
             require: true,

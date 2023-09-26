@@ -1,9 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Component, useEffect, useState, useReducer, useMemo } from "react"
+import React, { Component, useEffect, useState, useReducer, useMemo } from "react";
 import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 import moment from "moment";
 import { Input, Textarea, Button, Checkbox, IconButton, Badge } from "@material-tailwind/react";
 import numeral from "numeral";
@@ -368,7 +368,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                         header: () => <div>Users</div>,
                         cell: (info: any) => {
                             return <div className="text-xs">{info.getValue().map((v: any, ii: number) => {
-                                return v.fullName + ', '
+                                return v.username + ', '
                             })}</div>
                         },
                         footer: (props: any) => props.column.id,
@@ -441,6 +441,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
     }, [table.getState().columnFilters[0]?.id])
 
     const handleApi = async (type: any, urlData: any = null, uuid: any = null, dataPost: any = null) => {
+        let companyActive = JSON.parse(localStorage.getItem('companyActive') as string)?.value;
         if (dataPost !== null) {
             dataPost.company_id = JSON.parse(localStorage.getItem('companyActive') as string)?.value;
         }
@@ -470,6 +471,12 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 }).then((res: any) => {
+                    if (urlData === '/api/company/') {
+                        if (res.data.uuid === JSON.parse(localStorage.getItem('companyActive') as string)?.value) {
+                            localStorage.removeItem('companyActive')
+                        }
+                    }
+
                     toast.success(res.data.massage);
                     handleApi('view')
                 });
@@ -480,12 +487,11 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
             try {
                 await axios({
                     method: "GET",
-                    url: urlFatch + "?company_id=" + JSON.parse(localStorage.getItem('companyActive') as string)?.value,
+                    url: urlFatch + (companyActive ? "?company_id=" + JSON.parse(localStorage.getItem('companyActive') as string)?.value : ""),
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 }).then((res: any) => {
-                    console.log(res.data.data)
                     setdata(res.data.data)
                     if (pageActive) table.setPageIndex(pageActive);
                     setTimeout(() => {
@@ -659,7 +665,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                     <div className="row gx-8">
                                         {modalData ? modalData?.map((val: any, i: number) => {
                                             let userCompany = dataEdit?.userCompany?.map((mp: any) => {
-                                                return { label: mp.fullName, value: mp.uuid }
+                                                return { label: mp.username, value: mp.uuid }
                                             });
 
                                             return <div className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
@@ -790,8 +796,9 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                                                                     </label>
                                                                                     <Select
                                                                                         multi={true}
+                                                                                        mergeDataValue={true}
                                                                                         name={val.name}
-                                                                                        data={userCompany ? [...userCompany, ...val.select] : val.select}
+                                                                                        data={val.select}
                                                                                         required={val.required}
                                                                                         defaultValue={userCompany}
                                                                                     />

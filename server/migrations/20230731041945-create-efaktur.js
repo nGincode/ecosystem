@@ -40,6 +40,7 @@ module.exports = {
       noFaktur: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
       },
       address: {
         type: Sequelize.STRING,

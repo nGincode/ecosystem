@@ -16,7 +16,7 @@ const getId = async (req, res) => {
 
   if (!Company) {
     return res.json({
-      message: "Company not found",
+      massage: "Company not found",
     });
   }
 
@@ -45,7 +45,7 @@ const putId = async (req, res) => {
     kodepos,
     email,
   } = req.body;
-  const users = req.body?.["users[]"];
+  const users = req.body?.["users"];
 
   if (req.body.npwp.length < 15 || req.body.npwp.length > 16) {
     return res.status(400).json({
@@ -69,8 +69,14 @@ const putId = async (req, res) => {
   }
 
   if (!Company) {
-    return res.json({
-      message: "Company not found",
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
+
+  if (!users.length) {
+    return res.status(400).json({
+      massage: "Users not found",
     });
   }
 
@@ -102,13 +108,33 @@ const putId = async (req, res) => {
   });
 
   let createCompanyUser = [];
-  for (let index = 0; index < users.length; index++) {
-    const usersUUID = users[index];
-    const dtUser = await user.findOne({ where: { uuid: usersUUID } });
-    createCompanyUser.push({
-      company_id: Company.id,
-      user_id: dtUser.id,
-    });
+  if (!Array.isArray(users)) {
+    const dtUser = await user.findOne({ where: { uuid: users } });
+    if (dtUser) {
+      createCompanyUser.push({
+        company_id: Company.id,
+        user_id: dtUser.id,
+      });
+    } else {
+      return res.status(400).json({
+        massage: "Users not valid",
+      });
+    }
+  } else {
+    for (let index = 0; index < users.length; index++) {
+      const usersUUID = users[index];
+      const dtUser = await user.findOne({ where: { uuid: usersUUID } });
+      if (dtUser) {
+        createCompanyUser.push({
+          company_id: Company.id,
+          user_id: dtUser.id,
+        });
+      } else {
+        return res.status(400).json({
+          massage: "Users not valid",
+        });
+      }
+    }
   }
   await companyUser.bulkCreate(createCompanyUser);
 
@@ -156,7 +182,7 @@ const get = async (req, res) => {
       data: User.map((val) => {
         return {
           value: val.uuid,
-          label: val.fullName,
+          label: val.username,
         };
       }),
     });
@@ -189,7 +215,7 @@ const get = async (req, res) => {
 
     if (!Company) {
       return res.json({
-        message: "Company not found",
+        massage: "Company not found",
       });
     }
 
@@ -258,7 +284,7 @@ const put = async (req, res) => {
 
   if (!Company) {
     return res.json({
-      message: "Company not found",
+      massage: "Company not found",
     });
   }
 
@@ -315,12 +341,17 @@ const del = async (req, res) => {
   });
 
   if (!Company) {
-    return res.json({
-      message: "Company not found",
+    return res.status(400).json({
+      massage: "Company not found",
     });
   }
 
   await Company.destroy();
+  await companyUser.destroy({
+    where: {
+      company_id: Company.id,
+    },
+  });
 
   res.json({
     massage: "Delete successful",

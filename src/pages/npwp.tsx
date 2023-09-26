@@ -1,21 +1,20 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import React, { Component, useEffect, useState } from "react"
-import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
+import React, { Component, useEffect, useState } from "react";
 import toast, { Toaster } from 'react-hot-toast';
 import { Input, Textarea, Button } from "@material-tailwind/react";
 import axios from "axios";
+import Link from "next/link";
+import Image from "next/image";
 
 import Select from "./components/reactSelect";
 import ReactTable from "./components/reactTable";
 import DebouncedInput from "./components/debouncedInput"
-import Link from "next/link";
-import Image from "next/image";
 
 export default function Npwp({ userData, setuserData }: any) {
     const [dataCreate, setdataCreate] = useState();
     const [search, setsearch] = useState('');
-    const URL = "/api/npwp";
+    const URL = "/api/npwp/";
     const Subject = "NPWP";
 
     const handleApi = async (url: any, data: any = null) => {
@@ -128,7 +127,7 @@ export default function Npwp({ userData, setuserData }: any) {
                     </div>
                 </div>
 
-                {JSON.parse(localStorage.getItem('companyActive') as string)?.value && userData.length ? <>
+                {JSON.parse(localStorage.getItem('companyActive') as string)?.value && userData.company.length ? <>
                     <div className="col-12 mt-10">
                         <div className="row g-16 align-items-center justify-content-end">
                             <div className="col-12 col-md-6 col-xl-4">
@@ -230,7 +229,7 @@ export default function Npwp({ userData, setuserData }: any) {
                                 <div className="text-center w-full text-gray-500">
                                     <div className="flex justify-center -mt-10 -mb-7 ">
                                         <Image src="/img/noResult.gif" width={200} height={200} alt="noResult" /> </div>
-                                    <div className="text-lg">Requires company data</div>
+                                    <div className="text-lg">{!userData.company.length ? "Requires company data" : !JSON.parse(localStorage.getItem('companyActive') as string)?.value ? "Please select company" : null}</div>
                                 </div>
                             </div>
                         </div>
