@@ -452,7 +452,8 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                     url: urlData + uuid,
                     data: dataPost,
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        "Content-Type": "application/json"
                     }
                 }).then((res: any) => {
                     toast.success(res.data.massage);
