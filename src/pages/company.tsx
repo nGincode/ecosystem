@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable @next/next/no-img-element */
 import React, { Component, useEffect, useState } from "react"
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import toast, { Toaster } from 'react-hot-toast';
@@ -12,10 +10,11 @@ import DebouncedInput from "./components/debouncedInput"
 import Link from "next/link";
 
 export default function Company({ userData, setuserData }: any) {
+    const [pagePermission, setpagePermission] = useState([]);
     const [dataCreate, setdataCreate] = useState();
     const [userNullCom, setuserNullCom] = useState();
     const [search, setsearch] = useState('');
-    const URL = "/api/company/";
+    const URLAPI = "/api/company/";
     const Subject = "Company";
 
     useEffect(() => {
@@ -37,14 +36,21 @@ export default function Company({ userData, setuserData }: any) {
             }
         }
         handleApiFirst('view');
-    }, [])
+        setpagePermission(userData?.permission?.data?.map((val: any) => {
+            return val.data.find((vall: any) => {
+                if (vall.label == Subject) {
+                    return vall;
+                }
+            })
+        })?.filter((val: any) => val !== undefined)?.[0]?.checklist ?? [])
+    }, [userData])
 
     const handleApi = async (url: any, data: any = null) => {
         if (url === 'create') {
             try {
                 await axios({
                     method: "POST",
-                    url: URL,
+                    url: URLAPI,
                     data: data,
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -169,9 +175,12 @@ export default function Company({ userData, setuserData }: any) {
                             </div>
                         </div>
 
-                        <div className="col hp-flex-none w-auto">
-                            <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNew"><i className="ri-add-line remix-icon"></i> Add {Subject}</Button>
-                        </div>
+
+                        {pagePermission.find((val: any) => val == "create") ?
+                            <div className="col hp-flex-none w-auto">
+                                <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNew"><i className="ri-add-line remix-icon"></i> Add {Subject}</Button>
+                            </div>
+                            : <></>}
                         <div className="modal fade -mt-2" id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" aria-hidden="true">
                             <div className="modal-dialog modal-xl modal-dialog-centered">
                                 <div className="modal-content">
@@ -251,10 +260,10 @@ export default function Company({ userData, setuserData }: any) {
                             <ReactTable
                                 search={search}
                                 action={{
-                                    edit: URL,
-                                    delete: URL
+                                    delete: pagePermission.find((val: any) => val == "delete") ? URLAPI : null,
+                                    edit: pagePermission.find((val: any) => val == "edit") ? URLAPI : null
                                 }}
-                                urlFatch={URL}
+                                urlFatch={URLAPI}
                                 modalData={modalData}
                                 Subject={Subject}
                                 reload={dataCreate}

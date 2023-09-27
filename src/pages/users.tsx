@@ -12,9 +12,14 @@ import { Input, Textarea, Button } from "@material-tailwind/react";
 import Link from "next/link";
 
 export default function Users({ userData, setuserData }: any) {
+    const [pagePermission, setpagePermission] = useState([]);
     const [dataCreate, setdataCreate] = useState();
     const [search, setsearch] = useState('');
     const [dataPermission, setdataPermission] = useState([]);
+    const URLAPI = "/api/permission/";
+    const Subject = "Users";
+
+
 
 
     const handleApi = async (url: any, data: any = null) => {
@@ -68,7 +73,7 @@ export default function Users({ userData, setuserData }: any) {
     };
 
     useEffect(() => {
-        const handleApi = async (url: any, data: any = null) => {
+        const handleApiFirst = async (url: any, data: any = null) => {
             if (url === 'view_permission') {
                 try {
                     await axios({
@@ -85,8 +90,15 @@ export default function Users({ userData, setuserData }: any) {
                 }
             }
         }
-        handleApi('view_permission')
-    }, []);
+        handleApiFirst('view_permission');
+        setpagePermission(userData?.permission?.data?.map((val: any) => {
+            return val.data.find((vall: any) => {
+                if (vall.label == Subject) {
+                    return vall;
+                }
+            })
+        })?.filter((val: any) => val !== undefined)?.[0]?.checklist ?? [])
+    }, [userData]);
 
 
 
@@ -122,9 +134,11 @@ export default function Users({ userData, setuserData }: any) {
                             </div>
                         </div>
 
-                        <div className="col hp-flex-none w-auto">
-                            <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNewUser"><i className="ri-add-line remix-icon"></i> Add Users</Button>
-                        </div>
+                        {pagePermission.find((val: any) => val == "create") ?
+                            <div className="col hp-flex-none w-auto">
+                                <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNewUser"><i className="ri-add-line remix-icon"></i> Add Users</Button>
+                            </div>
+                            : null}
                         <div className="modal fade -mt-2" id="addNewUser" tabIndex={-1} aria-labelledby="addNewUserLabel" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
                             <div className="modal-dialog modal-dialog-centered">
                                 <div className="modal-content">
@@ -214,10 +228,10 @@ export default function Users({ userData, setuserData }: any) {
                             <ReactTable
                                 search={search}
                                 action={{
-                                    edit: '/api/user/',
-                                    delete: '/api/user/'
+                                    delete: pagePermission.find((val: any) => val == "delete") ? URLAPI : null,
+                                    edit: pagePermission.find((val: any) => val == "edit") ? URLAPI : null
                                 }}
-                                urlFatch={'/api/user'}
+                                urlFatch={URLAPI}
                                 reload={dataCreate}
                                 modalData={[
                                     {

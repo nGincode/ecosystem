@@ -1,6 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable @next/next/no-img-element */
 import React, { Component, useEffect, useState, useMemo } from "react"
 import Link from "next/link";
 
@@ -33,6 +30,7 @@ import Image from "next/image";
 
 
 export default function Efaktur({ userData, setuserData }: any) {
+    const [pagePermission, setpagePermission] = useState([]);
     const [dataCreate, setdataCreate] = useState();
     const [search, setsearch] = useState('');
     const [modalData, setmodalData] = useState([
@@ -98,8 +96,6 @@ export default function Efaktur({ userData, setuserData }: any) {
     const [itemInputEfak, setitemInputEfak] = useState<any>([{ delete: false }]);
     const URLAPI = "/api/efaktur/";
     const Subject = "E-Faktur";
-
-
 
     const handleApi = async (url: any, data: any = null) => {
         if (url === 'create') {
@@ -353,8 +349,36 @@ export default function Efaktur({ userData, setuserData }: any) {
     }
 
     useEffect(() => {
-        handleApi('view_npwp')
-    }, [])
+        const handleApiFirst = async (url: any, data: any = null) => {
+            if (url === 'view_npwp') {
+                let companyActive = JSON.parse(localStorage.getItem('companyActive') as string)?.value;
+                if (userData.company.length && companyActive) {
+                    try {
+                        await axios({
+                            method: "GET",
+                            url: '/api/npwp?company_id=' + companyActive,
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem("token")}`
+                            }
+                        }).then((res: any) => {
+                            let arr = res.data.data.map((val: any) => { return { label: val.npwp + ' (' + val.name + ')', value: val.npwp, data: val } })
+                            setnpwp(arr)
+                        });
+                    } catch (error: any) {
+                        toast.error(error.response.data.massage);
+                    }
+                }
+            }
+        }
+        handleApiFirst('view_npwp');
+        setpagePermission(userData?.permission?.data?.map((val: any) => {
+            return val.data.find((vall: any) => {
+                if (vall.label == Subject) {
+                    return vall;
+                }
+            })
+        })?.filter((val: any) => val !== undefined)?.[0]?.checklist ?? [])
+    }, [userData])
 
     const RPtoNumber = (val: string) => {
         if (val) {
@@ -831,9 +855,10 @@ export default function Efaktur({ userData, setuserData }: any) {
                                 </div>
                             </div>
 
-                            <div className="col hp-flex-none w-auto">
-                                <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNew"><i className="ri-add-line remix-icon"></i> Add {Subject}</Button>
-                            </div>
+                            {pagePermission.find((val: any) => val == "create") ?
+                                <div className="col hp-flex-none w-auto">
+                                    <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNew"><i className="ri-add-line remix-icon"></i> Add {Subject}</Button>
+                                </div> : null}
                             <div className="modal fade -mt-1" id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" role="dialog" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
                                 <div className="modal-dialog modal-xl modal-dialog-centered">
                                     <div className="modal-content">
@@ -1119,9 +1144,10 @@ export default function Efaktur({ userData, setuserData }: any) {
                                 <ReactTable
                                     search={search}
                                     action={{
-                                        delete: '/api/efaktur/'
+                                        delete: pagePermission.find((val: any) => val == "delete") ? URLAPI : null,
+                                        edit: pagePermission.find((val: any) => val == "edit") ? null : null
                                     }}
-                                    urlFatch={'/api/efaktur'}
+                                    urlFatch={URLAPI}
                                     modalData={modalData}
                                     Subject={Subject}
                                     reload={dataCreate}
