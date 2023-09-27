@@ -258,7 +258,9 @@ const post = async (req, res) => {
       if (i > 2) {
         if (val[0] === "FK") {
           const NoFakturCek = await efaktur.findOne({
-            where: { noFaktur: val[1] + "0" + val[3] },
+            where: {
+              noFaktur: val[1] + "0" + val[3],
+            },
           });
 
           if (NoFakturCek) {

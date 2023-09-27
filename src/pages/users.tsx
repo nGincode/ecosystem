@@ -16,7 +16,7 @@ export default function Users({ userData, setuserData }: any) {
     const [dataCreate, setdataCreate] = useState();
     const [search, setsearch] = useState('');
     const [dataPermission, setdataPermission] = useState([]);
-    const URLAPI = "/api/permission/";
+    const URLAPI = "/api/user/";
     const Subject = "Users";
 
 
