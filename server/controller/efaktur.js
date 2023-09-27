@@ -476,6 +476,7 @@ const proof = async (req, res) => {
 };
 
 const exprt = async (req, res) => {
+  const { company_id } = req.body;
   let data = [];
   const subject = [
     [
@@ -531,9 +532,27 @@ const exprt = async (req, res) => {
     ],
   ];
 
+  if (!company_id) {
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
+  const Company = await company.findOne({
+    where: {
+      uuid: company_id,
+    },
+  });
+
+  if (!Company) {
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
+
   const Efaktur = await efaktur.findAll({
     where: {
       proof: null,
+      company_id: Company.id,
     },
     include: [
       {
@@ -599,7 +618,11 @@ const exprt = async (req, res) => {
       ]);
     });
   });
-  res.json([...subject, ...data]);
+  if (data.length) {
+    res.json([...subject, ...data]);
+  } else {
+    res.status(400).json({ massage: "Data not result" });
+  }
 };
 
 module.exports = {

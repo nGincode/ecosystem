@@ -171,6 +171,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                 await axios({
                     method: "POST",
                     url: '/api/efaktur/export',
+                    data: { company_id: JSON.parse(localStorage.getItem('companyActive') as string)?.value },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
