@@ -449,7 +449,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
             try {
                 await axios({
                     method: "PUT",
-                    url: urlData + '/' + uuid,
+                    url: urlData + uuid,
                     data: dataPost,
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
