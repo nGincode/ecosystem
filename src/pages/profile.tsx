@@ -21,7 +21,7 @@ export default function Profile({ userData, setuserData }: any) {
     }
 
     const handleApi = async (url: any, data: any = null) => {
-        if (url === 'create_user') {
+        if (url === 'change_user') {
             try {
                 await axios({
                     method: "PUT",
@@ -89,7 +89,7 @@ export default function Profile({ userData, setuserData }: any) {
             address: event.target.address.value,
             dateOfBirth: event.target.dateOfBirth.value,
         };
-        handleApi('create_user', data);
+        handleApi('change_user', data);
 
     };
 

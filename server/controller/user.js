@@ -253,6 +253,8 @@ const put = async (req, res) => {
       phone: phone,
       address: address,
       dateOfBirth: dateOfBirth,
+      permission: User.permission,
+      img: User.img,
     };
 
     await User.update(data);

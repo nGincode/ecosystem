@@ -84,7 +84,7 @@ const putId = async (req, res) => {
     npwp: req.body.npwp,
     name: name,
     phone: phone,
-    email: email ?? null,
+    email: email == "" || !email ? null : email,
     address: {
       jalan: jalan,
       block: block,
