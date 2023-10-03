@@ -2,6 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Component, useEffect, useState, useReducer, useMemo } from "react";
 import axios from "axios";
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 import toast, { Toaster } from 'react-hot-toast';
 import Swal from 'sweetalert2';
 import moment from "moment";

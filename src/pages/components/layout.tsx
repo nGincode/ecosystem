@@ -229,7 +229,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                     </div>
                 </div>
 
-                <div className="hp-main-layout block">
+                <div className="hp-main-layout">
                     <header>
                         <div className="row w-100 m-0">
                             <div className="col px-0">

@@ -33,7 +33,7 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING,
-        unique: true,
+        allowNull: false,
       },
       address: {
         type: Sequelize.JSON,
