@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import HeaderSearch from "./headerSearch";
 import ReactSelect from "./reactSelect";
+import Image from "next/image";
 
 export default function layout({ children = null, logOut, userData }: any) {
     const router = useRouter();
@@ -539,7 +540,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                             <div className="w-auto px-0">
                                 <div className="hp-header-logo d-flex align-items-center">
                                     <div className="position-relative font-bold text-center">
-                                        <img className="hp-logo" src="/img/logo.png" alt="logo" />
+                                        <Image className="hp-logo" src="/img/logo.png" alt="logo" />
 
                                     </div>
                                 </div>
@@ -569,12 +570,12 @@ export default function layout({ children = null, logOut, userData }: any) {
                                         <div className="w-auto px-0">
                                             <div className="hp-header-logo d-flex align-items-center">
                                                 <div className="position-relative font-bold text-center">
-                                                    <img className="hp-logo hp-sidebar-visible hp-dark-none" src="/img/logo.png" alt="logo" />
-                                                    <img className="hp-logo hp-sidebar-visible hp-dark-block" src="/img/logo.png" alt="logo" />
-                                                    <img className="hp-logo hp-sidebar-hidden hp-dir-none hp-dark-none  h-14" src="/img/logo.png" alt="logo" />
-                                                    <img className="hp-logo hp-sidebar-hidden hp-dir-none hp-dark-block  h-14" src="/img/logo.png" alt="logo" />
-                                                    <img className="hp-logo hp-sidebar-hidden hp-dir-block hp-dark-none  h-14" src="/img/logo.png" alt="logo" />
-                                                    <img className="hp-logo hp-sidebar-hidden hp-dir-block hp-dark-block h-14" src="/img/logo.png" alt="logo" />
+                                                    <Image className="hp-logo hp-sidebar-visible hp-dark-none" src="/img/logo.png" alt="logo" />
+                                                    <Image className="hp-logo hp-sidebar-visible hp-dark-block" src="/img/logo.png" alt="logo" />
+                                                    <Image className="hp-logo hp-sidebar-hidden hp-dir-none hp-dark-none  h-14" src="/img/logo.png" alt="logo" />
+                                                    <Image className="hp-logo hp-sidebar-hidden hp-dir-none hp-dark-block  h-14" src="/img/logo.png" alt="logo" />
+                                                    <Image className="hp-logo hp-sidebar-hidden hp-dir-block hp-dark-none  h-14" src="/img/logo.png" alt="logo" />
+                                                    <Image className="hp-logo hp-sidebar-hidden hp-dir-block hp-dark-block h-14" src="/img/logo.png" alt="logo" />
                                                 </div>
                                             </div>
                                         </div>
