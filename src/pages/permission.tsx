@@ -146,7 +146,6 @@ export default function Permission({ userData, setuserData }: any) {
             }
         })
 
-
         handleApi('create', { name: event.target.name.value, view: event.target.view_val.value, perm: data });
     };
 

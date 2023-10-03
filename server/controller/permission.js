@@ -44,7 +44,8 @@ const putId = async (req, res) => {
     let data = [];
     let check = false;
     val.data.map((vall) => {
-      let find = req.body[vall.name];
+      let find = req.body[vall.name.replace("[]", "")];
+      console.log(find);
       if (find?.[0] === "true") {
         check = true;
       }
