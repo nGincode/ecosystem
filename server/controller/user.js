@@ -362,7 +362,6 @@ const del = async (req, res) => {
       "username",
       "dateOfBirth",
       "phone",
-      "role",
       "address",
       "status",
     ],

@@ -159,7 +159,6 @@ const get = async (req, res) => {
         "username",
         "dateOfBirth",
         "phone",
-        "role",
         "address",
         "status",
       ],
