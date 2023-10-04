@@ -94,7 +94,6 @@ export default function App({ Component, pageProps }: AppProps) {
 
     const router = useRouter();
     const ComponetPermission = router.asPath == '/profile' ? true : userData?.permission?.data?.find((find: any) => find.data.filter((fn: any) => fn.name.replaceAll('[]', '').toLocaleLowerCase() == (router.asPath == '/' ? 'analytics' : router.asPath.replaceAll('/', '').toLocaleLowerCase()))?.[0]?.checklist?.[0] == 'view') ? true : false;
-
     if (router.asPath == '/' && !ComponetPermission) {
         let acc = '';
         userData?.permission?.data?.map((find: any) => {
@@ -121,7 +120,11 @@ export default function App({ Component, pageProps }: AppProps) {
                             <>
                                 <Component userData={userData} setuserData={setuserData}  {...pageProps} />
                             </>
-                            : <div className='w-full text-center text-gray-700'><div className='flex justify-center'><Image src="/img/notPermission.gif" width={250} height={250} alt="notPermission" /></div>You Need Permission</div>}
+                            : <>
+                                {router.route == '/_error' ?
+                                    <div className='w-full text-center text-gray-700 mt-96'><div className='flex justify-center'><Image src="/img/404.gif" width={100} height={100} alt="404" /></div>Not Found Page</div> :
+                                    <div className='w-full text-center text-gray-700'><div className='flex justify-center'><Image src="/img/notPermission.gif" width={250} height={250} alt="notPermission" /></div>You Need Permission</div>
+                                }</>}
                         </>
                         : <div className='w-full text-center text-gray-700 fixed z-50 top-0 left-0 bg-gradient-to-r from-gray-100 from-20% h-screen to-cyan-200 to-100%'><div className='flex justify-center'><Image src="/img/notPermission.gif" width={250} height={250} alt="notPermission" /></div>You Need Permission</div>}
                 </Layout> :

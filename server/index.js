@@ -3,15 +3,15 @@ const fileUpload = require("express-fileupload");
 const server = express();
 const routes = require("./routes/index");
 const next = require("next");
-
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const path = require("path");
+const dotenv = require("dotenv").config();
 
-const dev = process.env.NODE_ENV !== "production";
-const hostname = "localhost";
-const port = 1999;
+const dev = dotenv.parsed.NODE_ENV !== "production";
+const hostname = dotenv.parsed.HOSTNAME;
+const port = dotenv.parsed.PORT;
 // when using middleware `hostname` and `port` must be provided below
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
