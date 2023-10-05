@@ -16,6 +16,7 @@ import { read, utils, writeFile } from 'xlsx';
 import * as PDFJS from 'pdfjs-dist';
 PDFJS.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS.version}/pdf.worker.js`;
 import Swal from "sweetalert2";
+import Image from "next/image";
 
 // import * as GC from '@grapecity/spread-sheets';
 // import ExcelIO from "@grapecity/spread-excelio";
@@ -26,10 +27,9 @@ import Select from "./../../components/reactSelect";
 import ReactTable from "./../../components/reactTable";
 import SelectFem from "./../../components/selectFem";
 import DebouncedInput from "./../../components/debouncedInput";
-import Image from "next/image";
 
 
-export default function Efaktur({ userData, setuserData }: any) {
+export default function EfakturIn({ userData, setuserData }: any) {
     const [pagePermission, setpagePermission] = useState([]);
     const [dataCreate, setdataCreate] = useState();
     const [search, setsearch] = useState('');
@@ -94,8 +94,8 @@ export default function Efaktur({ userData, setuserData }: any) {
     const [npwp, setnpwp] = useState([]);
     const [tabIdentitas, settabIdentitas] = useState('');
     const [itemInputEfak, setitemInputEfak] = useState<any>([{ delete: false }]);
-    const URLAPI = "/api/efakturOut/";
-    const Subject = "E-Faktur";
+    const URLAPI = "/api/efaktur/out";
+    const Subject = "E-Faktur Out";
 
     const handleApi = async (url: any, data: any = null) => {
         if (url === 'create') {
@@ -140,7 +140,7 @@ export default function Efaktur({ userData, setuserData }: any) {
             try {
                 await axios({
                     method: "POST",
-                    url: '/api/efakturOut/proof',
+                    url: '/api/efaktur/out/proof',
                     data: data,
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -166,7 +166,7 @@ export default function Efaktur({ userData, setuserData }: any) {
             try {
                 await axios({
                     method: "POST",
-                    url: '/api/efakturOut/export',
+                    url: '/api/efaktur/out/export',
                     data: { company_id: JSON.parse(localStorage.getItem('companyActive') as string)?.value },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -344,7 +344,8 @@ export default function Efaktur({ userData, setuserData }: any) {
 
         var pom = document.createElement('a');
         pom.href = url;
-        pom.setAttribute('download', (JSON.parse(localStorage.getItem('companyActive') as string)?.label) + '_EcosystemApp.csv');
+
+        pom.setAttribute('download', ((JSON.parse(localStorage.getItem('companyActive') as string)?.label) ?? 'By') + '_EcosystemApp.csv');
         pom.click();
     }
 
@@ -509,6 +510,9 @@ export default function Efaktur({ userData, setuserData }: any) {
                                     if (valll['Nama Barang'].indexOf(',') >= 0) {
                                         err.push("(Baris: " + (ii + 2) + ") " + "Nama Barang Terdapat Koma");
                                     }
+                                    if (valll['Nama Barang'].indexOf('"') >= 0) {
+                                        // err.push("(Baris: " + (ii + 2) + ") " + "Nama Barang Terdapat Kutip");
+                                    }
                                 } else {
                                     err.push("Judul Nama Barang Tidak Ada");
                                 }
@@ -517,6 +521,9 @@ export default function Efaktur({ userData, setuserData }: any) {
                                     if (valll['Alamat'].indexOf(',') >= 0) {
                                         err.push("(Baris: " + (ii + 2) + ") " + "Alamat Terdapat Koma");
                                     }
+                                    if (valll['Alamat'].indexOf('"') >= 0) {
+                                        err.push("(Baris: " + (ii + 2) + ") " + "Alamat Terdapat Kutip");
+                                    }
                                 } else {
                                     err.push("Judul Alamat Tidak Ada");
                                 }
@@ -524,6 +531,10 @@ export default function Efaktur({ userData, setuserData }: any) {
                                 if (valll['Nama NPWP/NIK']) {
                                     if (valll['Nama NPWP/NIK'].indexOf(',') >= 0) {
                                         err.push("(Baris: " + (ii + 2) + ") " + "Nama NPWP Terdapat Koma");
+                                    }
+
+                                    if (valll['Nama NPWP/NIK'].indexOf('"') >= 0) {
+                                        err.push("(Baris: " + (ii + 2) + ") " + "Nama NPWP Terdapat Kutip");
                                     }
                                 } else {
                                     err.push("Judul Nama NPWP/NIK Tidak Ada");
@@ -580,9 +591,9 @@ export default function Efaktur({ userData, setuserData }: any) {
                                     let jumlahPPNBM = 0;
                                     let jumlahDPP = 0;
                                     dtRes.map((vallll: any) => {
-                                        jumlahDPP += Math.floor(RPtoNumber(vallll['DPP']));
-                                        jumlahPPNBM += Math.floor(RPtoNumber(vallll['PPNBM']));
-                                        jumlahPPN += Math.floor(RPtoNumber(vallll['PPN']));
+                                        jumlahDPP += RPtoNumber(vallll['DPP']);
+                                        jumlahPPNBM += RPtoNumber(vallll['PPNBM']);
+                                        jumlahPPN += RPtoNumber(vallll['PPN']);
                                     });
 
                                     data.push([
@@ -597,9 +608,9 @@ export default function Efaktur({ userData, setuserData }: any) {
                                         NPWPDetec,
                                         NAMEDetec,
                                         valll['Alamat'],
-                                        jumlahDPP,
-                                        jumlahPPN,
-                                        jumlahPPNBM,
+                                        Math.round(jumlahDPP),
+                                        Math.round(jumlahPPN),
+                                        Math.round(jumlahPPNBM),
                                         IDKet ?? '',
                                         valll['FG Uang Muka'] ?? 0,
                                         valll['Uang Muka DPP'] ?? 0,

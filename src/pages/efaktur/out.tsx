@@ -29,7 +29,7 @@ import SelectFem from "./../../components/selectFem";
 import DebouncedInput from "./../../components/debouncedInput";
 
 
-export default function Efaktur({ userData, setuserData }: any) {
+export default function EfakturOut({ userData, setuserData }: any) {
     const [pagePermission, setpagePermission] = useState([]);
     const [dataCreate, setdataCreate] = useState();
     const [search, setsearch] = useState('');
