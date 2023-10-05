@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "SET NODE_ENV=development && nodemon  server/index.js ",
+    "dev": "set NODE_ENV=development && nodemon  server/index.js ",
     "build": "next build",
     "start": "node server/index.js",
     "lint": "next lint",
