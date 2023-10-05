@@ -10,7 +10,8 @@ const path = require("path");
 const dotenv = require("dotenv").config();
 
 console.log(process.env.NODE_ENV);
-const dev = "development" !== "production";
+const dev = process.env.NODE_ENV !== "production";
+// const dev = dotenv.parsed.NODE_ENV !== "production";
 const hostname = dotenv.parsed.HOSTNAME;
 const port = dotenv.parsed.PORT;
 // when using middleware `hostname` and `port` must be provided below
