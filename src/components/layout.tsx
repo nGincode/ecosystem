@@ -223,7 +223,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                 </div>
                                             </div>
 
-                                            {/* <div className="hover-dropdown-fade w-auto px-0 d-flex align-items-center position-relative">
+                                            <div className="hover-dropdown-fade w-auto px-0 d-flex align-items-center position-relative">
                                                 <button type="button" className="btn btn-icon-only bg-transparent border-0 hp-hover-bg-black-10 hp-hover-bg-dark-100 hp-transition d-flex align-items-center justify-content-center" style={{ height: "40px" }}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" className="hp-text-color-black-80 hp-text-color-dark-30">
                                                         <path d="M12 6.44v3.33M12.02 2C8.34 2 5.36 4.98 5.36 8.66v2.1c0 .68-.28 1.7-.63 2.28l-1.27 2.12c-.78 1.31-.24 2.77 1.2 3.25a23.34 23.34 0 0 0 14.73 0 2.22 2.22 0 0 0 1.2-3.25l-1.27-2.12c-.35-.58-.63-1.61-.63-2.28v-2.1C18.68 5 15.68 2 12.02 2Z" stroke="currentColor" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round"></path>
@@ -314,9 +314,9 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div> */}
+                                            </div>
 
-                                            {/* <div className="me-2 hp-basket-dropdown-button w-auto px-0 position-relative">
+                                            <div className="me-2 hp-basket-dropdown-button w-auto px-0 position-relative">
                                                 <button type="button" className="btn btn-icon-only bg-transparent border-0 hp-hover-bg-black-10 hp-hover-bg-dark-100 hp-transition d-flex align-items-center justify-content-center" style={{ height: "40px" }}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" className="hp-text-color-black-80 hp-text-color-dark-30">
                                                         <path d="M8.4 6.5h7.2c3.4 0 3.74 1.59 3.97 3.53l.9 7.5C20.76 19.99 20 22 16.5 22H7.51C4 22 3.24 19.99 3.54 17.53l.9-7.5C4.66 8.09 5 6.5 8.4 6.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
@@ -408,7 +408,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div> */}
+                                            </div>
 
                                             <div className="hover-dropdown-fade w-auto px-0 ms-6 position-relative">
                                                 <div className="hp-cursor-pointer rounded-4 border hp-border-color-dark-80">

@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Component, useEffect, useState, useReducer, useMemo } from "react";
 import axios from "axios";
@@ -896,7 +895,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
     } else {
         return (<div className="text-center w-full text-gray-500">
             <div className="flex justify-center -mt-10 -mb-7 ">
-                <Image src="/img/noResult.gif" width={200} height={200} alt="noResult" /> </div>
+                <img src="/img/noResult.gif" width={200} height={200} alt="noResult" /> </div>
             <div className="text-lg">No results found</div></div>)
 
     }

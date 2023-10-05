@@ -3,7 +3,6 @@ import toast, { Toaster } from 'react-hot-toast';
 import { Input, Textarea, Button } from "@material-tailwind/react";
 import axios from "axios";
 import Link from "next/link";
-import Image from "next/image";
 
 import Select from "./../components/reactSelect";
 import ReactTable from "./../components/reactTable";
@@ -238,7 +237,7 @@ export default function Npwp({ userData, setuserData }: any) {
                             <div className="card-body px-0 text-center flex justify-center flex-wrap">
                                 <div className="text-center w-full text-gray-500">
                                     <div className="flex justify-center -mt-10 -mb-7 ">
-                                        <Image src="/img/noResult.gif" width={200} height={200} alt="noResult" /> </div>
+                                        <img src="/img/noResult.gif" width={200} height={200} alt="noResult" /> </div>
                                     <div className="text-lg">{!userData.company.length ? "Requires company data" : !JSON.parse(localStorage.getItem('companyActive') as string)?.value ? "Please select company" : null}</div>
                                 </div>
                             </div>

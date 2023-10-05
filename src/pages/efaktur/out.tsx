@@ -16,7 +16,6 @@ import { read, utils, writeFile } from 'xlsx';
 import * as PDFJS from 'pdfjs-dist';
 PDFJS.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS.version}/pdf.worker.js`;
 import Swal from "sweetalert2";
-import Image from "next/image";
 
 // import * as GC from '@grapecity/spread-sheets';
 // import ExcelIO from "@grapecity/spread-excelio";
@@ -1534,7 +1533,7 @@ export default function Efaktur({ userData, setuserData }: any) {
                             <div className="card-body px-0 text-center flex justify-center flex-wrap">
                                 <div className="text-center w-full text-gray-500">
                                     <div className="flex justify-center -mt-10 -mb-7 ">
-                                        <Image src="/img/noResult.gif" width={200} height={200} alt="noResult" /> </div>
+                                        <img src="/img/noResult.gif" width={200} height={200} alt="noResult" /> </div>
                                     <div className="text-lg">{!userData.company.length ? "Requires company data" : !JSON.parse(localStorage.getItem('companyActive') as string)?.value ? "Please select company" : null}</div>
                                 </div>
                             </div>
