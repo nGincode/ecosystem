@@ -9,7 +9,6 @@ const logger = require("morgan");
 const path = require("path");
 const dotenv = require("dotenv").config();
 
-console.log(dotenv.parsed.NODE_ENV);
 console.log(process.env.NODE_ENV);
 const dev = process.env.NODE_ENV !== "production";
 const hostname = dotenv.parsed.HOSTNAME;
