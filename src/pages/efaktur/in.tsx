@@ -22,10 +22,10 @@ import Swal from "sweetalert2";
 // import { SpreadSheets, Worksheet } from '@grapecity/spread-sheets-react';
 // import '@grapecity/spread-sheets/styles/gc.spread.sheets.excel2013white.css';
 
-import Select from "./components/reactSelect";
-import ReactTable from "./components/reactTable";
-import SelectFem from "./components/selectFem";
-import DebouncedInput from "./components/debouncedInput";
+import Select from "./../../components/reactSelect";
+import ReactTable from "./../../components/reactTable";
+import SelectFem from "./../../components/selectFem";
+import DebouncedInput from "./../../components/debouncedInput";
 import Image from "next/image";
 
 
@@ -94,7 +94,7 @@ export default function Efaktur({ userData, setuserData }: any) {
     const [npwp, setnpwp] = useState([]);
     const [tabIdentitas, settabIdentitas] = useState('');
     const [itemInputEfak, setitemInputEfak] = useState<any>([{ delete: false }]);
-    const URLAPI = "/api/efaktur/";
+    const URLAPI = "/api/efakturOut/";
     const Subject = "E-Faktur";
 
     const handleApi = async (url: any, data: any = null) => {
@@ -140,7 +140,7 @@ export default function Efaktur({ userData, setuserData }: any) {
             try {
                 await axios({
                     method: "POST",
-                    url: '/api/efaktur/proof',
+                    url: '/api/efakturOut/proof',
                     data: data,
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -166,7 +166,7 @@ export default function Efaktur({ userData, setuserData }: any) {
             try {
                 await axios({
                     method: "POST",
-                    url: '/api/efaktur/export',
+                    url: '/api/efakturOut/export',
                     data: { company_id: JSON.parse(localStorage.getItem('companyActive') as string)?.value },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`

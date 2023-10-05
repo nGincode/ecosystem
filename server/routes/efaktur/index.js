@@ -1,17 +1,17 @@
 const express = require("express");
 const router = express.Router();
 
-const efakturController = require("../../controller/efaktur");
+const efakturControllerOut = require("../../controller/efaktur/out");
 
-router.get("/", efakturController.get);
-router.post("/", efakturController.post);
-router.put("/", efakturController.put);
+router.get("/out", efakturControllerOut.get);
+router.post("/out", efakturControllerOut.post);
+router.put("/out", efakturControllerOut.put);
 
-router.delete("/:uuid", efakturController.del);
-router.get("/:uuid", efakturController.getId);
-router.put("/:uuid", efakturController.putId);
+router.delete("/out/:uuid", efakturControllerOut.del);
+router.get("/out/:uuid", efakturControllerOut.getId);
+router.put("/out/:uuid", efakturControllerOut.putId);
 
-router.post("/proof", efakturController.proof);
-router.post("/export", efakturController.exprt);
+router.post("/out/proof", efakturControllerOut.proof);
+router.post("/out/export", efakturControllerOut.exprt);
 
 module.exports = router;

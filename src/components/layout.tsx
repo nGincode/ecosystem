@@ -7,83 +7,89 @@ import Link from "next/link";
 
 import HeaderSearch from "./headerSearch";
 import ReactSelect from "./reactSelect";
+import AccessData from "./accessData";
 
 export default function layout({ children = null, logOut, userData }: any) {
     const router = useRouter();
 
     useEffect(() => {
-        require("./../../../public/app-assets/js/plugin/swiper-bundle.min.js");
-        require("./../../../public/app-assets/js/plugin/jquery.mask.min.js");
+        require("./../../public/app-assets/js/plugin/swiper-bundle.min.js");
+        require("./../../public/app-assets/js/plugin/jquery.mask.min.js");
 
-        require("./../../../public/app-assets/js/layouts/sider.js");
-        require("./../../../public/app-assets/js/components/input-number.js");
+        require("./../../public/app-assets/js/layouts/sider.js");
+        require("./../../public/app-assets/js/components/input-number.js");
 
-        require("./../../../public/app-assets/js/base/index.js");
+        require("./../../public/app-assets/js/base/index.js");
 
-        require("./../../../public/assets/js/main.js");
+        require("./../../public/assets/js/main.js");
     }, []);
 
-    const menuData = [{
-        label: 'DASHBOARDS',
-        option: [
+
+    const Menu = () => {
+        return <>
             {
-                icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                    <path fillRule="evenodd" d="M2.25 2.25a.75.75 0 000 1.5H3v10.5a3 3 0 003 3h1.21l-1.172 3.513a.75.75 0 001.424.474l.329-.987h8.418l.33.987a.75.75 0 001.422-.474l-1.17-3.513H18a3 3 0 003-3V3.75h.75a.75.75 0 000-1.5H2.25zm6.04 16.5l.5-1.5h6.42l.5 1.5H8.29zm7.46-12a.75.75 0 00-1.5 0v6a.75.75 0 001.5 0v-6zm-3 2.25a.75.75 0 00-1.5 0v3.75a.75.75 0 001.5 0V9zm-3 2.25a.75.75 0 00-1.5 0v1.5a.75.75 0 001.5 0v-1.5z" clipRule="evenodd" />
-                </svg>,
-                link: '/',
-                label: 'Analytics',
-                dropdown: false,
+                AccessData('menu').map((val: any, i: number) => {
+                    let PermissionLabel = userData.permission?.data?.find((find: any) => val.label == find.label.toUpperCase());
+                    if (PermissionLabel?.check)
+                        return (
+                            <li key={i}>
+                                <div className="menu-title">{val.label}</div>
+                                <ul>
+                                    {val.option.map((vall: any, ii: number) => {
+                                        let OptionTrue = PermissionLabel?.data?.find((find: any) => find.label == vall.label).check;
+                                        if (PermissionLabel?.data?.find((find: any) => find.label == vall.label)?.checklist?.find((find: any) => find == "view") || OptionTrue)
+                                            return (
+                                                <span key={ii}>
+                                                    {vall.dropdown ?
+                                                        <li>
+                                                            <Link href="" className={vall.option.find((el: any) => el.link === router.asPath) ? "submenu-item  active arrow-active" : "submenu-item "}>
+                                                                <span>
+                                                                    <span className="submenu-item-icon">
+                                                                        {vall.icon}
+                                                                    </span>
+                                                                    <span>{vall.label}</span>
+                                                                </span>
+                                                                <div className="menu-arrow"></div>
+                                                            </Link>
+
+                                                            <ul className={vall.option.find((el: any) => el.link === router.asPath) ? "submenu-children active" : "submenu-children"} data-level={1} style={vall.option.find((el: any) => el.link === router.asPath) ? { display: "block" } : {}}>
+                                                                {vall.option.map((valll: any, iii: number) => {
+                                                                    if (PermissionLabel?.data?.find((find: any) => find.label == vall.label).data.find((fd: any) => fd.link == valll.link)?.checklist?.find((find: any) => find == "view"))
+                                                                        return (
+                                                                            <li key={iii}>
+                                                                                <Link href={valll.link} className={router.asPath === valll.link ? "active" : ""}>
+                                                                                    <div className="flex">
+                                                                                        <span className="submenu-item-icon">
+                                                                                            {valll.icon}
+                                                                                        </span>
+                                                                                        <span className="ml-1 mt-0.5">{valll.label}</span>
+                                                                                    </div>
+                                                                                </Link>
+                                                                            </li>)
+                                                                })}
+                                                            </ul>
+                                                        </li>
+                                                        :
+                                                        <li>
+                                                            <Link href={vall.link} className={`${(router.asPath === vall.link ? "active" : "")}`}>
+                                                                <div className="tooltip-item in-active" data-bs-toggle="tooltip" data-bs-placement="right" title="" data-bs-original-title={vall.label} aria-label={vall.label}></div>
+                                                                <span>
+                                                                    <span className="submenu-item-icon">
+                                                                        {vall.icon}
+                                                                    </span>
+                                                                    <span>{vall.label}</span>
+                                                                </span>
+                                                            </Link>
+                                                        </li>
+                                                    }
+                                                </span>)
+                                    })}
+                                </ul>
+                            </li>)
+                })
             }
-        ]
-    }, {
-        label: 'ACCOUNTS',
-        option: [
-            {
-                icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                    <path fillRule="evenodd" d="M8.25 6.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM15.75 9.75a3 3 0 116 0 3 3 0 01-6 0zM2.25 9.75a3 3 0 116 0 3 3 0 01-6 0zM6.31 15.117A6.745 6.745 0 0112 12a6.745 6.745 0 016.709 7.498.75.75 0 01-.372.568A12.696 12.696 0 0112 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 01-.372-.568 6.787 6.787 0 011.019-4.38z" clipRule="evenodd" />
-                    <path d="M5.082 14.254a8.287 8.287 0 00-1.308 5.135 9.687 9.687 0 01-1.764-.44l-.115-.04a.563.563 0 01-.373-.487l-.01-.121a3.75 3.75 0 013.57-4.047zM20.226 19.389a8.287 8.287 0 00-1.308-5.135 3.75 3.75 0 013.57 4.047l-.01.121a.563.563 0 01-.373.486l-.115.04c-.567.2-1.156.349-1.764.441z" />
-                </svg>,
-                link: '/users',
-                label: 'Users',
-                dropdown: false,
-            },
-            {
-                icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                    <path fillRule="evenodd" d="M15.75 1.5a6.75 6.75 0 00-6.651 7.906c.067.39-.032.717-.221.906l-6.5 6.499a3 3 0 00-.878 2.121v2.818c0 .414.336.75.75.75H6a.75.75 0 00.75-.75v-1.5h1.5A.75.75 0 009 19.5V18h1.5a.75.75 0 00.53-.22l2.658-2.658c.19-.189.517-.288.906-.22A6.75 6.75 0 1015.75 1.5zm0 3a.75.75 0 000 1.5A2.25 2.25 0 0118 8.25a.75.75 0 001.5 0 3.75 3.75 0 00-3.75-3.75z" clipRule="evenodd" />
-                </svg>,
-                link: '/permission',
-                label: 'Permission',
-                dropdown: false,
-            },
-            {
-                icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                    <path fillRule="evenodd" d="M3 2.25a.75.75 0 000 1.5v16.5h-.75a.75.75 0 000 1.5H15v-18a.75.75 0 000-1.5H3zM6.75 19.5v-2.25a.75.75 0 01.75-.75h3a.75.75 0 01.75.75v2.25a.75.75 0 01-.75.75h-3a.75.75 0 01-.75-.75zM6 6.75A.75.75 0 016.75 6h.75a.75.75 0 010 1.5h-.75A.75.75 0 016 6.75zM6.75 9a.75.75 0 000 1.5h.75a.75.75 0 000-1.5h-.75zM6 12.75a.75.75 0 01.75-.75h.75a.75.75 0 010 1.5h-.75a.75.75 0 01-.75-.75zM10.5 6a.75.75 0 000 1.5h.75a.75.75 0 000-1.5h-.75zm-.75 3.75A.75.75 0 0110.5 9h.75a.75.75 0 010 1.5h-.75a.75.75 0 01-.75-.75zM10.5 12a.75.75 0 000 1.5h.75a.75.75 0 000-1.5h-.75zM16.5 6.75v15h5.25a.75.75 0 000-1.5H21v-12a.75.75 0 000-1.5h-4.5zm1.5 4.5a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 2.25a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75v-.008a.75.75 0 00-.75-.75h-.008zM18 17.25a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008z" clipRule="evenodd" />
-                </svg>,
-                link: '/company',
-                label: 'Company',
-                dropdown: false,
-            },
-            {
-                icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                    <path d="M4.5 3.75a3 3 0 00-3 3v.75h21v-.75a3 3 0 00-3-3h-15z" />
-                    <path fillRule="evenodd" d="M22.5 9.75h-21v7.5a3 3 0 003 3h15a3 3 0 003-3v-7.5zm-18 3.75a.75.75 0 01.75-.75h6a.75.75 0 010 1.5h-6a.75.75 0 01-.75-.75zm.75 2.25a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" clipRule="evenodd" />
-                </svg>,
-                link: '/npwp',
-                label: 'NPWP',
-                dropdown: false,
-            },
-            {
-                icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                    <path d="M12 7.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" />
-                    <path fillRule="evenodd" d="M1.5 4.875C1.5 3.839 2.34 3 3.375 3h17.25c1.035 0 1.875.84 1.875 1.875v9.75c0 1.036-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 14.625v-9.75zM8.25 9.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM18.75 9a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V9.75a.75.75 0 00-.75-.75h-.008zM4.5 9.75A.75.75 0 015.25 9h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H5.25a.75.75 0 01-.75-.75V9.75z" clipRule="evenodd" />
-                    <path d="M2.25 18a.75.75 0 000 1.5c5.4 0 10.63.722 15.6 2.075 1.19.324 2.4-.558 2.4-1.82V18.75a.75.75 0 00-.75-.75H2.25z" />
-                </svg>,
-                link: '/efaktur',
-                label: 'E-Faktur',
-                dropdown: false,
-            },
-        ]
-    }];
+        </>
+    }
 
     return (
         <>
@@ -126,58 +132,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                             </div>
 
                             <ul>
-                                {menuData.map((val: any, i: number) => {
-                                    let PermissionLabel = userData.permission?.data?.find((find: any) => val.label == find.label.toUpperCase());
-                                    if (PermissionLabel?.check)
-                                        return (
-                                            <li key={i}>
-                                                <div className="menu-title">{val.label}</div>
-                                                <ul>
-                                                    {val.option.map((vall: any, ii: number) => {
-                                                        if (PermissionLabel?.data?.find((find: any) => find.label == vall.label)?.checklist?.find((find: any) => find == "view"))
-                                                            return (
-                                                                <span key={ii}>
-                                                                    {vall.dropdown ?
-                                                                        <li>
-                                                                            <Link href="" className={vall.option.find((el: any) => el.link === router.asPath) ? "submenu-item  active arrow-active" : "submenu-item "}>
-                                                                                <span>
-                                                                                    <span className="submenu-item-icon">
-                                                                                        {vall.icon}
-                                                                                    </span>
-                                                                                    <span>{vall.label}</span>
-                                                                                </span>
-                                                                                <div className="menu-arrow"></div>
-                                                                            </Link>
-
-                                                                            <ul className={vall.option.find((el: any) => el.link === router.asPath) ? "submenu-children active" : "submenu-children"} data-level={1} style={vall.option.find((el: any) => el.link === router.asPath) ? { display: "block" } : {}}>
-                                                                                {vall.option.map((valll: any, iii: number) => {
-                                                                                    return (
-                                                                                        <li key={iii}>
-                                                                                            <Link href={valll.link} className={router.asPath === valll.link ? "active" : ""}>
-                                                                                                <span>{valll.label}</span>
-                                                                                            </Link>
-                                                                                        </li>)
-                                                                                })}
-                                                                            </ul>
-                                                                        </li>
-                                                                        :
-                                                                        <li>
-                                                                            <Link href={vall.link} className={`${(router.asPath === vall.link ? "active" : "")}`}>
-                                                                                <div className="tooltip-item in-active" data-bs-toggle="tooltip" data-bs-placement="right" title="" data-bs-original-title={vall.label} aria-label={vall.label}></div>
-                                                                                <span>
-                                                                                    <span className="submenu-item-icon">
-                                                                                        {vall.icon}
-                                                                                    </span>
-                                                                                    <span>{vall.label}</span>
-                                                                                </span>
-                                                                            </Link>
-                                                                        </li>
-                                                                    }
-                                                                </span>)
-                                                    })}
-                                                </ul>
-                                            </li>)
-                                })}
+                                {Menu()}
 
                             </ul>
                         </div>
@@ -242,7 +197,7 @@ export default function layout({ children = null, logOut, userData }: any) {
 
                                     <div className="hp-header-text-info col col-lg-14 col-xl-16 hp-header-start-text d-flex align-items-center hp-horizontal-none">
                                         <div className="d-flex overflow-hidden rounded-4 hp-bg-color-black-0 hp-bg-color-dark-100" style={{ minWidth: "45px", width: "45px", height: "45px" }}>
-                                            <img src="./app-assets/img/memoji/newspaper.svg" alt="Newspaper" height="80%" style={{ marginTop: "auto", marginLeft: "auto" }} />
+                                            <img src="/app-assets/img/memoji/newspaper.svg" alt="Newspaper" height="80%" style={{ marginTop: "auto", marginLeft: "auto" }} />
                                         </div>
 
                                         <p className="hp-header-start-text-item hp-input-label fw-normal hp-text-color-black-100 hp-text-color-dark-0 ms-12 mb-0 lh-1 d-flex align-items-center">
@@ -268,7 +223,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                 </div>
                                             </div>
 
-                                            <div className="hover-dropdown-fade w-auto px-0 d-flex align-items-center position-relative">
+                                            {/* <div className="hover-dropdown-fade w-auto px-0 d-flex align-items-center position-relative">
                                                 <button type="button" className="btn btn-icon-only bg-transparent border-0 hp-hover-bg-black-10 hp-hover-bg-dark-100 hp-transition d-flex align-items-center justify-content-center" style={{ height: "40px" }}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" className="hp-text-color-black-80 hp-text-color-dark-30">
                                                         <path d="M12 6.44v3.33M12.02 2C8.34 2 5.36 4.98 5.36 8.66v2.1c0 .68-.28 1.7-.63 2.28l-1.27 2.12c-.78 1.31-.24 2.77 1.2 3.25a23.34 23.34 0 0 0 14.73 0 2.22 2.22 0 0 0 1.2-3.25l-1.27-2.12c-.35-.58-.63-1.61-.63-2.28v-2.1C18.68 5 15.68 2 12.02 2Z" stroke="currentColor" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round"></path>
@@ -291,7 +246,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                             <div className="row hp-cursor-pointer rounded hp-transition hp-hover-bg-primary-4 hp-hover-bg-dark-80 py-12 px-10" style={{ marginLeft: "-10px", marginRight: "-10px" }}>
                                                                 <div className="w-auto px-0 me-12">
                                                                     <div className="avatar-item d-flex align-items-center justify-content-center rounded-circle" style={{ width: "48px", height: "48px" }}>
-                                                                        <img src="./app-assets/img/memoji/user-avatar-1.png" className="w-100" />
+                                                                        <img src="/app-assets/img/memoji/user-avatar-1.png" className="w-100" />
                                                                     </div>
                                                                 </div>
 
@@ -309,7 +264,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                             <div className="row hp-cursor-pointer rounded hp-transition hp-hover-bg-primary-4 hp-hover-bg-dark-80 py-12 px-10" style={{ marginLeft: "-10px", marginRight: "-10px" }}>
                                                                 <div className="w-auto px-0 me-12">
                                                                     <div className="avatar-item d-flex align-items-center justify-content-center rounded-circle" style={{ width: "48px", height: "48px" }}>
-                                                                        <img src="./app-assets/img/memoji/user-avatar-2.png" className="w-100" />
+                                                                        <img src="/app-assets/img/memoji/user-avatar-2.png" className="w-100" />
                                                                     </div>
                                                                 </div>
 
@@ -325,7 +280,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                             <div className="row hp-cursor-pointer rounded hp-transition hp-hover-bg-primary-4 hp-hover-bg-dark-80 py-12 px-10" style={{ marginLeft: "-10px", marginRight: "-10px" }}>
                                                                 <div className="w-auto px-0 me-12">
                                                                     <div className="avatar-item d-flex align-items-center justify-content-center rounded-circle" style={{ width: "48px", height: "48px" }}>
-                                                                        <img src="./app-assets/img/memoji/user-avatar-3.png" className="w-100" />
+                                                                        <img src="/app-assets/img/memoji/user-avatar-3.png" className="w-100" />
                                                                     </div>
                                                                 </div>
 
@@ -359,9 +314,9 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> */}
 
-                                            <div className="me-2 hp-basket-dropdown-button w-auto px-0 position-relative">
+                                            {/* <div className="me-2 hp-basket-dropdown-button w-auto px-0 position-relative">
                                                 <button type="button" className="btn btn-icon-only bg-transparent border-0 hp-hover-bg-black-10 hp-hover-bg-dark-100 hp-transition d-flex align-items-center justify-content-center" style={{ height: "40px" }}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" className="hp-text-color-black-80 hp-text-color-dark-30">
                                                         <path d="M8.4 6.5h7.2c3.4 0 3.74 1.59 3.97 3.53l.9 7.5C20.76 19.99 20 22 16.5 22H7.51C4 22 3.24 19.99 3.54 17.53l.9-7.5C4.66 8.09 5 6.5 8.4 6.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
@@ -386,7 +341,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                                 <div className="col mt-4 pe-0" style={{ flex: "0 0 32px" }}>
                                                                     <a href="#">
                                                                         <div className="avatar-item d-flex align-items-center justify-content-center hp-bg-black-0 hp-bg-dark-100 rounded-circle" style={{ width: "35px", height: "35px" }}>
-                                                                            <img src="./app-assets/img/product/watch-1.png" />
+                                                                            <img src="/app-assets/img/product/watch-1.png" />
                                                                         </div>
                                                                     </a>
                                                                 </div>
@@ -453,7 +408,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> */}
 
                                             <div className="hover-dropdown-fade w-auto px-0 ms-6 position-relative">
                                                 <div className="hp-cursor-pointer rounded-4 border hp-border-color-dark-80">
@@ -471,8 +426,6 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                 <div className="hp-header-profile-menu dropdown-fade position-absolute pt-18" style={{ top: "100%", width: "260px" }}>
                                                     <div className="rounded hp-bg-black-0 hp-bg-dark-100 px-18 py-24">
                                                         <span className="d-block h5 hp-text-color-black-100 hp-text-color-dark-0 mb-16">Profile Settings</span>
-
-                                                        <Link href="/profile" className="hp-p1-body fw-medium hp-hover-text-color-primary-2">View Profile</Link>
 
                                                         <div className="divider mt-18 mb-16"></div>
 
@@ -521,7 +474,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                             </div>
 
                                                             <div className="col-12 mt-24">
-                                                                <a className="hp-p1-body fw-medium cursor-pointer" onClick={() => { logOut() }}>Logout</a>
+                                                                <a className="hp-p1-body fw-medium cursor-pointer text-red-900" onClick={() => { logOut() }}>Logout</a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -590,67 +543,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                     </div>
 
                                     <ul>
-                                        {menuData.map((val: any, i: number) => {
-                                            let PermissionLabel = userData.permission?.data?.find((find: any) => val.label == find.label.toUpperCase());
-                                            if (PermissionLabel?.check)
-                                                return (
-                                                    <li key={i}>
-                                                        <div className="menu-title">{val.label}</div>
-                                                        <ul>
-                                                            {val.option.map((vall: any, ii: number) => {
-                                                                if (PermissionLabel?.data?.find((find: any) => find.label == vall.label)?.checklist?.find((find: any) => find == "view"))
-                                                                    return (
-                                                                        <li key={ii}>
-                                                                            {vall.dropdown ? <>
-                                                                                {vall.option.map((valll: any, iii: number) => {
-                                                                                    return (
-                                                                                        <span key={iii}>
-                                                                                            <Link key={iii} href="" className="submenu-item">
-                                                                                                <span >
-                                                                                                    <span className="submenu-item-icon">
-                                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
-                                                                                                            <path d="M4.26 11.02v4.97c0 1.82 0 1.82 1.72 2.98l4.73 2.73c.71.41 1.87.41 2.58 0l4.73-2.73c1.72-1.16 1.72-1.16 1.72-2.98v-4.97c0-1.82 0-1.82-1.72-2.98l-4.73-2.73c-.71-.41-1.87-.41-2.58 0L5.98 8.04C4.26 9.2 4.26 9.2 4.26 11.02Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                                                                                                            <path d="M17.5 7.63V5c0-2-1-3-3-3h-5c-2 0-3 1-3 3v2.56M12.63 10.99l.57.89c.09.14.29.28.44.32l1.02.26c.63.16.8.7.39 1.2l-.67.81c-.1.13-.18.36-.17.52l.06 1.05c.04.65-.42.98-1.02.74l-.98-.39a.863.863 0 0 0-.55 0l-.98.39c-.6.24-1.06-.1-1.02-.74l.06-1.05c.01-.16-.07-.4-.17-.52l-.67-.81c-.41-.5-.24-1.04.39-1.2l1.02-.26c.16-.04.36-.19.44-.32l.57-.89c.36-.54.92-.54 1.27 0Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                                                                                                        </svg>
-                                                                                                    </span>
-
-                                                                                                    <span>{valll.label}</span>
-                                                                                                </span>
-
-                                                                                                <div className="menu-arrow"></div>
-                                                                                            </Link>
-
-                                                                                            <ul className="submenu-children" data-level={iii}>
-                                                                                                <li>
-                                                                                                    <Link onClick={() => {
-                                                                                                        ($('#menuClose') as any).trigger("click");
-                                                                                                    }} href={valll.link}>
-                                                                                                        <span>{valll.label}</span>
-                                                                                                    </Link>
-                                                                                                </li>
-
-                                                                                            </ul>
-                                                                                        </span>)
-                                                                                })}
-                                                                            </> :
-                                                                                <Link href={vall.link} onClick={() => {
-                                                                                    ($('#menuClose') as any).trigger("click");
-                                                                                }} className={router.asPath === vall.link ? "active" : ""}>
-                                                                                    <div className="tooltip-item in-active" data-bs-toggle="tooltip" data-bs-placement="right" title="" data-bs-original-title={vall.label} aria-label={vall.label}></div>
-                                                                                    <span>
-                                                                                        <span className="submenu-item-icon">
-                                                                                            {vall.icon}
-                                                                                        </span>
-
-                                                                                        <span>{vall.label}</span>
-                                                                                    </span>
-                                                                                </Link>
-                                                                            }
-                                                                        </li>)
-                                                            })}
-                                                        </ul>
-                                                    </li>)
-                                        })}
+                                        {Menu()}
                                     </ul>
                                 </div>
 

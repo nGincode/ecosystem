@@ -1,20 +1,20 @@
-import React, { Component, useEffect, useState } from "react"
-import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
+import React, { Component, useEffect, useState } from "react";
+import type { InferGetServerSidePropsType, GetServerSideProps } from 'next';
 import toast, { Toaster } from 'react-hot-toast';
 import { Input, Textarea, Button } from "@material-tailwind/react";
 import axios from "axios";
-
-import Select from "./components/reactSelect";
-import ReactTable from "./components/reactTable";
-import DebouncedInput from "./components/debouncedInput"
 import Link from "next/link";
+
+import Select from "./../components/reactSelect";
+import ReactTable from "./../components/reactTable";
+import DebouncedInput from "./../components/debouncedInput";
 
 export default function Company({ userData, setuserData }: any) {
     const [pagePermission, setpagePermission] = useState([]);
     const [dataCreate, setdataCreate] = useState();
     const [userNullCom, setuserNullCom] = useState();
     const [search, setsearch] = useState('');
-    const URLAPI = "/api/company/";
+    const URLAPI = "/api/company";
     const Subject = "Company";
 
     useEffect(() => {
@@ -23,7 +23,7 @@ export default function Company({ userData, setuserData }: any) {
                 try {
                     await axios({
                         method: "GET",
-                        url: "/api/company?dataUser=1",
+                        url: URLAPI+"?dataUser=1",
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }

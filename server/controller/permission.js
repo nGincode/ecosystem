@@ -44,21 +44,49 @@ const putId = async (req, res) => {
     let data = [];
     let check = false;
     val.data.map((vall) => {
-      let find = req.body[vall.name.replace("[]", "")];
-      console.log(find);
-      if (find?.[0] === "true") {
-        check = true;
+      if (vall.option) {
+        let optionCheck = false;
+        let dataOption = [];
+        vall.option.map((valll) => {
+          let find = req.body[valll.name.replace("[]", "")];
+          if (find?.[0] === "true") {
+            optionCheck = true;
+          }
+          dataOption.push({
+            name: valll.name,
+            label: valll.label,
+            link: valll.link,
+            checklist: [
+              find?.[0] === "true" ? "view" : null,
+              find?.[1] === "true" ? "create" : null,
+              find?.[2] === "true" ? "edit" : null,
+              find?.[3] === "true" ? "delete" : null,
+            ],
+          });
+        });
+
+        data.push({
+          label: vall.label,
+          check: optionCheck,
+          data: dataOption,
+        });
+      } else {
+        let find = req.body[vall.name.replace("[]", "")];
+        if (find?.[0] === "true") {
+          check = true;
+        }
+        data.push({
+          name: vall.name,
+          label: vall.label,
+          link: vall.link,
+          checklist: [
+            find?.[0] === "true" ? "view" : null,
+            find?.[1] === "true" ? "create" : null,
+            find?.[2] === "true" ? "edit" : null,
+            find?.[3] === "true" ? "delete" : null,
+          ],
+        });
       }
-      data.push({
-        name: vall.name,
-        label: vall.label,
-        checklist: [
-          find?.[0] === "true" ? "view" : null,
-          find?.[1] === "true" ? "create" : null,
-          find?.[2] === "true" ? "edit" : null,
-          find?.[3] === "true" ? "delete" : null,
-        ],
-      });
     });
 
     return {

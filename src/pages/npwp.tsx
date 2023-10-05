@@ -5,15 +5,15 @@ import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
 
-import Select from "./components/reactSelect";
-import ReactTable from "./components/reactTable";
-import DebouncedInput from "./components/debouncedInput"
+import Select from "./../components/reactSelect";
+import ReactTable from "./../components/reactTable";
+import DebouncedInput from "./../components/debouncedInput"
 
 export default function Npwp({ userData, setuserData }: any) {
     const [pagePermission, setpagePermission] = useState([]);
     const [dataCreate, setdataCreate] = useState();
     const [search, setsearch] = useState('');
-    const URLAPI = "/api/npwp/";
+    const URLAPI = "/api/npwp";
     const Subject = "NPWP";
 
     useEffect(() => {
@@ -224,7 +224,7 @@ export default function Npwp({ userData, setuserData }: any) {
                                         delete: pagePermission.find((val: any) => val == "delete") ? URLAPI : null,
                                         edit: pagePermission.find((val: any) => val == "edit") ? URLAPI : null
                                     }}
-                                    urlFatch={'/api/npwp'}
+                                    urlFatch={URLAPI}
                                     modalData={modalData}
                                     Subject={Subject}
                                     reload={dataCreate}

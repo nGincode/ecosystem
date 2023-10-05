@@ -5,18 +5,19 @@ import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import toast, { Toaster } from 'react-hot-toast';
 import { Input, Textarea, Button, Checkbox, IconButton } from "@material-tailwind/react";
 import axios from "axios";
-
-import Select from "./components/reactSelect";
-import ReactTable from "./components/reactTable";
-import DebouncedInput from "./components/debouncedInput"
-import ReactSelect from "./components/reactSelect";
 import Link from "next/link";
+
+import Select from "./../components/reactSelect";
+import ReactTable from "./../components/reactTable";
+import DebouncedInput from "./../components/debouncedInput"
+import ReactSelect from "./../components/reactSelect";
+import AccessData from "./../components/accessData";
 
 export default function Permission({ userData, setuserData }: any) {
     const [pagePermission, setpagePermission] = useState([]);
     const [dataCreate, setdataCreate] = useState();
     const [search, setsearch] = useState('');
-    const URLAPI = "/api/permission/";
+    const URLAPI = "/api/permission";
     const Subject = "Permission";
 
     const handleApi = async (url: any, data: any = null) => {
@@ -51,48 +52,7 @@ export default function Permission({ userData, setuserData }: any) {
         })?.filter((val: any) => val !== undefined)?.[0]?.checklist ?? [])
     }, [userData])
 
-    const permissionData = [
-        {
-            label: 'Dashboards',
-            data: [
-                {
-                    label: 'Analytics',
-                    name: 'analytics[]',
-                    checklist: ['view', 'edit', 'delete', 'create']
-                },
-            ],
-        },
-        {
-            label: 'Accounts',
-            data: [
-                {
-                    label: 'Users',
-                    name: 'users[]',
-                    checklist: ['view', 'edit', 'delete', 'create']
-                },
-                {
-                    label: 'Permission',
-                    name: 'permission[]',
-                    checklist: ['view', 'edit', 'delete', 'create']
-                },
-                {
-                    label: 'Company',
-                    name: 'company[]',
-                    checklist: ['view', 'edit', 'delete', 'create']
-                },
-                {
-                    label: 'NPWP',
-                    name: 'npwp[]',
-                    checklist: ['view', 'edit', 'delete', 'create']
-                },
-                {
-                    label: 'E-Faktur',
-                    name: 'efaktur[]',
-                    checklist: ['view', 'edit', 'delete', 'create']
-                }
-            ],
-        }
-    ];
+    const PermissionData = AccessData();
 
     const modalData = [
         {
@@ -106,7 +66,7 @@ export default function Permission({ userData, setuserData }: any) {
             full: true,
             type: 'permission',
             required: true,
-            data: permissionData
+            data: PermissionData
         }, {
             name: 'view',
             label: 'View Data',
@@ -122,20 +82,49 @@ export default function Permission({ userData, setuserData }: any) {
     const submitAdd = (event: any) => {
         event.preventDefault();
 
-        let data = permissionData.map((val: any) => {
+        let data = PermissionData.map((val: any) => {
             let check = false;
             let dataCheck = val.data.map((vall: any) => {
-                let view = event.target[vall.name][0].checked ? 'view' : null;
-                let create = event.target[vall.name][1].checked ? 'create' : null;
-                let edit = event.target[vall.name][2].checked ? 'edit' : null;
-                let del = event.target[vall.name][3].checked ? 'delete' : null;
-                if (view) {
-                    check = true;
-                }
-                return {
-                    label: vall.label,
-                    name: vall.name,
-                    checklist: [view, create, edit, del]
+                if (vall.option) {
+                    let checkOption = false;
+                    let dataOption = vall.option.map((valll: any) => {
+                        let view = event.target[valll.name][0].checked ? 'view' : null;
+                        let create = event.target[valll.name][1].checked ? 'create' : null;
+                        let edit = event.target[valll.name][2].checked ? 'edit' : null;
+                        let del = event.target[valll.name][3].checked ? 'delete' : null;
+                        if (view) {
+                            checkOption = true;
+                        }
+                        return {
+                            label: valll.label,
+                            name: valll.name,
+                            link: valll.link,
+                            checklist: [view, create, edit, del]
+                        }
+
+                    });
+                    if (checkOption) {
+                        check = true;
+                    }
+                    return {
+                        label: vall.label,
+                        check: checkOption,
+                        data: dataOption,
+                    }
+                } else {
+                    let view = event.target[vall.name][0].checked ? 'view' : null;
+                    let create = event.target[vall.name][1].checked ? 'create' : null;
+                    let edit = event.target[vall.name][2].checked ? 'edit' : null;
+                    let del = event.target[vall.name][3].checked ? 'delete' : null;
+                    if (view) {
+                        check = true;
+                    }
+                    return {
+                        label: vall.label,
+                        name: vall.name,
+                        link: vall.link,
+                        checklist: [view, create, edit, del]
+                    }
                 }
             });
 
@@ -238,32 +227,65 @@ export default function Permission({ userData, setuserData }: any) {
                                                         </IconButton>
                                                     </div>
                                                 </div>
-                                                {permissionData.map((val: any, i: number) => {
+                                                {PermissionData.map((val: any, i: number) => {
                                                     return (<div key={i}>
                                                         <div className="flex mt-3 font-bold">
                                                             <div className="w-1/2">{val.label}</div>
                                                         </div>
                                                         {val.data.map((vall: any, ii: number) => {
-                                                            return (
-                                                                <div key={ii} className="flex mt-1">
-                                                                    <div className="w-1/2 ml-2 m-auto">- {vall.label}</div>
-                                                                    <div className="w-1/6 justify-center flex">
-                                                                        {vall.checklist.find((fil: any) => fil === 'view') ?
-                                                                            <Checkbox name={vall.name} /> : <Checkbox hidden name={vall.name} />}
+                                                            if (vall.checklist) {
+                                                                return (
+                                                                    <div key={ii} className="flex mt-1 ml-2">
+                                                                        <div className="w-1/2 ml-2 m-auto"> {vall.label}</div>
+                                                                        <div className="w-1/6 justify-center flex">
+                                                                            {vall.checklist.find((fil: any) => fil === 'view') ?
+                                                                                <Checkbox name={vall.name} /> : <Checkbox hidden name={vall.name} />}
+                                                                        </div>
+                                                                        <div className="w-1/6 justify-center flex">
+                                                                            {vall.checklist.find((fil: any) => fil === 'create') ?
+                                                                                <Checkbox color="blue" name={vall.name} /> : <Checkbox hidden name={vall.name} />}
+                                                                        </div>
+                                                                        <div className="w-1/6  justify-center flex">
+                                                                            {vall.checklist.find((fil: any) => fil === 'edit') ?
+                                                                                <Checkbox color="green" name={vall.name} /> : <Checkbox hidden name={vall.name} />}
+                                                                        </div>
+                                                                        <div className="w-1/6  justify-center flex">
+                                                                            {vall.checklist.find((fil: any) => fil === 'delete') ?
+                                                                                <Checkbox color="red" name={vall.name} /> : <Checkbox hidden name={vall.name} />}
+                                                                        </div>
+                                                                    </div>)
+                                                            } else {
+                                                                return (
+                                                                    <div key={ii} className="ml-2" >
+                                                                        <div className="flex my-2 font-semibold">
+                                                                            <div className="w-1/2">{vall.label}</div>
+                                                                        </div>
+
+                                                                        {vall.option.map((valll: any, iii: number) => {
+                                                                            return (
+                                                                                <div key={iii} className="flex mt-1 ml-2">
+                                                                                    <div className="w-1/2 ml-2 m-auto"> {valll.label}</div>
+                                                                                    <div className="w-1/6 justify-center flex">
+                                                                                        {valll.checklist.find((fil: any) => fil === 'view') ?
+                                                                                            <Checkbox name={valll.name} /> : <Checkbox hidden name={valll.name} />}
+                                                                                    </div>
+                                                                                    <div className="w-1/6 justify-center flex">
+                                                                                        {valll.checklist.find((fil: any) => fil === 'create') ?
+                                                                                            <Checkbox color="blue" name={valll.name} /> : <Checkbox hidden name={valll.name} />}
+                                                                                    </div>
+                                                                                    <div className="w-1/6  justify-center flex">
+                                                                                        {valll.checklist.find((fil: any) => fil === 'edit') ?
+                                                                                            <Checkbox color="green" name={valll.name} /> : <Checkbox hidden name={valll.name} />}
+                                                                                    </div>
+                                                                                    <div className="w-1/6  justify-center flex">
+                                                                                        {valll.checklist.find((fil: any) => fil === 'delete') ?
+                                                                                            <Checkbox color="red" name={valll.name} /> : <Checkbox hidden name={valll.name} />}
+                                                                                    </div>
+                                                                                </div>)
+                                                                        })}
                                                                     </div>
-                                                                    <div className="w-1/6 justify-center flex">
-                                                                        {vall.checklist.find((fil: any) => fil === 'create') ?
-                                                                            <Checkbox color="blue" name={vall.name} /> : <Checkbox hidden name={vall.name} />}
-                                                                    </div>
-                                                                    <div className="w-1/6  justify-center flex">
-                                                                        {vall.checklist.find((fil: any) => fil === 'edit') ?
-                                                                            <Checkbox color="green" name={vall.name} /> : <Checkbox hidden name={vall.name} />}
-                                                                    </div>
-                                                                    <div className="w-1/6  justify-center flex">
-                                                                        {vall.checklist.find((fil: any) => fil === 'delete') ?
-                                                                            <Checkbox color="red" name={vall.name} /> : <Checkbox hidden name={vall.name} />}
-                                                                    </div>
-                                                                </div>)
+                                                                )
+                                                            }
                                                         })}
                                                     </div>)
                                                 })}

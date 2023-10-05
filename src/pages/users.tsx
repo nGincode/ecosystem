@@ -4,19 +4,19 @@ import React, { Component, useEffect, useState } from "react"
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import toast, { Toaster } from 'react-hot-toast';
 import axios from "axios";
-
-import Select from "./components/reactSelect";
-import ReactTable from "./components/reactTable";
-import DebouncedInput from "./components/debouncedInput"
 import { Input, Textarea, Button } from "@material-tailwind/react";
 import Link from "next/link";
+
+import Select from "./../components/reactSelect";
+import ReactTable from "./../components/reactTable";
+import DebouncedInput from "./../components/debouncedInput"
 
 export default function Users({ userData, setuserData }: any) {
     const [pagePermission, setpagePermission] = useState([]);
     const [dataCreate, setdataCreate] = useState();
     const [search, setsearch] = useState('');
     const [dataPermission, setdataPermission] = useState([]);
-    const URLAPI = "/api/user/";
+    const URLAPI = "/api/user";
     const Subject = "Users";
 
 

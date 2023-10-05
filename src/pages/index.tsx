@@ -2,8 +2,8 @@
 import React, { Component, useEffect, useState, Suspense } from "react"
 import toast, { Toaster } from 'react-hot-toast';
 
-import Chart from "./components/chart";
-import Skelaton from './components/skelaton';
+import Chart from "./../components/chart";
+import Skelaton from './../components/skelaton';
 
 export default function Index({ userData, setuserData }: any) {
 

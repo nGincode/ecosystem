@@ -171,38 +171,82 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                     {vall.check ?
                                         <>
                                             {vall.data.map((map: any, ii: number) => {
-                                                let check = false;
-                                                let view = map.checklist.find((find: any) => find == 'view') ?
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    </svg> : null;
-                                                let create = map.checklist.find((find: any) => find == 'create') ?
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-blue-600">
-                                                        <path fillRule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clipRule="evenodd" />
-                                                    </svg> : null;
-                                                let edit = map.checklist.find((find: any) => find == 'edit') ?
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-green-600">
-                                                        <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
-                                                        <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
-                                                    </svg> : null;
-                                                let del = map.checklist.find((find: any) => find == 'delete') ?
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-red-600">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                    </svg> : null;
-                                                if (view) {
-                                                    check = true;
+                                                if (map.checklist) {
+                                                    let check = false;
+                                                    let view = map.checklist.find((find: any) => find == 'view') ?
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        </svg> : null;
+                                                    let create = map.checklist.find((find: any) => find == 'create') ?
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-blue-600">
+                                                            <path fillRule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clipRule="evenodd" />
+                                                        </svg> : null;
+                                                    let edit = map.checklist.find((find: any) => find == 'edit') ?
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-green-600">
+                                                            <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                                                            <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                                                        </svg> : null;
+                                                    let del = map.checklist.find((find: any) => find == 'delete') ?
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-red-600">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                        </svg> : null;
+                                                    if (view) {
+                                                        check = true;
+                                                    }
+                                                    if (check) {
+                                                        return <div key={ii} className="flex  w-full">
+                                                            <div className="w-full">{vall.label} {map.label}
+                                                                <div className="float-right w-13 flex">
+                                                                    {view}
+                                                                    {create}
+                                                                    {edit}
+                                                                    {del}
+                                                                </div></div>
+                                                        </div>;
+                                                    }
+                                                } else {
+                                                    return map.data.map((maps: any, iii: number) => {
+                                                        let check = false;
+                                                        let view = maps.checklist.find((find: any) => find == 'view') ?
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            </svg> : null;
+                                                        let create = maps.checklist.find((find: any) => find == 'create') ?
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-blue-600">
+                                                                <path fillRule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clipRule="evenodd" />
+                                                            </svg> : null;
+                                                        let edit = maps.checklist.find((find: any) => find == 'edit') ?
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-green-600">
+                                                                <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                                                                <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                                                            </svg> : null;
+                                                        let del = maps.checklist.find((find: any) => find == 'delete') ?
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-red-600">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                            </svg> : null;
+                                                        if (view) {
+                                                            check = true;
+                                                        }
+
+                                                        if (check) {
+                                                            return <div key={iii} className="flex  w-full">
+                                                                <div className="w-full">{vall.label} {maps.label}
+                                                                    <div className="float-right w-13 flex">
+                                                                        {view}
+                                                                        {create}
+                                                                        {edit}
+                                                                        {del}
+                                                                    </div></div>
+                                                            </div>;
+                                                        }
+
+                                                    })
+
+
                                                 }
-                                                if (check)
-                                                    return <div key={ii} className="flex  w-full">
-                                                        <div className="w-full">{vall.label} {map.label}
-                                                            <div className="float-right w-13 flex">
-                                                                {view}
-                                                                {create}
-                                                                {edit}
-                                                                {del}
-                                                            </div></div>
-                                                    </div>;
+
                                             })}
                                         </> : null}</div>)
                             })
@@ -769,23 +813,52 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                                                                     </div>
                                                                                     {val.data.map((vall: any, ii: number) => {
                                                                                         let perm = dataEdit?.permission.find((fill: any) => fill.label === val.label)?.data?.find((fil: any) => fil.name === vall.name);
+                                                                                        if (perm?.checklist) {
+                                                                                            return (
+                                                                                                <div key={ii} className="flex mt-1 ml-2">
+                                                                                                    <div className="w-1/2 ml-2 m-auto"> {vall.label}</div>
+                                                                                                    <div className="w-1/6 justify-center flex">
+                                                                                                        <Cekbox name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 1} checked={perm?.checklist.find((fil: any) => fil === 'view') ? true : false} />
+                                                                                                    </div>
+                                                                                                    <div className="w-1/6 justify-center flex">
+                                                                                                        <Cekbox color="blue" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 2} checked={perm?.checklist.find((fil: any) => fil === 'create') ? true : false} />
+                                                                                                    </div>
+                                                                                                    <div className="w-1/6  justify-center flex">
+                                                                                                        <Cekbox color="green" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 3} checked={perm?.checklist.find((fil: any) => fil === 'edit') ? true : false} />
+                                                                                                    </div>
+                                                                                                    <div className="w-1/6  justify-center flex">
+                                                                                                        <Cekbox color="red" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 4} checked={perm?.checklist.find((fil: any) => fil === 'delete') ? true : false} />
+                                                                                                    </div>
+                                                                                                </div>)
+                                                                                        } else {
 
-                                                                                        return (
-                                                                                            <div key={ii} className="flex mt-1">
-                                                                                                <div className="w-1/2 ml-2 m-auto">- {vall.label}</div>
-                                                                                                <div className="w-1/6 justify-center flex">
-                                                                                                    <Cekbox name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 1} checked={perm?.checklist.find((fil: any) => fil === 'view') ? true : false} />
+                                                                                            return (
+                                                                                                <div key={ii} className="ml-2" >
+                                                                                                    <div className="flex my-2 font-semibold">
+                                                                                                        <div className="w-1/2">{perm?.label}</div>
+                                                                                                    </div>
+                                                                                                    {perm?.data.map((valll: any, iii: number) => {
+                                                                                                        let perm = dataEdit?.permission.find((fill: any) => fill.label === val.label)?.data?.find((fil: any) => fil.name === vall.name)?.data?.find((fil: any) => fil.name === valll.name);
+                                                                                                        return (
+                                                                                                            <div key={iii} className="flex mt-1 ml-2">
+                                                                                                                <div className="w-1/2 ml-2 m-auto"> {valll.label}</div>
+                                                                                                                <div className="w-1/6 justify-center flex">
+                                                                                                                    <Cekbox name={valll.name} id={dataEdit?.name + vall.label + valll.name + iii + 1} checked={perm?.checklist.find((fil: any) => fil === 'view') ? true : false} />
+                                                                                                                </div>
+                                                                                                                <div className="w-1/6 justify-center flex">
+                                                                                                                    <Cekbox color="blue" name={valll.name} id={dataEdit?.name + vall.label + valll.name + iii + 2} checked={perm?.checklist.find((fil: any) => fil === 'create') ? true : false} />
+                                                                                                                </div>
+                                                                                                                <div className="w-1/6  justify-center flex">
+                                                                                                                    <Cekbox color="green" name={valll.name} id={dataEdit?.name + vall.label + valll.name + iii + 3} checked={perm?.checklist.find((fil: any) => fil === 'edit') ? true : false} />
+                                                                                                                </div>
+                                                                                                                <div className="w-1/6  justify-center flex">
+                                                                                                                    <Cekbox color="red" name={valll.name} id={dataEdit?.name + vall.label + valll.name + iii + 4} checked={perm?.checklist.find((fil: any) => fil === 'delete') ? true : false} />
+                                                                                                                </div>
+                                                                                                            </div>)
+                                                                                                    })}
                                                                                                 </div>
-                                                                                                <div className="w-1/6 justify-center flex">
-                                                                                                    <Cekbox color="blue" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 2} checked={perm?.checklist.find((fil: any) => fil === 'create') ? true : false} />
-                                                                                                </div>
-                                                                                                <div className="w-1/6  justify-center flex">
-                                                                                                    <Cekbox color="green" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 3} checked={perm?.checklist.find((fil: any) => fil === 'edit') ? true : false} />
-                                                                                                </div>
-                                                                                                <div className="w-1/6  justify-center flex">
-                                                                                                    <Cekbox color="red" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 4} checked={perm?.checklist.find((fil: any) => fil === 'delete') ? true : false} />
-                                                                                                </div>
-                                                                                            </div>)
+                                                                                            )
+                                                                                        }
                                                                                     })}
                                                                                 </div>)
                                                                             })}

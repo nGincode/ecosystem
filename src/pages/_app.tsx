@@ -15,9 +15,9 @@ if (typeof window !== "undefined") {
     (window as any).autocomplete = require("./../../public/app-assets/js/plugin/autocomplete.min.js");
 }
 
-import Layout from './components/layout'
-import Login from "./auth/login"
-import LoadingPage from './components/loadingPage';
+import Login from "./auth/login";
+import LoadingPage from './../components/loadingPage';
+import Layout from './../components/layout'
 
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -93,7 +93,31 @@ export default function App({ Component, pageProps }: AppProps) {
     }, []);
 
     const router = useRouter();
-    const ComponetPermission = router.asPath == '/profile' ? true : userData?.permission?.data?.find((find: any) => find.data.filter((fn: any) => fn.name.replaceAll('[]', '').toLocaleLowerCase() == (router.asPath == '/' ? 'analytics' : router.asPath.replaceAll('/', '').toLocaleLowerCase()))?.[0]?.checklist?.[0] == 'view') ? true : false;
+
+    //permission akses banned
+    let ComponetPermission = false;
+    userData?.permission?.data.map((find: any) => {
+        find.data.map((fn: any) => {
+            if (fn.check) {
+                fn.data.map((f: any) => {
+                    if (f.link === router.asPath && f.checklist[0]) {
+                        ComponetPermission = true;
+                    }
+                })
+            } else {
+                if (fn.link === router.asPath) {
+                    ComponetPermission = true;
+                }
+            }
+        }
+        )
+    });
+    if (router.asPath == '/profile' || router.asPath == '/') {
+        ComponetPermission = true;
+    }
+    if (router.asPath == '/auth/login' && userData?.permission?.data) {
+        router.push('/');
+    }
     if (router.asPath == '/' && !ComponetPermission) {
         let acc = '';
         userData?.permission?.data?.map((find: any) => {
@@ -108,6 +132,8 @@ export default function App({ Component, pageProps }: AppProps) {
             router.push(acc);
         }
     }
+
+
 
     return (
         <>

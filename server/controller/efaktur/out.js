@@ -1,4 +1,4 @@
-const { user, npwp, efaktur, efakturItem, company } = require("../models");
+const { user, npwp, efaktur, efakturItem, company } = require("../../models");
 const moment = require("moment/moment");
 const Crypto = require("crypto");
 const numeral = require("numeral");
