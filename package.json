@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon server/index.js",
+    "dev": "nodemon NODE_ENV=development server/index.js ",
     "build": "next build",
-    "start": "node server/index.js",
+    "start": "NODE_ENV=production node server/index.js",
     "lint": "next lint",
     "publish": "npx pm2 stop 0 && git pull && npm update && next build && npx pm2 start 0"
   },
