@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon server/index.js NODE_ENV=development",
+    "dev": "nodemon server/index.js",
     "build": "next build",
     "start": "node server/index.js",
     "lint": "next lint",
