@@ -9,7 +9,7 @@ const logger = require("morgan");
 const path = require("path");
 const dotenv = require("dotenv").config();
 
-const dev = process.env.NODE_ENV !== "production";
+const dev = process.env.NODE_ENV !== "development";
 console.log(dev ? "development" : "production");
 const hostname = "localhost";
 const port = 1999;
