@@ -5,9 +5,9 @@ import { Input, Textarea, Button } from "@material-tailwind/react";
 import axios from "axios";
 import Link from "next/link";
 
-import Select from "./../components/reactSelect";
-import ReactTable from "./../components/reactTable";
-import DebouncedInput from "./../components/debouncedInput";
+import Select from "../components/reactSelect";
+import ReactTable from "../components/reactTable";
+import DebouncedInput from "../components/debouncedInput";
 
 export default function Company({ userData, setuserData }: any) {
     const [pagePermission, setpagePermission] = useState([]);
@@ -23,7 +23,7 @@ export default function Company({ userData, setuserData }: any) {
                 try {
                     await axios({
                         method: "GET",
-                        url: URLAPI+"?dataUser=1",
+                        url: URLAPI + "?dataUser=1",
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }

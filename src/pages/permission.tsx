@@ -7,11 +7,11 @@ import { Input, Textarea, Button, Checkbox, IconButton } from "@material-tailwin
 import axios from "axios";
 import Link from "next/link";
 
-import Select from "./../components/reactSelect";
-import ReactTable from "./../components/reactTable";
-import DebouncedInput from "./../components/debouncedInput"
-import ReactSelect from "./../components/reactSelect";
-import AccessData from "./../components/accessData";
+import Select from "../components/reactSelect";
+import ReactTable from "../components/reactTable";
+import DebouncedInput from "../components/debouncedInput"
+import ReactSelect from "../components/reactSelect";
+import AccessData from "../components/accessData";
 
 export default function Permission({ userData, setuserData }: any) {
     const [pagePermission, setpagePermission] = useState([]);

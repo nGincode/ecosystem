@@ -7,13 +7,13 @@
     "build": "next build",
     "start": "node server/index.js",
     "lint": "next lint",
-    "publish": "npx pm2 stop 0 && git pull && npm update && next build && npx pm2 start 0"
+    "publish": "npx pm2 stop 0 && git pull && next build && npx pm2 start 0"
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
     "@grapecity/spread-excelio": "16.0.3",
     "@grapecity/spread-sheets-react": "^16.2.0",
-    "@material-tailwind/react": "^2.1.1",
+    "@material-tailwind/react": "2.0.8",
     "@tanstack/match-sorter-utils": "^8.8.4",
     "@tanstack/react-table": "^8.9.3",
     "@types/jquery": "^3.5.16",

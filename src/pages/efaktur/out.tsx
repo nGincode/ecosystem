@@ -23,10 +23,10 @@ import Image from "next/image";
 // import { SpreadSheets, Worksheet } from '@grapecity/spread-sheets-react';
 // import '@grapecity/spread-sheets/styles/gc.spread.sheets.excel2013white.css';
 
-import Select from "./../../components/reactSelect";
-import ReactTable from "./../../components/reactTable";
-import SelectFem from "./../../components/selectFem";
-import DebouncedInput from "./../../components/debouncedInput";
+import Select from "../../components/reactSelect";
+import ReactTable from "../../components/reactTable";
+import SelectFem from "../../components/selectFem";
+import DebouncedInput from "../../components/debouncedInput";
 
 
 export default function EfakturOut({ userData, setuserData }: any) {

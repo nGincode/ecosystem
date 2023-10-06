@@ -16,8 +16,8 @@ if (typeof window !== "undefined") {
 }
 
 import Login from "./auth/login";
-import LoadingPage from './../components/loadingPage';
-import Layout from './../components/layout'
+import LoadingPage from '../components/loadingPage';
+import Layout from '../components/layout'
 
 
 export default function App({ Component, pageProps }: AppProps) {

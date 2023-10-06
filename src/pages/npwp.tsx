@@ -5,9 +5,9 @@ import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
 
-import Select from "./../components/reactSelect";
-import ReactTable from "./../components/reactTable";
-import DebouncedInput from "./../components/debouncedInput"
+import Select from "../components/reactSelect";
+import ReactTable from "../components/reactTable";
+import DebouncedInput from "../components/debouncedInput"
 
 export default function Npwp({ userData, setuserData }: any) {
     const [pagePermission, setpagePermission] = useState([]);
