@@ -506,37 +506,15 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                     err.push("Judul NPWP/NIK Tidak Ada");
                                 }
 
-                                if (valll['Nama Barang']) {
-                                    if (valll['Nama Barang'].indexOf(',') >= 0) {
-                                        err.push("(Baris: " + (ii + 2) + ") " + "Nama Barang Terdapat Koma");
-                                    }
-                                    if (valll['Nama Barang'].indexOf('"') >= 0) {
-                                        // err.push("(Baris: " + (ii + 2) + ") " + "Nama Barang Terdapat Kutip");
-                                    }
-                                } else {
+                                if (!valll['Nama Barang']) {
                                     err.push("Judul Nama Barang Tidak Ada");
                                 }
 
-                                if (valll['Alamat']) {
-                                    if (valll['Alamat'].indexOf(',') >= 0) {
-                                        err.push("(Baris: " + (ii + 2) + ") " + "Alamat Terdapat Koma");
-                                    }
-                                    if (valll['Alamat'].indexOf('"') >= 0) {
-                                        err.push("(Baris: " + (ii + 2) + ") " + "Alamat Terdapat Kutip");
-                                    }
-                                } else {
+                                if (!valll['Alamat']) {
                                     err.push("Judul Alamat Tidak Ada");
                                 }
 
-                                if (valll['Nama NPWP/NIK']) {
-                                    if (valll['Nama NPWP/NIK'].indexOf(',') >= 0) {
-                                        err.push("(Baris: " + (ii + 2) + ") " + "Nama NPWP Terdapat Koma");
-                                    }
-
-                                    if (valll['Nama NPWP/NIK'].indexOf('"') >= 0) {
-                                        err.push("(Baris: " + (ii + 2) + ") " + "Nama NPWP Terdapat Kutip");
-                                    }
-                                } else {
+                                if (!valll['Nama NPWP/NIK']) {
                                     err.push("Judul Nama NPWP/NIK Tidak Ada");
                                 }
 
@@ -578,10 +556,10 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                 let NAMEDetec = '';
                                 if (valll['NPWP/NIK']?.length === 15) {
                                     NPWPDetec = valll['NPWP/NIK'];
-                                    NAMEDetec = valll['Nama NPWP/NIK'];
+                                    NAMEDetec = valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('"', '');
                                 } else if (valll['NPWP/NIK']?.length === 16) {
                                     NPWPDetec = '000000000000000';
-                                    NAMEDetec = `${valll['NPWP/NIK']}#NIK#NAMA#${valll['Nama NPWP/NIK']}`;
+                                    NAMEDetec = `${valll['NPWP/NIK']}#NIK#NAMA#${valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('"', '')}`;
                                 } else {
                                     err.push("(Baris: " + (ii + 2) + ") " + "NPWP Tidak Valid");
                                 }
@@ -607,7 +585,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                         moment(valll['Tanggal'], 'YYYY/MM/DD').format('DD/MM/YYYY'),
                                         NPWPDetec,
                                         NAMEDetec,
-                                        valll['Alamat'],
+                                        valll['Alamat'].replaceAll(',', '').replaceAll('"', ''),
                                         Math.floor(jumlahDPP),
                                         Math.floor(jumlahPPN),
                                         Math.floor(jumlahPPNBM),
@@ -616,13 +594,13 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                         valll['Uang Muka DPP'] ?? 0,
                                         valll['Uang Muka PPN'] ?? 0,
                                         valll['Uang Muka PPNBM'] ?? 0,
-                                        valll['Referensi'] ?? '',
+                                        valll['Referensi']?.replaceAll(',', '').replaceAll('"', '') ?? '',
                                         valll['Kode Dokumen Pendukung'] ?? ''
                                     ]);
                                     data.push([
                                         "OF",
-                                        valll['Kode Barang'] ?? '',
-                                        valll['Nama Barang'],
+                                        valll['Kode Barang']?.replaceAll(',', '').replaceAll('"', '') ?? '',
+                                        valll['Nama Barang']?.replaceAll(',', '').replaceAll('"', ''),
                                         hargaSatuan,
                                         jumlahBarang,
                                         hargaTotal,
@@ -635,8 +613,8 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                 } else {
                                     data.push([
                                         "OF",
-                                        valll['Kode Barang'] ?? '',
-                                        valll['Nama Barang'],
+                                        valll['Kode Barang']?.replaceAll(',', '').replaceAll('"', '') ?? '',
+                                        valll['Nama Barang']?.replaceAll(',', '').replaceAll('"', ''),
                                         hargaSatuan,
                                         jumlahBarang,
                                         hargaTotal,
@@ -652,6 +630,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                     })
 
                     let arrayFinal = [...subject, ...data];
+
                     if (err.length) {
                         toast.error(err.filter((value: any, index: any, array: any) => array.indexOf(value) === index).map((val: any) => {
                             return val + '\n'
