@@ -9,11 +9,9 @@ const logger = require("morgan");
 const path = require("path");
 const dotenv = require("dotenv").config();
 
-const dev = dotenv.parsed.NODE_ENV !== "production";
-console.log(dev ? "development" : "production");
+const dev = !process.env.DEV ? false : true;
 const hostname = dotenv.parsed.HOSTNAME;
 const port = dotenv.parsed.PORT;
-// when using middleware `hostname` and `port` must be provided below
 const app = next({ dev, hostname, port });
 
 const handle = app.getRequestHandler();
@@ -34,6 +32,11 @@ app.prepare().then(() => {
   });
 
   server.listen(port, () => {
-    console.log(`> Ready on http://${hostname}:${port}`);
+    console.log(
+      "\x1b[36m%s\x1b[0m",
+      `> Ready on ${
+        dev ? "Development" : "Production"
+      } http://${hostname}:${port}`
+    );
   });
 });
