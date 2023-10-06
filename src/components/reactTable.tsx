@@ -137,7 +137,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                         header: () => null,
                         cell: ({ row }: any) => {
                             if (row.original.img) {
-                                return <div className="avatar-item avatar-lg d-flex align-items-center justify-content-center bg-primary-4 hp-bg-dark-primary text-primary hp-text-color-dark-0 rounded-circle"><Image width={50} height={50} src={row.original.img} className=" object-cover rounded-full w-12 h-12" alt={row.original.name} />
+                                return <div className="avatar-item avatar-lg d-flex align-items-center justify-content-center bg-primary-4 hp-bg-dark-primary text-primary hp-text-color-dark-0 rounded-circle"><Image width={50} height={50} src={row.original.img} className=" object-cover rounded-full w-12 h-12" alt={row.original.name ?? row.original.uuid} />
                                 </div>
                             } else {
                                 return <div className="avatar-item avatar-lg d-flex align-items-center justify-content-center bg-primary-4 hp-bg-dark-primary text-primary hp-text-color-dark-0 rounded-circle">{(row.original.name ?? row.original.username).substring(0, 2)}</div>

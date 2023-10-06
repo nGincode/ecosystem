@@ -1,9 +1,9 @@
 {
   "name": "ecosystem",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "set ENV=development && nodemon server/index.js ",
+    "dev": "nodemon server/index.js ",
     "build": "next build",
     "start": "node server/index.js",
     "lint": "next lint",
@@ -30,7 +30,6 @@
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "datatables.net-dt": "^1.13.6",
-    "dotenv": "^16.3.1",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.12",
     "express": "^4.18.2",
