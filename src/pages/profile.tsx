@@ -1,8 +1,7 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable @next/next/no-img-element */
 import React, { Component, useEffect, useState } from "react"
 import toast, { Toaster } from 'react-hot-toast';
 import { Input, Textarea, Button } from "@material-tailwind/react";
+import Image from "next/image";
 import axios from "axios";
 import moment from "moment"
 import Link from "next/link";
@@ -178,10 +177,10 @@ export default function Profile({ userData, setuserData }: any) {
                                         <div className="d-inline-block position-relative">
                                             {userData.img ?
                                                 <div className="avatar-item d-flex align-items-center justify-content-center rounded-circle" style={{ width: "80px", height: "80px" }}>
-                                                    <img src={userData.img} className="object-cover rounded-full w-20 h-20" />
+                                                    <Image width={100} height={100} alt='' src={userData.img} className="object-cover rounded-full w-20 h-20" />
                                                 </div> :
                                                 <div className="avatar-item d-flex align-items-center justify-content-center rounded-circle" style={{ width: "80px", height: "80px" }}>
-                                                    <img src="./app-assets/img/memoji/memoji-1.png" />
+                                                    <Image width={100} height={100} alt='' src="/app-assets/img/memoji/memoji-1.png" />
                                                 </div>}
 
                                             <span className="position-absolute translate-middle badge rounded-pill bg-primary text-white border-none">
@@ -222,7 +221,7 @@ export default function Profile({ userData, setuserData }: any) {
                             </div>
 
                             <div className="hp-profile-menu-footer">
-                                <img src="./app-assets/img/pages/profile/menu-img.svg" alt="Profile Image" />
+                                <Image width={200} height={200}  src="/app-assets/img/pages/profile/menu-img.svg" alt="Profile Image" />
                             </div>
                         </div>
 
@@ -277,10 +276,10 @@ export default function Profile({ userData, setuserData }: any) {
                                                 <div className="d-inline-block position-relative">
                                                     {userData.img ?
                                                         <div className="avatar-item d-flex align-items-center justify-content-center rounded-circle" style={{ width: "80px", height: "80px" }}>
-                                                            <img src={userData.img} />
+                                                            <Image width={100} height={100} alt='' src={userData.img} />
                                                         </div> :
                                                         <div className="avatar-item d-flex align-items-center justify-content-center rounded-circle" style={{ width: "80px", height: "80px" }}>
-                                                            <img src="./app-assets/img/memoji/memoji-1.png" />
+                                                            <Image width={100} height={100} alt='' src="/app-assets/img/memoji/memoji-1.png" />
                                                         </div>}
 
                                                     <span className="position-absolute translate-middle badge rounded-pill bg-primary text-white border-none">
@@ -322,7 +321,7 @@ export default function Profile({ userData, setuserData }: any) {
                                     </div>
 
                                     <div className="hp-profile-menu-footer">
-                                        <img src="./app-assets/img/pages/profile/menu-img.svg" alt="Profile Image" />
+                                        <Image width={200} height={200} src="/app-assets/img/pages/profile/menu-img.svg" alt="Profile Image" />
                                     </div>
                                 </div>
                             </div>

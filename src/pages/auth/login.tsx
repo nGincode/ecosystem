@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-
 import {
     Button, Badge, Input, Textarea,
     Tabs,
@@ -26,8 +24,8 @@ export default function login({ submitLogin }: any) {
                     <div className="col-12 px-0">
                         <div className="row h-100 w-100 mx-0 align-items-center justify-content-center">
                             <div className="hp-bg-item text-center mb-32 mb-md-0 px-0 col-12">
-                                <img className="hp-dark-none m-auto w-100" src="/app-assets/img/pages/authentication/authentication-bg.svg" alt="Background Image" />
-                                <img className="hp-dark-block m-auto w-100" src="/app-assets/img/pages/authentication/authentication-bg-dark.svg" alt="Background Image" />
+                                <Image className="hp-dark-none m-auto w-100" width={100} height={100} src="/app-assets/img/pages/authentication/authentication-bg.svg" alt="Background Image" />
+                                <Image className="hp-dark-block m-auto w-100" width={100} height={100} src="/app-assets/img/pages/authentication/authentication-bg-dark.svg" alt="Background Image" />
                             </div>
                         </div>
                     </div>

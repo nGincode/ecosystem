@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable @next/next/no-img-element */
 import React, { Component, useEffect, useState } from "react"
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import toast, { Toaster } from 'react-hot-toast';
