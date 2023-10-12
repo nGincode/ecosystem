@@ -10,8 +10,23 @@ const company = require("./company");
 const auth = require("./auth");
 const permission = require("./permission");
 
-router.get("/", (req, res) => {
-  res.send("API Starting!");
+router.get("/", async (req, res) => {
+  // res.send("API Starting!");
+  const { user } = require("../models");
+  const User = await user.findAll({
+    attributes: [
+      "uuid",
+      "img",
+      "fullName",
+      "email",
+      "username",
+      "dateOfBirth",
+      "phone",
+      "address",
+      "status",
+    ],
+  });
+  res.json(["API Starting!", User]);
 });
 
 router.get("/token", (req, res) => {
