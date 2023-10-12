@@ -219,6 +219,10 @@ const get = async (req, res) => {
     }
 
     const data = Company.map((val) => {
+      if (!Array.isArray(val.address)) {
+        val.address = JSON.parse(val.address);
+      }
+
       return {
         uuid: val.uuid,
         name: val.name,

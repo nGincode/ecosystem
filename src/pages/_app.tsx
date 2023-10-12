@@ -47,6 +47,11 @@ export default function App({ Component, pageProps }: AppProps) {
                     if (res.data.status == 200) {
                         localStorage.setItem('token', res.data.token);
                         localStorage.setItem('client_id', res.data.client_id);
+                        if (!Array.isArray(res.data.data.permission.data)) {
+                            res.data.data.permission.data = JSON.parse(res.data.data.permission.data);
+                        } else {
+                            res.data.data.permission = null;
+                        }
                         setuserData(res.data.data);
                     }
                 });
@@ -64,6 +69,11 @@ export default function App({ Component, pageProps }: AppProps) {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }
                     }).then((res) => {
+                        if (!Array.isArray(res.data.data.permission.data)) {
+                            res.data.data.permission.data = JSON.parse(res.data.data.permission.data);
+                        } else {
+                            res.data.data.permission = null;
+                        }
                         setuserData(res.data.data);
                         setloadingFull(false);
                     });
@@ -96,6 +106,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
     //permission akses banned
     let ComponetPermission = false;
+
     userData?.permission?.data.map((find: any) => {
         find.data.map((fn: any) => {
             if (fn.check) {
@@ -132,6 +143,7 @@ export default function App({ Component, pageProps }: AppProps) {
             router.push(acc);
         }
     }
+
 
 
 

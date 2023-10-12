@@ -196,7 +196,7 @@ const get = async (req, res) => {
         email: val.email,
         username: val.username,
         dateOfBirth: val.dateOfBirth
-          ? moment(val.dateOfBirth).format("DD MMM YYYY")
+          ? moment(val.dateOfBirth).format("DD/MM/YYYY")
           : "-",
         phone: val.phone,
         role: val?.permission?.name,

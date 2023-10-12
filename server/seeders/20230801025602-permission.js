@@ -24,6 +24,7 @@ module.exports = {
           {
             data: [
               {
+                link: "/analytics",
                 name: "analytics[]",
                 label: "Analytics",
                 checklist: ["view", "create", "edit", "delete"],
@@ -35,24 +36,46 @@ module.exports = {
           {
             data: [
               {
+                link: "/users",
                 name: "users[]",
                 label: "Users",
                 checklist: ["view", "create", "edit", "delete"],
               },
               {
+                link: "/permission",
                 name: "permission[]",
                 label: "Permission",
                 checklist: ["view", "create", "edit", "delete"],
               },
               {
+                link: "/company",
+                name: "company[]",
+                label: "Company",
+                checklist: ["view", "create", "edit", "delete"],
+              },
+              {
+                link: "/npwp",
                 name: "npwp[]",
                 label: "NPWP",
                 checklist: ["view", "create", "edit", "delete"],
               },
               {
-                name: "efaktur[]",
+                data: [
+                  {
+                    link: "/efaktur/in",
+                    name: "efakturIn[]",
+                    label: "E-Faktur In",
+                    checklist: ["view", "create", "edit", "delete"],
+                  },
+                  {
+                    link: "/efaktur/out",
+                    name: "efakturOut[]",
+                    label: "E-Faktur Out",
+                    checklist: ["view", "create", "edit", "delete"],
+                  },
+                ],
+                check: true,
                 label: "E-Faktur",
-                checklist: ["view", "create", "edit", "delete"],
               },
             ],
             check: true,

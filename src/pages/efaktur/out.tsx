@@ -345,7 +345,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
         var pom = document.createElement('a');
         pom.href = url;
 
-        pom.setAttribute('download', ((JSON.parse(localStorage.getItem('companyActive') as string)?.label) ?? 'By') + '_EcosystemApp.csv');
+        pom.setAttribute('download', (localStorage.getItem('companyActive') ? (JSON.parse(localStorage.getItem('companyActive') as string)?.label) + '_' : '') + 'PK.csv');
         pom.click();
     }
 
@@ -554,12 +554,13 @@ export default function EfakturOut({ userData, setuserData }: any) {
 
                                 let NPWPDetec = '';
                                 let NAMEDetec = '';
-                                if (valll['NPWP/NIK']?.length === 15) {
+                                let NpWp = valll['NPWP/NIK'].replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '');
+                                if (NpWp?.length === 15) {
                                     NPWPDetec = valll['NPWP/NIK'];
-                                    NAMEDetec = valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('"', '');
+                                    NAMEDetec = NpWp;
                                 } else if (valll['NPWP/NIK']?.length === 16) {
                                     NPWPDetec = '000000000000000';
-                                    NAMEDetec = `${valll['NPWP/NIK']}#NIK#NAMA#${valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('"', '')}`;
+                                    NAMEDetec = `${valll['NPWP/NIK']}#NIK#NAMA#${NpWp}`;
                                 } else {
                                     err.push("(Baris: " + (ii + 2) + ") " + "NPWP Tidak Valid");
                                 }
@@ -1205,7 +1206,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                         </span>
                                     </label>
                                     <div className="text-center mt-2">
-                                        <a download href="/format/Format Efaktur.csv">
+                                        <a download href="/format/Format Efaktur PK.csv">
                                             Download Example ETax
                                         </a>
                                     </div>
@@ -1245,7 +1246,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                         <input type="file" id="fileFormat" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style={{ display: "none" }} onChange={(val: any) => importFile(val, false)} />
                                     </label>
                                     <div className="text-center mt-2">
-                                        <Link href="/format/Format Import.xlsx">
+                                        <Link href="/format/Format Efaktur PK.xlsx">
                                             Download Format ETax
                                         </Link>
                                     </div>
@@ -1499,7 +1500,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                         <input type="file" id="fileConvert" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style={{ display: "none" }} onChange={(val: any) => importFile(val, true)} />
                                     </label>
                                     <div className="text-center mt-1">
-                                        <Link href="/format/Format Import.xlsx">
+                                        <Link href="/format/Format Import Efaktur PK.xlsx">
                                             Download Format ETax
                                         </Link>
                                     </div>

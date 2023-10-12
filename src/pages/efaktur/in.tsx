@@ -687,10 +687,12 @@ export default function EfakturIn({ userData, setuserData }: any) {
 
     const keteranganTambhan07 = [
         { label: '07', value: '0' },
-    ]
+    ];
 
     const keteranganTambhan08 = [
-        { label: 'Senjata, Amunisi, Helm Anti Peluru dan Jaket Atau Rompi Anti Peluru, Kendaraan Darat Khusus, Radar 7 Suku Cadang', value: '41' },]
+        { label: 'Senjata, Amunisi, Helm Anti Peluru dan Jaket Atau Rompi Anti Peluru, Kendaraan Darat Khusus, Radar 7 Suku Cadang', value: '41' }
+    ];
+
     const tabData = [
         {
             label: "NIK",
@@ -708,6 +710,7 @@ export default function EfakturIn({ userData, setuserData }: any) {
             </>,
         },
     ];
+
     if (npwp?.length) {
         tabData.push(
             {
@@ -740,7 +743,7 @@ export default function EfakturIn({ userData, setuserData }: any) {
                         </div>
                     </>,
             })
-    }
+    };
 
     const arrayUnique = (inputArr: any) => {
         let key: any = ''
@@ -1226,7 +1229,7 @@ export default function EfakturIn({ userData, setuserData }: any) {
                                         </span>
                                     </label>
                                     <div className="text-center mt-2">
-                                        <a download href="/format/Format Efaktur.csv">
+                                        <a download href="/format/Format Efaktur PM.csv">
                                             Download Example ETax
                                         </a>
                                     </div>
@@ -1266,7 +1269,7 @@ export default function EfakturIn({ userData, setuserData }: any) {
                                         <input type="file" id="fileFormat" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style={{ display: "none" }} onChange={(val: any) => importFile(val, false)} />
                                     </label>
                                     <div className="text-center mt-2">
-                                        <Link href="/format/Format Import.xlsx">
+                                        <Link href="/format/Format Import Efaktur PM.xlsx">
                                             Download Format ETax
                                         </Link>
                                     </div>
@@ -1520,7 +1523,7 @@ export default function EfakturIn({ userData, setuserData }: any) {
                                         <input type="file" id="fileConvert" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style={{ display: "none" }} onChange={(val: any) => importFile(val, true)} />
                                     </label>
                                     <div className="text-center mt-1">
-                                        <Link href="/format/Format Import.xlsx">
+                                        <Link href="/format/Format Import Efaktur PM.xlsx">
                                             Download Format ETax
                                         </Link>
                                     </div>
