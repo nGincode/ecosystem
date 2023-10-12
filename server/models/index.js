@@ -8,10 +8,14 @@ const process = require("process");
 const basename = path.basename(__filename);
 
 const config = {
-  database: dotenv.parsed.DATABASE,
-  username: dotenv.parsed.DATABASE_USERNAME,
-  password: dotenv.parsed.DATABASE_PASSWORD,
-  host: dotenv.parsed.HOST,
+  // database: dotenv.parsed.DATABASE,
+  // username: dotenv.parsed.DATABASE_USERNAME,
+  // password: dotenv.parsed.DATABASE_PASSWORD,
+  // host: dotenv.parsed.HOST,
+  database: "ecosyste_database",
+  username: "ecosyste_database",
+  password: "J412HCFCG)64",
+  host: "localhost",
   dialect: dotenv.parsed.DATABASE_DIALECT,
   pool: {
     idle: 10000,
