@@ -556,8 +556,8 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                 let NAMEDetec = '';
                                 let NpWp = valll['NPWP/NIK'].replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '');
                                 if (NpWp?.length === 15) {
-                                    NPWPDetec = valll['NPWP/NIK'];
-                                    NAMEDetec = NpWp;
+                                    NPWPDetec = NpWp;
+                                    NAMEDetec = valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('"', '');
                                 } else if (valll['NPWP/NIK']?.length === 16) {
                                     NPWPDetec = '000000000000000';
                                     NAMEDetec = `${valll['NPWP/NIK']}#NIK#NAMA#${NpWp}`;
