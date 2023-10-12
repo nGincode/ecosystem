@@ -13,6 +13,10 @@ const config = {
   password: dotenv.parsed.DATABASE_PASSWORD,
   host: dotenv.parsed.HOST,
   dialect: dotenv.parsed.DATABASE_DIALECT,
+  pool: {
+    idle: 10000,
+    evict: 20000,
+  },
 };
 
 const db = {};

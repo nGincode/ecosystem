@@ -26,7 +26,7 @@ router.get("/", async (req, res) => {
       "status",
     ],
   });
-  res.json(["API Starting!", User]);
+  res.send(User ? "API Starting!" : "Database not Connect");
 });
 
 router.get("/token", (req, res) => {
