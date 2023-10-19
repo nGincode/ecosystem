@@ -13,6 +13,10 @@ export default function Index({ userData, setuserData }: any) {
         require("./../../public/app-assets/js/cards/card-statistic.js");
     }, []);
 
+    if (typeof document !== "undefined") {
+        (document as any).title = "Dashboard";
+    }
+
 
     return (
         <div className="row mb-32 g-32">
@@ -166,7 +170,7 @@ export default function Index({ userData, setuserData }: any) {
                                             <div className="hp-flex-none w-auto pe-0 col">
                                                 <div className="hp-cursor-pointer border hp-border-color-dark-80 me-16" style={{ borderRadius: "15px" }}>
                                                     <div className="overflow-hidden m-4 d-flex hp-bg-info-4" style={{ minWidth: "64px", width: "64px", height: "64px", borderRadius: "15px" }}>
-                                                        <Image width={100} height={100} src="/app-assets/img/memoji/user-avatar-6.png" alt="User"  />
+                                                        <Image width={100} height={100} src="/app-assets/img/memoji/user-avatar-6.png" alt="User" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -195,7 +199,7 @@ export default function Index({ userData, setuserData }: any) {
                                             <div className="hp-flex-none w-auto pe-0 col">
                                                 <div className="hp-cursor-pointer border hp-border-color-dark-80 me-16" style={{ borderRadius: "15px" }}>
                                                     <div className="overflow-hidden m-4 d-flex hp-bg-warning-4" style={{ minWidth: "64px", width: "64px", height: "64px", borderRadius: "15px" }}>
-                                                        <Image width={100} height={100} src="/app-assets/img/memoji/user-avatar-7.png" alt="User"  />
+                                                        <Image width={100} height={100} src="/app-assets/img/memoji/user-avatar-7.png" alt="User" />
                                                     </div>
                                                 </div>
                                             </div>

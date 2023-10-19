@@ -5,7 +5,6 @@ import React, { Component, useEffect } from "react"
 import { useRouter } from 'next/router'
 import Link from "next/link";
 
-import HeaderSearch from "./headerSearch";
 import ReactSelect from "./reactSelect";
 import AccessData from "./accessData";
 
@@ -91,9 +90,68 @@ export default function layout({ children = null, logOut, userData }: any) {
         </>
     }
 
+
+    $(function () {
+        $("#header-search").keyup(function () {
+            $(".autocomplete-suggestions").css(
+                "width",
+                $("header .hp-header-search").width() + "px"
+            );
+        });
+
+        ($("#header-search") as any).autocomplete({
+            lookup: [
+                {
+                    value: "Dashboard",
+                    url: "/",
+                },
+                {
+                    value: "Stock",
+                    url: "/stock",
+                },
+                {
+                    value: "Permission",
+                    url: "/permission",
+                },
+                {
+                    value: "Users",
+                    url: "/users",
+                },
+            ],
+            onSelect: function (event: any) {
+                router.push(event.url);
+            },
+        });
+    });
+
+    const searchActive = () => {
+        $("header .hp-header-text-info").toggleClass("d-none");
+        $("header .hp-header-search").toggleClass("d-none");
+        $(".hp-header-search-button")
+            .find("button .hp-header-search-button-icon-1")
+            .toggleClass("d-none");
+        $(".hp-header-search-button")
+            .find("button .hp-header-search-button-icon-2")
+            .toggleClass("d-none");
+
+        $("header .hp-horizontal-menu").toggleClass("search-active");
+
+        setTimeout(() => {
+            $("header .hp-header-search").toggleClass("active");
+
+            if (!$("header .hp-header-search").hasClass("active")) {
+                $("#header-search").val("");
+            }
+
+            setTimeout(() => {
+                $("#header-search").focus();
+            }, 300);
+        }, 100);
+    }
+
+
     return (
         <>
-            <HeaderSearch />
             <main className="hp-bg-color-dark-90 d-flex min-vh-100 bg-gradient-to-r from-gray-100 from-20% to-cyan-200 to-100%">
                 <div className=" hp-bg-color-black-20delete hp-sidebar hp-bg-color-dark-90 border-end border-black-40 hp-border-color-dark-80">
                     <div className="hp-sidebar-container">
@@ -213,7 +271,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                     <div className="col hp-flex-none w-auto pe-0">
                                         <div className="row align-items-center justify-content-end">
                                             <div className="w-auto px-0">
-                                                <div className="d-flex align-items-center me-4 hp-header-search-button">
+                                                <div onClick={searchActive} className="d-flex align-items-center me-4 hp-header-search-button">
                                                     <button type="button" className="btn btn-icon-only bg-transparent border-0 hp-hover-bg-black-10 hp-hover-bg-dark-100 hp-transition d-flex align-items-center justify-content-center" style={{ height: "40px" }}>
                                                         <svg className="hp-header-search-button-icon-1 hp-text-color-black-80 hp-text-color-dark-30" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                                             <path d="M11.5 21a9.5 9.5 0 1 0 0-19 9.5 9.5 0 0 0 0 19ZM22 22l-2-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>

@@ -8,6 +8,10 @@ import Link from "next/link";
 
 export default function Profile({ userData, setuserData }: any) {
 
+    if (typeof document !== "undefined") {
+        (document as any).title = 'Profile';
+    }
+
     const [tab, setTab] = useState(1);
 
     const convertFileToBase64 = (file: any) => {
@@ -31,6 +35,11 @@ export default function Profile({ userData, setuserData }: any) {
                     }
                 }).then((res: any) => {
                     toast.success(res.data.massage);
+                    if (!Array.isArray(res.data.data.permission.data)) {
+                        res.data.data.permission.data = JSON.parse(res.data.data.permission.data);
+                    } else {
+                        res.data.data.permission = null;
+                    }
                     setuserData(res.data.data);
                     localStorage.setItem('token', res.data.token);
                     ($('.btn-close') as any).trigger("click");
@@ -69,6 +78,11 @@ export default function Profile({ userData, setuserData }: any) {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 }).then((res: any) => {
+                    if (!Array.isArray(res.data.data.permission.data)) {
+                        res.data.data.permission.data = JSON.parse(res.data.data.permission.data);
+                    } else {
+                        res.data.data.permission = null;
+                    }
                     toast.success(res.data.massage);
                     setuserData(res.data.data);
                 });
@@ -221,7 +235,7 @@ export default function Profile({ userData, setuserData }: any) {
                             </div>
 
                             <div className="hp-profile-menu-footer">
-                                <Image width={200} height={200}  src="/app-assets/img/pages/profile/menu-img.svg" alt="Profile Image" />
+                                <Image width={200} height={200} src="/app-assets/img/pages/profile/menu-img.svg" alt="Profile Image" />
                             </div>
                         </div>
 

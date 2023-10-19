@@ -18,6 +18,10 @@ export default function Permission({ userData, setuserData }: any) {
     const URLAPI = "/api/permission";
     const Subject = "Permission";
 
+    if (typeof document !== "undefined") {
+        (document as any).title = Subject;
+    }
+
     const handleApi = async (url: any, data: any = null) => {
         if (url === 'create') {
             try {

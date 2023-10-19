@@ -1,10 +1,4 @@
-const {
-  user,
-  npwp,
-  efakturOut,
-  efakturOutItem,
-  company,
-} = require("../../models");
+const { user, npwp, efaktur, efakturItem, company } = require("../../models");
 const moment = require("moment/moment");
 const Crypto = require("crypto");
 const numeral = require("numeral");
@@ -84,12 +78,12 @@ const get = async (req, res) => {
 
   let EFAKTUR;
   if (permission.view === "all") {
-    EFAKTUR = await efakturOut.findAll({
+    EFAKTUR = await efaktur.findAll({
       where: { company_id: Company.id },
       include: [
         {
-          model: efakturOutItem,
-          as: "efakturOutItem",
+          model: efakturItem,
+          as: "efakturItem",
           attributes: {
             exclude: ["id"],
           },
@@ -99,15 +93,15 @@ const get = async (req, res) => {
       order: [["id", "DESC"]],
     });
   } else {
-    EFAKTUR = await efakturOut.findAll({
+    EFAKTUR = await efaktur.findAll({
       where: {
         user_id: users_id,
         company_id: Company.id,
       },
       include: [
         {
-          model: efakturOutItem,
-          as: "efakturOutItem",
+          model: efakturItem,
+          as: "efakturItem",
           attributes: {
             exclude: ["id"],
           },
@@ -144,8 +138,8 @@ const get = async (req, res) => {
       DPP: numeral(val.jumlahDPP).format("0,0"),
       PPN: numeral(val.jumlahPPN).format("0,0"),
       PPNBM: numeral(val.jumlahPPNBM).format("0,0"),
-      item: val.efakturOutItem.length + " Item",
-      itemJson: val.efakturOutItem,
+      item: val.efakturItem.length + " Item",
+      itemJson: val.efakturItem,
     };
   });
 
@@ -189,12 +183,12 @@ const del = async (req, res) => {
   const { users_id, users_uuid } = req.user;
   const { uuid } = req.params;
 
-  const EFAKTUR = await efakturOut.findOne({
+  const EFAKTUR = await efaktur.findOne({
     where: { uuid: uuid },
     include: [
       {
-        model: efakturOutItem,
-        as: "efakturOutItem",
+        model: efakturItem,
+        as: "efakturItem",
       },
     ],
   });
@@ -263,7 +257,7 @@ const post = async (req, res) => {
       const val = excel[i];
       if (i > 2) {
         if (val[0] === "FK") {
-          const NoFakturCek = await efakturOut.findOne({
+          const NoFakturCek = await efaktur.findOne({
             where: {
               noFaktur: val[1] + "0" + val[3],
             },
@@ -319,13 +313,13 @@ const post = async (req, res) => {
             referensi: val[18] !== "" ? val[18] : null,
           };
 
-          const dataEfaktur = await efakturOut.create(dataFaktur);
+          const dataEfaktur = await efaktur.create(dataFaktur);
           fk = dataEfaktur;
         } else if (val[0] === "OF") {
           const dataFakturIt = {
             company_id: Company.id,
             uuid: Crypto.randomUUID(),
-            efaktur_out_id: fk.id,
+            efaktur_id: fk.id,
             user_id: users_id,
             kodeBarang: val[1],
             nama: val[2],
@@ -338,7 +332,7 @@ const post = async (req, res) => {
             tarifPPN: val[9],
             PPNBM: val[10],
           };
-          await efakturOutItem.create(dataFakturIt);
+          await efakturItem.create(dataFakturIt);
         }
       }
     }
@@ -398,7 +392,7 @@ const post = async (req, res) => {
       return {
         company_id: Company.id,
         uuid: Crypto.randomUUID(),
-        efaktur_out_id: null,
+        efaktur_id: null,
         user_id: users_id,
         kodeBarang: val.kode,
         nama: val.name,
@@ -435,17 +429,17 @@ const post = async (req, res) => {
       uangMukaPPNBM: 0,
     };
 
-    const dataEfaktur = await efakturOut.create(dataFaktur);
+    const dataEfaktur = await efaktur.create(dataFaktur);
     let postItemFaktur = itemFaktur.map((val) => {
-      val.efaktur_out_id = dataEfaktur.id;
+      val.efaktur_id = dataEfaktur.id;
       return val;
     });
-    const efakturItemOutData = await efakturOutItem.bulkCreate(postItemFaktur);
+    const efakturItemData = await efakturItem.bulkCreate(postItemFaktur);
 
     res.json({
       status: 200,
       massage: "Create successful",
-      data: { dataFaktur, efakturOutItem: efakturItemOutData },
+      data: { dataFaktur, efakturItem: efakturItemData },
     });
   }
 };
@@ -454,7 +448,7 @@ const proof = async (req, res) => {
   let success = [];
   let error = [];
   for (let index = 0; index < req.body.length; index++) {
-    const Efaktur = await efakturOut.findOne({
+    const Efaktur = await efaktur.findOne({
       where: { noFaktur: req.body[index].noFaktur },
     });
 
@@ -557,15 +551,15 @@ const exprt = async (req, res) => {
     });
   }
 
-  const Efaktur = await efakturOut.findAll({
+  const Efaktur = await efaktur.findAll({
     where: {
       proof: null,
       company_id: Company.id,
     },
     include: [
       {
-        model: efakturOutItem,
-        as: "efakturOutItem",
+        model: efakturItem,
+        as: "efakturItem",
         attributes: {
           exclude: ["id"],
         },
@@ -610,7 +604,7 @@ const exprt = async (req, res) => {
       "",
     ]);
 
-    val.efakturOutItem.map((vall, ii) => {
+    val.efakturItem.map((vall, ii) => {
       data.push([
         "OF",
         vall.kodeBarang,

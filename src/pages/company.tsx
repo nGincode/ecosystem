@@ -17,6 +17,10 @@ export default function Company({ userData, setuserData }: any) {
     const URLAPI = "/api/company";
     const Subject = "Company";
 
+    if (typeof document !== "undefined") {
+        (document as any).title = Subject;
+    }
+
     useEffect(() => {
         const handleApiFirst = async (url: any, data: any = null) => {
             if (url === 'view') {

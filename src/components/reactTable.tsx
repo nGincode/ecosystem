@@ -637,6 +637,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                     </tr>
                                 )
                             })}
+                            {!table.getPrePaginationRowModel().rows.length ? <tr><td colSpan={table.getHeaderGroups()[0].headers.length} className="text-center">Not Data Result</td></tr> : null}
                         </tbody>
                     </table>
                     <div className="h-2" />

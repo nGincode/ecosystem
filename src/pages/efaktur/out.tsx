@@ -557,10 +557,10 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                 let NpWp = valll['NPWP/NIK'].replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '');
                                 if (NpWp?.length === 15) {
                                     NPWPDetec = NpWp;
-                                    NAMEDetec = valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('"', '');
+                                    NAMEDetec = valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '');
                                 } else if (valll['NPWP/NIK']?.length === 16) {
                                     NPWPDetec = '000000000000000';
-                                    NAMEDetec = `${valll['NPWP/NIK']}#NIK#NAMA#${NpWp}`;
+                                    NAMEDetec = `${NpWp}#NIK#NAMA#${valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '')}`;
                                 } else {
                                     err.push("(Baris: " + (ii + 2) + ") " + "NPWP Tidak Valid");
                                 }
@@ -575,6 +575,28 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                         jumlahPPN += RPtoNumber(vallll['PPN']);
                                     });
 
+                                    let totalPPN = 0;
+                                    let totalPPNBM = 0;
+                                    let totalDPP = 0;
+                                    if (valll['Total DPP']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '').replaceAll(' ', '')) {
+                                        totalDPP = RPtoNumber(valll['Total DPP']);
+                                    } else {
+                                        totalDPP = Math.round(jumlahDPP);
+                                    }
+
+                                    if (valll['Total PPNBM']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '').replaceAll(' ', '')) {
+                                        totalPPNBM = RPtoNumber(valll['Total PPNBM']);
+                                    } else {
+                                        totalPPNBM = Math.round(jumlahPPNBM);
+                                    }
+
+                                    if (valll['Total PPN']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '').replaceAll(' ', '')) {
+                                        totalPPN = RPtoNumber(valll['Total PPN']);
+                                    } else {
+                                        totalPPN = Math.round(jumlahPPN);
+                                    }
+
+
                                     data.push([
                                         "FK",
                                         jenis_transaksi,
@@ -587,9 +609,9 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                         NPWPDetec,
                                         NAMEDetec,
                                         valll['Alamat'].replaceAll(',', '').replaceAll('"', ''),
-                                        Math.floor(jumlahDPP),
-                                        Math.floor(jumlahPPN),
-                                        Math.floor(jumlahPPNBM),
+                                        totalDPP,
+                                        totalPPN,
+                                        totalPPNBM,
                                         IDKet ?? '',
                                         valll['FG Uang Muka'] ?? 0,
                                         valll['Uang Muka DPP'] ?? 0,
@@ -1246,7 +1268,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                         <input type="file" id="fileFormat" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style={{ display: "none" }} onChange={(val: any) => importFile(val, false)} />
                                     </label>
                                     <div className="text-center mt-2">
-                                        <Link href="/format/Format Efaktur PK.xlsx">
+                                        <Link href="/format/Format Import Efaktur PK.xlsx">
                                             Download Format ETax
                                         </Link>
                                     </div>

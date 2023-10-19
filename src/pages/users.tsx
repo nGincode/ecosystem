@@ -17,8 +17,9 @@ export default function Users({ userData, setuserData }: any) {
     const URLAPI = "/api/user";
     const Subject = "Users";
 
-
-
+    if (typeof document !== "undefined") {
+        (document as any).title = Subject;
+    }
 
     const handleApi = async (url: any, data: any = null) => {
         if (url === 'create_user') {

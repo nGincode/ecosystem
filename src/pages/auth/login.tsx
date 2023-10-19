@@ -11,6 +11,10 @@ import Image from "next/image";
 
 export default function login({ submitLogin }: any) {
 
+    if (typeof document !== "undefined") {
+        (document as any).title = "EcoSystem";
+    }
+
     return (
 
         <div className="row hp-authentication-page ">

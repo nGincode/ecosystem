@@ -16,6 +16,11 @@ export default function Npwp({ userData, setuserData }: any) {
     const URLAPI = "/api/npwp";
     const Subject = "NPWP";
 
+
+    if (typeof document !== "undefined") {
+        (document as any).title = Subject;
+    }
+
     useEffect(() => {
         setpagePermission(userData?.permission?.data?.map((val: any) => {
             return val.data.find((vall: any) => {
