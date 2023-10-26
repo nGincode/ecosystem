@@ -12,7 +12,7 @@ import {
     Tab,
     TabPanel,
 } from "@material-tailwind/react";
-import XLSX, { read, utils, writeFile } from 'sheetjs-style';
+import XLSX, { read, utils, writeFile } from 'xlsx';
 import * as PDFJS from 'pdfjs-dist';
 PDFJS.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS.version}/pdf.worker.js`;
 import Swal from "sweetalert2";
