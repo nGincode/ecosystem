@@ -1,0 +1,15 @@
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/auth/login": "pages/auth/login.html",
+  "/company": "pages/company.html",
+  "/efaktur/in": "pages/efaktur/in.html",
+  "/": "pages/index.html",
+  "/npwp": "pages/npwp.html",
+  "/efaktur/out": "pages/efaktur/out.html",
+  "/permission": "pages/permission.html",
+  "/profile": "pages/profile.html",
+  "/users": "pages/users.html",
+  "/404": "pages/404.html"
+}
