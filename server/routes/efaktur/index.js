@@ -24,6 +24,6 @@ router.get("/in/:uuid", efakturControllerIn.getId);
 router.put("/in/:uuid", efakturControllerIn.putId);
 
 router.post("/in/proof", efakturControllerIn.proof);
-router.post("/in/export", efakturControllerIn.exprt);
+router.post("/in/export_doccon", efakturControllerIn.export_doccon);
 
 module.exports = router;

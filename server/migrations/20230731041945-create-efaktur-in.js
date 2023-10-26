@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("efaktur_item", {
+    await queryInterface.createTable("efaktur_in", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -21,51 +21,55 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      efaktur_id: {
-        type: Sequelize.INTEGER,
+      KD_JENIS_TRANSAKSI: {
+        type: Sequelize.STRING,
         allowNull: false,
-        references: {
-          model: "efaktur",
-          key: "id",
-        },
       },
-      kodeBarang: {
+      FG_PENGGANTI: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      NOMOR_FAKTUR: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      MASA_PAJAK: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      TAHUN_PAJAK: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      TANGGAL_FAKTUR: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      NPWP: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      NAMA: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      ALAMAT_LENGKAP: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      nama: {
+      JUMLAH_DPP: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      hargaSatuan: {
+      JUMLAH_PPN: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      jumlahBarang: {
+      JUMLAH_PPNBM: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      hargaTotal: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      diskon: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      DPP: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      PPN: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      tarifPPNBM: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      PPNBM: {
+      IS_CREDITABLE: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -80,6 +84,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("efaktur_item");
+    await queryInterface.dropTable("efaktur_in");
   },
 };

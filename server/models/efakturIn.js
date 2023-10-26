@@ -1,22 +1,15 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class efaktur extends Model {
+  class efakturIn extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      this.hasMany(models.efakturItem, {
-        as: "efakturItem",
-        foreignKey: "efaktur_id",
-        onDelete: "cascade",
-        hooks: true,
-      });
-    }
+    static associate(models) {}
   }
-  efaktur.init(
+  efakturIn.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -28,92 +21,77 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
       },
-      company_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
       user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      noIdentitas: {
+      company_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      KD_JENIS_TRANSAKSI: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      jenis_faktur: {
+      FG_PENGGANTI: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      transaction: {
+      NOMOR_FAKTUR: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      MASA_PAJAK: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      date: {
+      TAHUN_PAJAK: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      noFaktur: {
+      TANGGAL_FAKTUR: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      address: {
+      NPWP: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      nameIdentitas: {
+      NAMA: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      jumlahDPP: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      jumlahPPN: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      jumlahPPNBM: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      IDKeteranganTambahan: {
+      ALAMAT_LENGKAP: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      FGUangMuka: {
+      JUMLAH_DPP: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      uangMukaDPP: {
+      JUMLAH_PPN: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      uangMukaPPN: {
+      JUMLAH_PPNBM: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      uangMukaPPNBM: {
+      IS_CREDITABLE: {
         type: DataTypes.STRING,
         allowNull: false,
-      },
-      referensi: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      proof: {
-        type: DataTypes.STRING,
-        allowNull: true,
       },
     },
     {
       sequelize,
-      modelName: "efaktur",
-      tableName: "efaktur",
+      modelName: "efakturIn",
+      tableName: "efaktur_in",
       // timestamps: true,
       freezeTableName: true,
       // createdAt: "created_at",
       // updatedAt: "updated_at",
     }
   );
-  return efaktur;
+  return efakturIn;
 };

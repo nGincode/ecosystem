@@ -25,7 +25,6 @@ import Image from "next/image";
 
 import Select from "../../components/reactSelect";
 import ReactTable from "../../components/reactTable";
-import SelectFem from "../../components/selectFem";
 import DebouncedInput from "../../components/debouncedInput";
 
 

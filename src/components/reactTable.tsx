@@ -135,7 +135,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
     let array: any = [];
     if (data?.[0]) {
         Object.keys(data[0]).map((val: any, i: number) => {
-            if (val == 'uuid' || val == 'addressJson' || val == 'itemJson') { } else {
+            if (val == 'uuid' || val == 'addressJson' || val == 'itemJson' || val == 'json') { } else {
                 if (val === 'img') {
                     array.push({
                         id: 'img',
