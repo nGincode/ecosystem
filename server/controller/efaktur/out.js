@@ -8,6 +8,7 @@ const {
 const moment = require("moment/moment");
 const Crypto = require("crypto");
 const numeral = require("numeral");
+const fs = require("fs");
 
 const getId = async (req, res) => {
   const { users_id, users_uuid, email, username } = req.user;
@@ -459,8 +460,16 @@ const proof = async (req, res) => {
     });
 
     if (Efaktur) {
-      require("fs").writeFile(
-        __dirname + `/../../public/upload/efaktur/${Efaktur.noFaktur}.pdf`,
+      let dirRoot = __dirname + `/../../../public/upload/efaktur/out`;
+      let dirURL = `/upload/efaktur/out/${Efaktur.noFaktur}.pdf`;
+      let nameFIle = `${Efaktur.noFaktur}.pdf`;
+
+      if (!fs.existsSync(dirRoot)) {
+        fs.mkdirSync(dirRoot);
+      }
+
+      fs.writeFile(
+        dirRoot + "/" + nameFIle,
         new Buffer.from(
           req.body[index].files.replace(/^data:application\/\w+;base64,/, ""),
           "base64"
@@ -471,7 +480,7 @@ const proof = async (req, res) => {
       );
 
       await Efaktur.update({
-        proof: `/upload/efaktur/${Efaktur.noFaktur}.pdf`,
+        proof: dirURL,
       });
 
       success.push({ Efaktur: Efaktur.noFaktur });
@@ -590,7 +599,7 @@ const exprt = async (req, res) => {
       "FK",
       val.transaction,
       val.jenis_faktur,
-      val.noFaktur,
+      val.noFaktur.substring(3, val.noFaktur.length),
       moment(val.date, "YYYY-MM-DD").format("MM"),
       moment(val.date, "YYYY-MM-DD").format("YYYY"),
       moment(val.date, "YYYY-MM-DD").format("DD/MM/YYYY"),

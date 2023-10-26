@@ -372,11 +372,24 @@ export default function EfakturOut({ userData, setuserData }: any) {
         }
         handleApiFirst('view_npwp');
         setpagePermission(userData?.permission?.data?.map((val: any) => {
-            return val.data.find((vall: any) => {
+            let array: any = [];
+            let perm: any = val.data.find((vall: any) => {
+                if (vall.data) {
+                    return vall.data.find((valll: any) => {
+                        if (valll.label == Subject) {
+                            array.push(valll);
+                        }
+                    });
+                }
                 if (vall.label == Subject) {
                     return vall;
                 }
-            })
+            });
+            if (array.length) {
+                return array[0];
+            } else {
+                return perm;
+            }
         })?.filter((val: any) => val !== undefined)?.[0]?.checklist ?? [])
     }, [userData])
 
@@ -481,7 +494,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                         if (dtRes.length)
                             dtRes.map((valll: any, i: number) => {
 
-                                if (valll['Tanggal']) {
+                                if (valll['Tanggal'] !== undefined) {
                                     if (!valll['Tanggal']) {
                                         err.push("(Baris: " + (ii + 2) + ") " + "Tanggal Kosong");
                                     }
@@ -489,7 +502,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                     err.push("Judul Tanggal Tidak Ada");
                                 }
 
-                                if (valll['No Faktur']) {
+                                if (valll['No Faktur'] !== undefined) {
                                     if (!valll['No Faktur']) {
                                         err.push("(Baris: " + (ii + 2) + ") " + "No Faktur Kosong");
                                     }
@@ -497,7 +510,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                     err.push("Judul No Faktur Tidak Ada");
                                 }
 
-                                if (valll['NPWP/NIK']) {
+                                if (valll['NPWP/NIK'] !== undefined) {
                                     if (!valll['NPWP/NIK']) {
                                         err.push("(Baris: " + (ii + 2) + ") " + "NPWP Kosong");
                                     }
@@ -505,19 +518,32 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                     err.push("Judul NPWP/NIK Tidak Ada");
                                 }
 
-                                if (!valll['Nama Barang']) {
+                                if (valll['Nama Barang'] !== undefined) {
+                                    if (!valll['Nama Barang']) {
+                                        err.push("(Baris: " + (ii + 2) + ") " + "Nama Barang Kosong");
+                                    }
+
+                                } else {
                                     err.push("Judul Nama Barang Tidak Ada");
                                 }
 
-                                if (!valll['Alamat']) {
+                                if (valll['Alamat'] !== undefined) {
+                                    if (!valll['Alamat']) {
+                                        err.push("(Baris: " + (ii + 2) + ") " + "Alamat Kosong");
+                                    }
+                                } else {
                                     err.push("Judul Alamat Tidak Ada");
                                 }
 
-                                if (!valll['Nama NPWP/NIK']) {
+                                if (valll['Nama NPWP/NIK'] !== undefined) {
+                                    if (!valll['Nama NPWP/NIK']) {
+                                        err.push("(Baris: " + (ii + 2) + ") " + "Nama NPWP/NIK Kosong");
+                                    }
+                                } else {
                                     err.push("Judul Nama NPWP/NIK Tidak Ada");
                                 }
 
-                                if (valll['Jenis Faktur']) {
+                                if (valll['Jenis Faktur'] !== undefined) {
                                     if (!valll['Jenis Faktur']) {
                                         err.push("(Baris: " + (ii + 2) + ") " + "Janis Faktur Kosong");
                                     }
@@ -525,7 +551,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                     err.push("Judul Jenis Faktur Tidak Ada");
                                 }
 
-                                if (valll['Jenis Transaksi']) {
+                                if (valll['Jenis Transaksi'] !== undefined) {
                                     if (!valll['Jenis Transaksi']) {
                                         err.push("(Baris: " + (ii + 2) + ") " + "Jenis Transaksi Kosong");
                                     }
@@ -569,32 +595,14 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                     let jumlahPPNBM = 0;
                                     let jumlahDPP = 0;
                                     dtRes.map((vallll: any) => {
-                                        jumlahDPP += RPtoNumber(vallll['DPP']);
-                                        jumlahPPNBM += RPtoNumber(vallll['PPNBM']);
-                                        jumlahPPN += RPtoNumber(vallll['PPN']);
+                                        jumlahDPP += Math.round(RPtoNumber(vallll['DPP']));
+                                        jumlahPPNBM += Math.round(RPtoNumber(vallll['PPNBM']));
+                                        jumlahPPN += Math.round(RPtoNumber(vallll['PPN']));
                                     });
 
-                                    let totalPPN = 0;
-                                    let totalPPNBM = 0;
-                                    let totalDPP = 0;
-                                    if (valll['Total DPP']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '').replaceAll(' ', '')) {
-                                        totalDPP = RPtoNumber(valll['Total DPP']);
-                                    } else {
-                                        totalDPP = Math.round(jumlahDPP);
-                                    }
-
-                                    if (valll['Total PPNBM']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '').replaceAll(' ', '')) {
-                                        totalPPNBM = RPtoNumber(valll['Total PPNBM']);
-                                    } else {
-                                        totalPPNBM = Math.round(jumlahPPNBM);
-                                    }
-
-                                    if (valll['Total PPN']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '').replaceAll(' ', '')) {
-                                        totalPPN = RPtoNumber(valll['Total PPN']);
-                                    } else {
-                                        totalPPN = Math.round(jumlahPPN);
-                                    }
-
+                                    let totalPPN = Math.round(jumlahPPN);
+                                    let totalPPNBM = Math.round(jumlahPPNBM);
+                                    let totalDPP = Math.round(jumlahDPP);
 
                                     data.push([
                                         "FK",
@@ -793,10 +801,19 @@ export default function EfakturOut({ userData, setuserData }: any) {
                     const textList = await Promise.all(pageList.map((p) => p.getTextContent()));
 
                     const array = textList?.[0]?.items;
-                    if (array.length === 52) {
-                        let nama: any = array?.[10];
-                        let noFak: any = array?.[9];
-                        let ttd: any = array?.[43];
+                    if (array.length === 52 || array.length === 61) {
+                        let nama: any = '';
+                        let noFak: any = '';
+                        let ttd: any = '';
+                        if (array.length === 52) {
+                            ttd = array?.[43];
+                            noFak = array?.[9];
+                            nama = array?.[10];
+                        } else if (array.length === 61) {
+                            ttd = array?.[51];
+                            noFak = array?.[8];
+                            nama = array?.[9];
+                        }
 
                         const file = await convertFileToBase64(files[index]);
 
@@ -817,6 +834,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                 }
 
             }
+
             if (err.length) {
                 toast.error(err.map((val: any) => `${val}\n`), {
                     duration: 5500,
@@ -824,7 +842,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
             }
 
             if (data.length) {
-                await handleApi('proof', arrayUnique(data));
+                await handleApi('proof', data);
             }
 
         } else {
