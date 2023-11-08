@@ -564,10 +564,10 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                 let jumlahBarang = RPtoNumber(valll['Jumlah Barang']);
                                 let hargaTotal = RPtoNumber(valll['Harga Total']);
                                 let diskon = RPtoNumber(valll['Diskon']);
-                                let dpp = RPtoNumber(valll['DPP']);
-                                let ppn = RPtoNumber(valll['PPN']);
+                                let dpp = Math.round(RPtoNumber(valll['DPP']));
+                                let ppn = Math.round(RPtoNumber(valll['PPN']));
                                 let tarif_ppnbm = RPtoNumber(valll['Tarif PPNBM']);
-                                let ppnbm = RPtoNumber(valll['PPNBM']);
+                                let ppnbm = Math.round(RPtoNumber(valll['PPNBM']));
                                 let jenis_transaksi = jenisTransaksi(valll['Jenis Transaksi']);
                                 let jenis_faktur = jenisFaktur(valll['Jenis Faktur']);
                                 let IDKet = '';

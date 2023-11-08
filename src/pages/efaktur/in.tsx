@@ -356,28 +356,55 @@ export default function EfakturIn({ userData, setuserData }: any) {
 
     const ConvertToXLXS = (objArray: any) => {
 
-        var wb = XLSX.utils.book_new();
-        wb.Props = {
-            Title: "Export Ecosystem",
-            Subject: "Export Efaktur In",
-            Author: "Fembi Nur Ilham",
-            CreatedDate: new Date()
-        };
 
+        let array: any = [];
+        for (let index = 0; index < objArray.length; index++) {
+            array['A' + (index + 3)] = { t: 's', v: index + 1 };
+            array['B' + (index + 3)] = { t: 's', v: objArray[index].NAMA };
+            array['I' + (index + 3)] = { t: 's', v: objArray[index].NOMOR_FAKTUR };
+            array['J' + (index + 3)] = { t: 'd', v: objArray[index].TANGGAL_FAKTUR, z: 'yyyy-mm-dd' };
+            array['K' + (index + 3)] = { z: '#,##0', t: 'n', v: objArray[index].JUMLAH_DPP };
+            array['L' + (index + 3)] = { z: '#,##0', t: 'n', v: objArray[index].JUMLAH_PPN };
+        }
 
-        var ws = XLSX.utils.json_to_sheet([]);
-
-
-        ws['A1'] = { v: "Courier: 24", t: "s" };
-        ws["A1"].s = {	// set the style for target cell
-            font: {
-                bold: true,
-            },
-        };
-
-        XLSX.utils.book_append_sheet(wb, ws, "");
-
-        XLSX.writeFile(wb, "Report.xlsb");
+        XLSX.writeFile({
+            SheetNames: ["Data"],
+            Sheets: {
+                Data: {
+                    "!ref": "A1:O" + objArray.length + 3,
+                    A1: { t: 's', v: "No" },
+                    B1: { t: 's', v: "Suplier" },
+                    C1: { t: 's', v: "Surat Jalan" },
+                    C2: { t: 's', v: "Nomor" },
+                    D2: { t: 's', v: "Tanggal Dokument" },
+                    E2: { t: 's', v: "Tanggal Terima" },
+                    F1: { t: 's', v: "Faktur/Tagihan/Invoice" },
+                    F2: { t: 's', v: "Nomor" },
+                    G2: { t: 's', v: "Tanggal Dokument" },
+                    H2: { t: 's', v: "Tanggal Terima" },
+                    I1: { t: 's', v: "Faktur Pajak" },
+                    I2: { t: 's', v: "Nomor" },
+                    J2: { t: 's', v: "Tanggal" },
+                    K1: { t: 's', v: "Nilai Barang" },
+                    K2: { t: 's', v: "DPP" },
+                    L2: { t: 's', v: "PPN" },
+                    M1: { t: 's', v: "Pelunasan" },
+                    M2: { t: 's', v: "Tanggal" },
+                    N2: { t: 's', v: "Nominal" },
+                    O2: { t: 's', v: "Via Bank/Cas" },
+                    ...array,
+                    "!merges": [
+                        { s: { c: 0, r: 0 }, e: { c: 0, r: 1 } }, /* A1:A2 */
+                        { s: { c: 1, r: 0 }, e: { c: 1, r: 1 } }, /* B1:B2 */
+                        { s: { c: 2, r: 0 }, e: { c: 4, r: 0 } }, /* C1:E1 */
+                        { s: { c: 5, r: 0 }, e: { c: 7, r: 0 } }, /* F1:H1 */
+                        { s: { c: 8, r: 0 }, e: { c: 9, r: 0 } }, /* I1:J1 */
+                        { s: { c: 10, r: 0 }, e: { c: 11, r: 0 } }, /* K1:L1 */
+                        { s: { c: 12, r: 0 }, e: { c: 14, r: 0 } }, /* K1:L1 */
+                    ]
+                }
+            }
+        }, 'Doc Control.xlsx');
     }
 
     useEffect(() => {
