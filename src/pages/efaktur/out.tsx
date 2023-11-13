@@ -470,93 +470,60 @@ export default function EfakturOut({ userData, setuserData }: any) {
 
                     let sampleArr = rows.map((val: any) => { return val.Tanggal + '_' + val['No Faktur'] }).filter((item, i, self) => {
                         return self.indexOf(item) === i;
+                    })?.filter((cek: any) => {
+                        if (cek !== "undefined_undefined") {
+                            return cek;
+                        }
                     });
 
                     let data: any = [];
                     let err: any = [];
+
+                    let countRows = 2;
+
                     sampleArr.map((val: any, ii: number) => {
                         let sub: any = val.split('_');
 
 
                         let dtRes: any = rows.filter((vall: any, i: number) => {
-
-                            if (!vall['No Faktur']) {
-                                err.push("(Baris: " + (i + 2) + ") " + "No Faktur Kosong");
+                            if (vall["Tanggal"] && vall['No Faktur']) {
+                                return vall["Tanggal"] == sub[0] && vall['No Faktur'] == sub[1];
                             }
-
-                            if (!vall["Tanggal"]) {
-                                err.push("(Baris: " + (i + 2) + ") " + "Tanggal Faktur Kosong");
-                            }
-
-                            return vall["Tanggal"] == sub[0] && vall['No Faktur'] == sub[1];
                         });
 
-                        if (dtRes.length)
+                        if (dtRes.length) {
                             dtRes.map((valll: any, i: number) => {
 
-                                if (valll['Tanggal'] !== undefined) {
-                                    if (!valll['Tanggal']) {
-                                        err.push("(Baris: " + (ii + 2) + ") " + "Tanggal Kosong");
-                                    }
-                                } else {
-                                    err.push("Judul Tanggal Tidak Ada");
+                                if (!valll['Tanggal']) {
+                                    err.push(countRows + " : " + "Cek Tanggal Tidak Ada");
                                 }
 
-                                if (valll['No Faktur'] !== undefined) {
-                                    if (!valll['No Faktur']) {
-                                        err.push("(Baris: " + (ii + 2) + ") " + "No Faktur Kosong");
-                                    }
-                                } else {
-                                    err.push("Judul No Faktur Tidak Ada");
+                                if (!valll['No Faktur']) {
+                                    err.push(countRows + " : " + "Cek No Faktur Tidak Ada");
                                 }
 
-                                if (valll['NPWP/NIK'] !== undefined) {
-                                    if (!valll['NPWP/NIK']) {
-                                        err.push("(Baris: " + (ii + 2) + ") " + "NPWP Kosong");
-                                    }
-                                } else {
-                                    err.push("Judul NPWP/NIK Tidak Ada");
+                                if (!valll['NPWP/NIK']) {
+                                    err.push(countRows + " : " + " Cek NPWP/NIK Tidak Ada");
                                 }
 
-                                if (valll['Nama Barang'] !== undefined) {
-                                    if (!valll['Nama Barang']) {
-                                        err.push("(Baris: " + (ii + 2) + ") " + "Nama Barang Kosong");
-                                    }
-
-                                } else {
-                                    err.push("Judul Nama Barang Tidak Ada");
+                                if (!valll['Nama Barang']) {
+                                    err.push(countRows + " : " + "Cek Nama Barang Tidak Ada");
                                 }
 
-                                if (valll['Alamat'] !== undefined) {
-                                    if (!valll['Alamat']) {
-                                        err.push("(Baris: " + (ii + 2) + ") " + "Alamat Kosong");
-                                    }
-                                } else {
-                                    err.push("Judul Alamat Tidak Ada");
+                                if (!valll['Alamat']) {
+                                    err.push(countRows + " : " + "Cek Alamat Tidak Ada");
                                 }
 
-                                if (valll['Nama NPWP/NIK'] !== undefined) {
-                                    if (!valll['Nama NPWP/NIK']) {
-                                        err.push("(Baris: " + (ii + 2) + ") " + "Nama NPWP/NIK Kosong");
-                                    }
-                                } else {
-                                    err.push("Judul Nama NPWP/NIK Tidak Ada");
+                                if (!valll['Nama NPWP/NIK']) {
+                                    err.push(countRows + " : " + "Cek Nama NPWP/NIK Tidak Ada");
                                 }
 
-                                if (valll['Jenis Faktur'] !== undefined) {
-                                    if (!valll['Jenis Faktur']) {
-                                        err.push("(Baris: " + (ii + 2) + ") " + "Janis Faktur Kosong");
-                                    }
-                                } else {
-                                    err.push("Judul Jenis Faktur Tidak Ada");
+                                if (!valll['Jenis Faktur']) {
+                                    err.push(countRows + " : " + "Cek Jenis Faktur Tidak Ada");
                                 }
 
-                                if (valll['Jenis Transaksi'] !== undefined) {
-                                    if (!valll['Jenis Transaksi']) {
-                                        err.push("(Baris: " + (ii + 2) + ") " + "Jenis Transaksi Kosong");
-                                    }
-                                } else {
-                                    err.push("Judul Jenis Transaksi Tidak Ada");
+                                if (!valll['Jenis Transaksi']) {
+                                    err.push(countRows + " : " + "Cek Jenis Transaksi Tidak Ada");
                                 }
 
 
@@ -579,7 +546,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
 
                                 let NPWPDetec = '';
                                 let NAMEDetec = '';
-                                let NpWp = valll['NPWP/NIK'].replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '');
+                                let NpWp = valll['NPWP/NIK']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '');
                                 if (NpWp?.length === 15) {
                                     NPWPDetec = NpWp;
                                     NAMEDetec = valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '');
@@ -587,8 +554,10 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                     NPWPDetec = '000000000000000';
                                     NAMEDetec = `${NpWp}#NIK#NAMA#${valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '')}`;
                                 } else {
-                                    err.push("(Baris: " + (ii + 2) + ") " + "NPWP Tidak Valid");
+                                    err.push(countRows + " : " + "NPWP Tidak Valid");
                                 }
+
+                                countRows++;
 
                                 if (!i) {
                                     let jumlahPPN = 0;
@@ -615,7 +584,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                         moment(valll['Tanggal'], 'YYYY/MM/DD').format('DD/MM/YYYY'),
                                         NPWPDetec,
                                         NAMEDetec,
-                                        valll['Alamat'].replaceAll(',', '').replaceAll('"', ''),
+                                        valll['Alamat']?.replaceAll(',', '').replaceAll('"', ''),
                                         totalDPP,
                                         totalPPN,
                                         totalPPNBM,
@@ -656,6 +625,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                     ])
                                 }
                             })
+                        }
 
                     })
 
