@@ -135,7 +135,7 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
     let array: any = [];
     if (data?.[0]) {
         Object.keys(data[0]).map((val: any, i: number) => {
-            if (val == 'uuid' || val == 'addressJson' || val == 'itemJson' || val == 'json') { } else {
+            if (val == 'uuid' || val == 'addressJson' || val == 'itemJson' || val == 'docControlJson' || val == 'json') { } else {
                 if (val === 'img') {
                     array.push({
                         id: 'img',
@@ -360,6 +360,95 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                                             <td >
                                                                 {numeral(info.row.original.itemJson?.reduce((a: any, b: any) => { return a + Number(b.PPNBM) }, 0)).format('0,0')}
                                                             </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <Button className="m-3" data-bs-dismiss="modal" aria-label="Close">Close</Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        },
+                        footer: (props: any) => props.column.id,
+                    })
+                } else if (val === 'docControl') {
+                    array.push({
+                        accessorKey: val,
+                        header: () => <div>Doc Control</div>,
+                        cell: (info: any) => {
+                            return <>
+                                <div data-bs-toggle="modal" data-bs-target={`#modalItem_${info.row.original.uuid}`} className="cursor-pointer">
+                                    <Button size="sm" color={
+                                        info.row.original.docControlJson.SJ_NO ||
+                                            info.row.original.docControlJson.SJ_TGLTRM ||
+                                            info.row.original.docControlJson.SJ_TGLDOC ||
+                                            info.row.original.docControlJson.TAG_NO ||
+                                            info.row.original.docControlJson.TAG_TGLDOC ||
+                                            info.row.original.docControlJson.TAG_TGLTRM ||
+                                            info.row.original.docControlJson.PEL_TGL ||
+                                            info.row.original.docControlJson.PEL_NOM ||
+                                            info.row.original.docControlJson.VIA ? 'green' : 'red'} variant="text">{info.getValue()}</Button>
+                                </div>
+                                <div className="modal fade" id={`modalItem_${info.row.original.uuid}`} tabIndex={-1} aria-hidden="true">
+                                    <div className="modal-dialog modal-xl modal-dialog-centered">
+                                        <div className="modal-content" >
+                                            <div className="modal-header py-16 px-24">
+                                                <h5 className="modal-title font-bold" >Data No Faktur : {info.row.original.noFaktur}</h5>
+                                                <button type="button" className="btn-close hp-bg-none d-flex align-items-center justify-content-center" data-bs-dismiss="modal" aria-label="Close">
+                                                    <i className="ri-close-line hp-text-color-dark-0 lh-1" style={{ fontSize: "24px" }}></i>
+                                                </button>
+                                            </div>
+
+                                            <div className="divider m-0"></div>
+
+                                            <div className="overflow-auto">
+                                                <table className="table align-middle table-hover ">
+                                                    <thead>
+                                                        <tr>
+                                                            <td rowSpan={2}>Supplier</td>
+                                                            <td colSpan={3}>Surat Jalan</td>
+                                                            <td colSpan={3}>Faktur/Tagihan/Invoice</td>
+                                                            <td colSpan={2}>Faktur Pajak</td>
+                                                            <td colSpan={2}>Nilai Barang</td>
+                                                            <td colSpan={3}>Pelunasan</td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Nomor</td>
+                                                            <td>Tanggal</td>
+                                                            <td>Terima</td>
+                                                            <td>Nomor</td>
+                                                            <td>Tanggal</td>
+                                                            <td>Terima</td>
+                                                            <td>Nomor</td>
+                                                            <td>Tanggal</td>
+                                                            <td>DPP</td>
+                                                            <td>PPN</td>
+                                                            <td>Tanggal</td>
+                                                            <td>Nominal</td>
+                                                            <td>Via</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>{info.row.original.nama}</td>
+                                                            <td>{info.row.original.docControlJson.SJ_NO}</td>
+                                                            <td>{info.row.original.docControlJson.SJ_TGLDOC}</td>
+                                                            <td>{info.row.original.docControlJson.SJ_TGLTRM}</td>
+
+                                                            <td>{info.row.original.docControlJson.TAG_NO}</td>
+                                                            <td>{info.row.original.docControlJson.TAG_TGLDOC}</td>
+                                                            <td>{info.row.original.docControlJson.TAG_TGLTRM}</td>
+
+                                                            <td>{info.row.original.noFaktur}</td>
+                                                            <td>{info.row.original.date}</td>
+                                                            <td>{info.row.original.amountDPP}</td>
+                                                            <td>{info.row.original.amountPPN}</td>
+
+                                                            <td>{info.row.original.docControlJson.PEL_TGL}</td>
+                                                            <td>{info.row.original.docControlJson.PEL_NOM}</td>
+                                                            <td>{info.row.original.docControlJson.VIA}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>

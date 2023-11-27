@@ -668,8 +668,8 @@ export default function EfakturOut({ userData, setuserData }: any) {
         { label: '07', value: '0' },
     ]
 
-    const keteranganTambhan08 = [
-        { label: 'Senjata, Amunisi, Helm Anti Peluru dan Jaket Atau Rompi Anti Peluru, Kendaraan Darat Khusus, Radar 7 Suku Cadang', value: '41' },]
+    const keteranganTambhan08 = [{ label: 'Senjata, Amunisi, Helm Anti Peluru dan Jaket Atau Rompi Anti Peluru, Kendaraan Darat Khusus, Radar 7 Suku Cadang', value: '41' },]
+
     const tabData = [
         {
             label: "NIK",
@@ -687,6 +687,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
             </>,
         },
     ];
+
     if (npwp?.length) {
         tabData.push(
             {

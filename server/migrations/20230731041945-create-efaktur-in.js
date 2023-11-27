@@ -73,6 +73,42 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      SJ_NO: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      SJ_TGLDOC: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+      },
+      SJ_TGLTRM: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+      },
+      TAG_NO: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      TAG_TGLDOC: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+      },
+      TAG_TGLTRM: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+      },
+      PEL_TGL: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+      },
+      PEL_NOM: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      VIA: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,

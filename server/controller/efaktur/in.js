@@ -120,6 +120,18 @@ const get = async (req, res) => {
       amountPPN: numeral(val.JUMLAH_PPN).format("0,0"),
       amountPPNBM: numeral(val.JUMLAH_PPNBM).format("0,0"),
       json: val,
+      docControl: "View",
+      docControlJson: {
+        SJ_NO: val.SJ_NO,
+        SJ_TGLDOC: val.SJ_TGLDOC,
+        SJ_TGLTRM: val.SJ_TGLTRM,
+        TAG_NO: val.TAG_NO,
+        TAG_TGLDOC: val.TAG_TGLDOC,
+        TAG_TGLTRM: val.TAG_TGLTRM,
+        PEL_TGL: val.PEL_TGL,
+        PEL_NOM: val.PEL_NOM,
+        VIA: val.VIA,
+      },
     };
   });
 
@@ -308,6 +320,55 @@ const export_doccon = async (req, res) => {
   }
 };
 
+const import_doccon = async (req, res) => {
+  const { company_id, data } = req.body;
+
+  if (!company_id) {
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
+  const Company = await company.findOne({
+    where: {
+      uuid: company_id,
+    },
+  });
+
+  if (!Company) {
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
+
+  for (let index = 0; index < data.length; index++) {
+    if (Company.id && data[index]?.tgl_faktur && data[index]?.no_faktur) {
+      let Efaktur = await efakturIn.findOne({
+        where: {
+          company_id: Company.id,
+          TANGGAL_FAKTUR: data[index].tgl_faktur,
+          NOMOR_FAKTUR: data[index].no_faktur,
+        },
+      });
+
+      if (Efaktur) {
+        await Efaktur.update({
+          SJ_NO: data[index].no_surat_jalan ?? Efaktur.SJ_NO,
+          SJ_TGLDOC: data[index].tgl_surat_jalan ?? Efaktur.SJ_TGLDOC,
+          SJ_TGLTRM: data[index].terima_surat_jalan ?? Efaktur.SJ_TGLTRM,
+          TAG_NO: data[index].no_tagihan ?? Efaktur.TAG_NO,
+          TAG_TGLDOC: data[index].tgl_tagihan ?? Efaktur.TAG_TGLDOC,
+          TAG_TGLTRM: data[index].terima_tagihan ?? Efaktur.TAG_TGLTRM,
+          PEL_TGL: data[index].tgl_lunas ?? Efaktur.PEL_TGL,
+          PEL_NOM: data[index].nominal_lunas ?? Efaktur.PEL_NOM,
+          VIA: data[index].via_lunas ?? Efaktur.VIA,
+        });
+      }
+    }
+  }
+
+  res.json(true);
+};
+
 module.exports = {
   get,
   put,
@@ -317,4 +378,5 @@ module.exports = {
   putId,
   proof,
   export_doccon,
+  import_doccon,
 };

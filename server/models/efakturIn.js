@@ -82,6 +82,42 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      SJ_NO: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      SJ_TGLDOC: {
+        type: DataTypes.DATEONLY,
+        allowNull: true,
+      },
+      SJ_TGLTRM: {
+        type: DataTypes.DATEONLY,
+        allowNull: true,
+      },
+      TAG_NO: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      TAG_TGLDOC: {
+        type: DataTypes.DATEONLY,
+        allowNull: true,
+      },
+      TAG_TGLTRM: {
+        type: DataTypes.DATEONLY,
+        allowNull: true,
+      },
+      PEL_TGL: {
+        type: DataTypes.DATEONLY,
+        allowNull: true,
+      },
+      PEL_NOM: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      VIA: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       sequelize,

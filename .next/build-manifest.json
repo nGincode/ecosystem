@@ -5,8 +5,8 @@
   "devFiles": [],
   "ampDevFiles": [],
   "lowPriorityFiles": [
-    "static/WcYMyczd9oK1NJ60WL3uo/_buildManifest.js",
-    "static/WcYMyczd9oK1NJ60WL3uo/_ssgManifest.js"
+    "static/qVv1nxyKmcMB9z2n9-Jeg/_buildManifest.js",
+    "static/qVv1nxyKmcMB9z2n9-Jeg/_ssgManifest.js"
   ],
   "rootMainFiles": [],
   "pages": {
@@ -40,7 +40,7 @@
       "static/chunks/framework-0c7baedefba6b077.js",
       "static/chunks/main-75623049b75f64cc.js",
       "static/chunks/852-7aa735b3ba6e1066.js",
-      "static/chunks/35-faebead94eb7f297.js",
+      "static/chunks/35-b4e5a561d976a942.js",
       "static/chunks/pages/company-c3f4af9570d91ec0.js"
     ],
     "/efaktur/in": [
@@ -50,8 +50,8 @@
       "static/chunks/674a26a7-c25f40a5f258c92b.js",
       "static/chunks/2b7b2d2a-4e9e97873d2042c6.js",
       "static/chunks/852-7aa735b3ba6e1066.js",
-      "static/chunks/35-faebead94eb7f297.js",
-      "static/chunks/pages/efaktur/in-a874c325172b1f31.js"
+      "static/chunks/35-b4e5a561d976a942.js",
+      "static/chunks/pages/efaktur/in-8b12b79ebcd35e48.js"
     ],
     "/efaktur/out": [
       "static/chunks/webpack-36f9f2d030778b0d.js",
@@ -60,7 +60,7 @@
       "static/chunks/674a26a7-c25f40a5f258c92b.js",
       "static/chunks/2b7b2d2a-4e9e97873d2042c6.js",
       "static/chunks/852-7aa735b3ba6e1066.js",
-      "static/chunks/35-faebead94eb7f297.js",
+      "static/chunks/35-b4e5a561d976a942.js",
       "static/chunks/pages/efaktur/out-d8c7be4963453a9f.js"
     ],
     "/npwp": [
@@ -68,7 +68,7 @@
       "static/chunks/framework-0c7baedefba6b077.js",
       "static/chunks/main-75623049b75f64cc.js",
       "static/chunks/852-7aa735b3ba6e1066.js",
-      "static/chunks/35-faebead94eb7f297.js",
+      "static/chunks/35-b4e5a561d976a942.js",
       "static/chunks/pages/npwp-9d0d262b39e2caf9.js"
     ],
     "/permission": [
@@ -76,7 +76,7 @@
       "static/chunks/framework-0c7baedefba6b077.js",
       "static/chunks/main-75623049b75f64cc.js",
       "static/chunks/852-7aa735b3ba6e1066.js",
-      "static/chunks/35-faebead94eb7f297.js",
+      "static/chunks/35-b4e5a561d976a942.js",
       "static/chunks/pages/permission-5c6b61ca407c84b2.js"
     ],
     "/profile": [
@@ -90,7 +90,7 @@
       "static/chunks/framework-0c7baedefba6b077.js",
       "static/chunks/main-75623049b75f64cc.js",
       "static/chunks/852-7aa735b3ba6e1066.js",
-      "static/chunks/35-faebead94eb7f297.js",
+      "static/chunks/35-b4e5a561d976a942.js",
       "static/chunks/pages/users-5998153c85b835bb.js"
     ]
   },
