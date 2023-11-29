@@ -246,13 +246,12 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                                                         {create}
                                                                         {edit}
                                                                         {del}
-                                                                    </div></div>
+                                                                    </div>
+                                                                </div>
                                                             </div>;
                                                         }
 
                                                     })
-
-
                                                 }
 
                                             })}
@@ -915,52 +914,78 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                                                                                             <div className="w-1/2">{val.label}</div>
                                                                                         </div>
                                                                                         {val.data.map((vall: any, ii: number) => {
-                                                                                            let perm = dataEdit?.permission.find((fill: any) => fill.label === val.label)?.data?.find((fil: any) => fil.name === vall.name);
-                                                                                            if (perm?.checklist) {
+                                                                                            if (vall?.name) {
                                                                                                 return (
                                                                                                     <div key={ii} className="flex mt-1 ml-2">
                                                                                                         <div className="w-1/2 ml-2 m-auto"> {vall.label}</div>
                                                                                                         <div className="w-1/6 justify-center flex">
-                                                                                                            <Cekbox name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 1} checked={perm?.checklist.find((fil: any) => fil === 'view') ? true : false} />
+                                                                                                            <Cekbox name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 1} checked={vall?.checklist.find((fil: any) => fil === 'view') ? true : false} />
                                                                                                         </div>
                                                                                                         <div className="w-1/6 justify-center flex">
-                                                                                                            <Cekbox color="blue" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 2} checked={perm?.checklist.find((fil: any) => fil === 'create') ? true : false} />
+                                                                                                            <Cekbox color="blue" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 2} checked={vall?.checklist.find((fil: any) => fil === 'create') ? true : false} />
                                                                                                         </div>
                                                                                                         <div className="w-1/6  justify-center flex">
-                                                                                                            <Cekbox color="green" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 3} checked={perm?.checklist.find((fil: any) => fil === 'edit') ? true : false} />
+                                                                                                            <Cekbox color="green" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 3} checked={vall?.checklist.find((fil: any) => fil === 'edit') ? true : false} />
                                                                                                         </div>
                                                                                                         <div className="w-1/6  justify-center flex">
-                                                                                                            <Cekbox color="red" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 4} checked={perm?.checklist.find((fil: any) => fil === 'delete') ? true : false} />
+                                                                                                            <Cekbox color="red" name={vall.name} id={dataEdit?.name + val.label + vall.name + ii + 4} checked={vall?.checklist.find((fil: any) => fil === 'delete') ? true : false} />
                                                                                                         </div>
                                                                                                     </div>)
                                                                                             } else {
 
-                                                                                                return (
-                                                                                                    <div key={ii} className="ml-2" >
-                                                                                                        <div className="flex my-2 font-semibold">
-                                                                                                            <div className="w-1/2">{perm?.label}</div>
-                                                                                                        </div>
-                                                                                                        {perm?.data.map((valll: any, iii: number) => {
-                                                                                                            let perm = dataEdit?.permission.find((fill: any) => fill.label === val.label)?.data?.find((fil: any) => fil.name === vall.name)?.data?.find((fil: any) => fil.name === valll.name);
-                                                                                                            return (
-                                                                                                                <div key={iii} className="flex mt-1 ml-2">
-                                                                                                                    <div className="w-1/2 ml-2 m-auto"> {valll.label}</div>
-                                                                                                                    <div className="w-1/6 justify-center flex">
-                                                                                                                        <Cekbox name={valll.name} id={dataEdit?.name + vall.label + valll.name + iii + 1} checked={perm?.checklist.find((fil: any) => fil === 'view') ? true : false} />
-                                                                                                                    </div>
-                                                                                                                    <div className="w-1/6 justify-center flex">
-                                                                                                                        <Cekbox color="blue" name={valll.name} id={dataEdit?.name + vall.label + valll.name + iii + 2} checked={perm?.checklist.find((fil: any) => fil === 'create') ? true : false} />
-                                                                                                                    </div>
-                                                                                                                    <div className="w-1/6  justify-center flex">
-                                                                                                                        <Cekbox color="green" name={valll.name} id={dataEdit?.name + vall.label + valll.name + iii + 3} checked={perm?.checklist.find((fil: any) => fil === 'edit') ? true : false} />
-                                                                                                                    </div>
-                                                                                                                    <div className="w-1/6  justify-center flex">
-                                                                                                                        <Cekbox color="red" name={valll.name} id={dataEdit?.name + vall.label + valll.name + iii + 4} checked={perm?.checklist.find((fil: any) => fil === 'delete') ? true : false} />
-                                                                                                                    </div>
-                                                                                                                </div>)
-                                                                                                        })}
+                                                                                                return (<div key={ii} className="ml-2" >
+                                                                                                    <div className="flex my-2 font-semibold">
+                                                                                                        <div className="w-1/2">{vall.label}</div>
                                                                                                     </div>
-                                                                                                )
+                                                                                                    {
+                                                                                                        vall.option.map((mp: any, int: any) => {
+                                                                                                            let valueData = dataEdit?.permission.find((fdn: any) => fdn.label === val.label)?.data.find((fdn2: any) => fdn2.label === vall.label)?.data?.find((fdn3: any) => fdn3.name === mp.name);
+
+                                                                                                            return (
+                                                                                                                <div key={int} className="flex mt-1 ml-2">
+                                                                                                                    <div className="w-1/2 ml-2 m-auto"> {mp.label}</div>
+                                                                                                                    <div className="w-1/6 justify-center flex">
+                                                                                                                        <Cekbox name={mp.name} id={dataEdit?.name + vall.label + mp.name + int + 1} checked={valueData?.checklist.find((fil: any) => fil === 'view') ? true : false} />
+                                                                                                                    </div>
+                                                                                                                    <div className="w-1/6 justify-center flex">
+                                                                                                                        <Cekbox color="blue" name={mp.name} id={dataEdit?.name + vall.label + mp.name + int + 2} checked={valueData?.checklist.find((fil: any) => fil === 'create') ? true : false} />
+                                                                                                                    </div>
+                                                                                                                    <div className="w-1/6  justify-center flex">
+                                                                                                                        <Cekbox color="green" name={mp.name} id={dataEdit?.name + vall.label + mp.name + int + 3} checked={valueData?.checklist.find((fil: any) => fil === 'edit') ? true : false} />
+                                                                                                                    </div>
+                                                                                                                    <div className="w-1/6  justify-center flex">
+                                                                                                                        <Cekbox color="red" name={mp.name} id={dataEdit?.name + vall.label + mp.name + int + 4} checked={valueData?.checklist.find((fil: any) => fil === 'delete') ? true : false} />
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            )
+                                                                                                        })}
+                                                                                                </div>)
+                                                                                                // return (
+                                                                                                //     <div key={ii} className="ml-2" >
+                                                                                                //         <div className="flex my-2 font-semibold">
+                                                                                                //             <div className="w-1/2">{perm?.label}</div>
+                                                                                                //         </div>
+                                                                                                //         {perm?.data.map((valll: any, iii: number) => {
+                                                                                                //             let perm = dataEdit?.permission.find((fill: any) => fill.label === val.label)?.data?.find((fil: any) => fil.name === vall.name)?.data?.find((fil: any) => fil.name === valll.name);
+                                                                                                //             return (
+                                                                                                //                 <div key={iii} className="flex mt-1 ml-2">
+                                                                                                //                     <div className="w-1/2 ml-2 m-auto"> {valll.label}</div>
+                                                                                                //                     <div className="w-1/6 justify-center flex">
+                                                                                                //                         <Cekbox name={valll.name} id={dataEdit?.name + vall.label + valll.name + iii + 1} checked={perm?.checklist.find((fil: any) => fil === 'view') ? true : false} />
+                                                                                                //                     </div>
+                                                                                                //                     <div className="w-1/6 justify-center flex">
+                                                                                                //                         <Cekbox color="blue" name={valll.name} id={dataEdit?.name + vall.label + valll.name + iii + 2} checked={perm?.checklist.find((fil: any) => fil === 'create') ? true : false} />
+                                                                                                //                     </div>
+                                                                                                //                     <div className="w-1/6  justify-center flex">
+                                                                                                //                         <Cekbox color="green" name={valll.name} id={dataEdit?.name + vall.label + valll.name + iii + 3} checked={perm?.checklist.find((fil: any) => fil === 'edit') ? true : false} />
+                                                                                                //                     </div>
+                                                                                                //                     <div className="w-1/6  justify-center flex">
+                                                                                                //                         <Cekbox color="red" name={valll.name} id={dataEdit?.name + vall.label + valll.name + iii + 4} checked={perm?.checklist.find((fil: any) => fil === 'delete') ? true : false} />
+                                                                                                //                     </div>
+                                                                                                //                 </div>)
+                                                                                                //         })}
+                                                                                                //     </div>
+                                                                                                // )
                                                                                             }
                                                                                         })}
                                                                                     </div>)

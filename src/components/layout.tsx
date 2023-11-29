@@ -35,7 +35,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                 <div className="menu-title">{val.label}</div>
                                 <ul>
                                     {val.option.map((vall: any, ii: number) => {
-                                        let OptionTrue = PermissionLabel?.data?.find((find: any) => find.label == vall.label).check;
+                                        let OptionTrue = PermissionLabel?.data?.find((find: any) => find.label == vall.label)?.check;
                                         if (PermissionLabel?.data?.find((find: any) => find.label == vall.label)?.checklist?.find((find: any) => find == "view") || OptionTrue)
                                             return (
                                                 <span key={ii}>
@@ -53,7 +53,7 @@ export default function layout({ children = null, logOut, userData }: any) {
 
                                                             <ul className={vall.option.find((el: any) => el.link === router.asPath) ? "submenu-children active" : "submenu-children"} data-level={1} style={vall.option.find((el: any) => el.link === router.asPath) ? { display: "block" } : {}}>
                                                                 {vall.option.map((valll: any, iii: number) => {
-                                                                    if (PermissionLabel?.data?.find((find: any) => find.label == vall.label).data.find((fd: any) => fd.link == valll.link)?.checklist?.find((find: any) => find == "view"))
+                                                                    if (PermissionLabel?.data?.find((find: any) => find.label == vall.label).data?.find((fd: any) => fd.link == valll.link)?.checklist?.find((find: any) => find == "view"))
                                                                         return (
                                                                             <li key={iii}>
                                                                                 <Link href={valll.link} className={router.asPath === valll.link ? "active" : ""}>

@@ -30,7 +30,12 @@ export default function AccessData(perm = 'permission') {
                         link: '/permission',
                         name: 'permission[]',
                         checklist: ['view', 'edit', 'delete', 'create']
-                    },
+                    }
+                ],
+            },
+            {
+                label: 'My Process',
+                data: [
                     {
                         label: 'Company',
                         name: 'company[]',
@@ -58,9 +63,25 @@ export default function AccessData(perm = 'permission') {
                                 name: 'efakturOut[]',
                                 checklist: ['view', 'edit', 'delete', 'create']
                             }]
-                    }
+                    },
+                    {
+                        label: 'Stock',
+                        option: [
+                            {
+                                label: 'Stock Label',
+                                link: '/stock/label',
+                                name: 'stockLabel[]',
+                                checklist: ['view', 'edit', 'delete', 'create']
+                            },
+                            {
+                                label: 'Stock Data',
+                                link: '/stock/data',
+                                name: 'stockData[]',
+                                checklist: ['view', 'edit', 'delete', 'create']
+                            }]
+                    },
                 ],
-            }
+            },
         ];
         data = PermissionData;
     } else if (perm == 'menu') {
@@ -93,6 +114,10 @@ export default function AccessData(perm = 'permission') {
                     link: '/permission',
                     label: 'Permission',
                 },
+            ]
+        }, {
+            label: 'MY PROCESS',
+            option: [
                 {
                     icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                         <path fillRule="evenodd" d="M3 2.25a.75.75 0 000 1.5v16.5h-.75a.75.75 0 000 1.5H15v-18a.75.75 0 000-1.5H3zM6.75 19.5v-2.25a.75.75 0 01.75-.75h3a.75.75 0 01.75.75v2.25a.75.75 0 01-.75.75h-3a.75.75 0 01-.75-.75zM6 6.75A.75.75 0 016.75 6h.75a.75.75 0 010 1.5h-.75A.75.75 0 016 6.75zM6.75 9a.75.75 0 000 1.5h.75a.75.75 0 000-1.5h-.75zM6 12.75a.75.75 0 01.75-.75h.75a.75.75 0 010 1.5h-.75a.75.75 0 01-.75-.75zM10.5 6a.75.75 0 000 1.5h.75a.75.75 0 000-1.5h-.75zm-.75 3.75A.75.75 0 0110.5 9h.75a.75.75 0 010 1.5h-.75a.75.75 0 01-.75-.75zM10.5 12a.75.75 0 000 1.5h.75a.75.75 0 000-1.5h-.75zM16.5 6.75v15h5.25a.75.75 0 000-1.5H21v-12a.75.75 0 000-1.5h-4.5zm1.5 4.5a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 2.25a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75v-.008a.75.75 0 00-.75-.75h-.008zM18 17.25a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008z" clipRule="evenodd" />
@@ -132,6 +157,31 @@ export default function AccessData(perm = 'permission') {
                             </svg>,
                             link: '/efaktur/out',
                             label: 'Out',
+                        },
+                    ]
+
+                },
+                {
+                    icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                    </svg>,
+                    link: '/stock',
+                    label: 'Stock',
+                    dropdown: true,
+                    option: [
+                        {
+                            icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                            </svg>,
+                            link: '/stock/label',
+                            label: 'Label',
+                        },
+                        {
+                            icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                            </svg>,
+                            link: '/stock/data',
+                            label: 'Data',
                         },
                     ]
 
