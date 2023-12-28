@@ -1,1 +1,9 @@
-{}
+{
+  "..\\components\\chart.tsx -> react-apexcharts": {
+    "id": 7229,
+    "files": [
+      "static/chunks/6c44d60f.88d0aa9125b63f98.js",
+      "static/chunks/229.81d0d619cfe73b62.js"
+    ]
+  }
+}

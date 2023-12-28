@@ -17,51 +17,81 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      npwp: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      date: {
-        type: Sequelize.STRING,
+      company_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
-      code: {
-        type: Sequelize.STRING,
+      no_faktur: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
-      name: {
+      costumer_name: {
         type: Sequelize.STRING,
+        allowNull: true,
+      },
+      address: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      area: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      product_code: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      product_name: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      packaging: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      varian: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      invoice_date: {
+        type: Sequelize.DATEONLY,
         allowNull: false,
-        unique: true,
+      },
+      invoice_no: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       qty: {
-        type: Sequelize.JSON,
-        allowNull: false,
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       price: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
-      uom: {
+      gross_amount: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
-      gross: {
+      discount: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       dpp: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       tax: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
-      net: {
+      net_amount: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
+      },
+      qty_last: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       createdAt: {
         type: Sequelize.DATE,
