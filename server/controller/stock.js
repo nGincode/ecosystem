@@ -9,6 +9,7 @@ const {
 const moment = require("moment/moment");
 const Crypto = require("crypto");
 const numeral = require("numeral");
+const { Op } = require("sequelize");
 const fs = require("fs");
 
 const getId = async (req, res) => {
@@ -290,60 +291,33 @@ const proof = async (req, res) => {
 };
 
 const exprt = async (req, res) => {
-  const { company_id } = req.body;
+  const { company_id, first_date, end_date } = req.body;
   let data = [];
+  let data2 = [];
   const subject = [
     [
-      "FK",
-      "KD_JENIS_TRANSAKSI",
-      "FG_PENGGANTI",
-      "NOMOR_FAKTUR",
-      "MASA_PAJAK",
-      "TAHUN_PAJAK",
-      "TANGGAL_FAKTUR",
-      "NPWP",
-      "NAMA",
-      "ALAMAT_LENGKAP",
-      "JUMLAH_DPP",
-      "JUMLAH_PPN",
-      "JUMLAH_PPNBM",
-      "ID_KETERANGAN_TAMBAHAN",
-      "FG_UANG_MUKA",
-      "UANG_MUKA_DPP",
-      "UANG_MUKA_PPN",
-      "UANG_MUKA_PPNBM",
-      "REFERENSI",
-      "KODE_DOKUMEN_PENDUKUNG",
-    ],
-    [
-      "LT",
-      "NPWP",
-      "NAMA",
-      "JALAN",
-      "BLOK",
-      "NOMOR",
-      "RT",
-      "RW",
-      "KECAMATAN",
-      "KELURAHAN",
-      "KABUPATEN",
-      "PROPINSI",
-      "KODE_POS",
-      "NOMOR_TELEPON",
-    ],
-    [
-      "OF",
-      "KODE_OBJEK",
-      "NAMA",
-      "HARGA_SATUAN",
-      "JUMLAH_BARANG",
-      "HARGA_TOTAL",
-      "DISKON",
+      "No Faktur",
+      "Invoice Date",
+      "Costumer Name",
+      "Address",
+      "Area",
+      "Product Code",
+      "Product Name",
+      "Packaging",
+      "Varian",
+      "Invoice No",
+      "Qty",
+      "Price",
+      "Groos Amount",
+      "Discount",
       "DPP",
-      "PPN",
-      "TARIF_PPNBM",
-      "PPNBM",
+      "TAX",
+      "Net Amount",
     ],
+  ];
+
+  const subject2 = [
+    ["Product Name", "Packaging", "Varian", "Qty Last", "Date Last"],
   ];
 
   if (!company_id) {
@@ -363,77 +337,60 @@ const exprt = async (req, res) => {
     });
   }
 
-  const Efaktur = await efakturOut.findAll({
+  const STOCK = await stock.findAll({
     where: {
-      proof: null,
       company_id: Company.id,
-    },
-    include: [
-      {
-        model: efakturOutItem,
-        as: "efakturOutItem",
-        attributes: {
-          exclude: ["id"],
-        },
+      invoice_date: {
+        [Op.between]: [first_date, end_date],
       },
-    ],
+    },
   });
 
-  Efaktur.map((val, i) => {
-    let noId;
-    let nameId;
-    if (val.noIdentitas.length === 16) {
-      noId = "000000000000000";
-      nameId = `${val.noIdentitas}#NIK#NAMA#${val.nameIdentitas}`;
-    } else if (val.noIdentitas.length === 15) {
-      noId = val.noIdentitas;
-      nameId = val.nameIdentitas;
-    } else {
-      return res.status(500).json({ massage: "No Identitas Tidak Valid" });
-    }
-
+  STOCK.map((val, i) => {
     data.push([
-      "FK",
-      val.transaction,
-      val.jenis_faktur,
-      val.noFaktur.substring(3, val.noFaktur.length),
-      moment(val.date, "YYYY-MM-DD").format("MM"),
-      moment(val.date, "YYYY-MM-DD").format("YYYY"),
-      moment(val.date, "YYYY-MM-DD").format("DD/MM/YYYY"),
-      noId,
-      nameId,
-      val.address,
-      val.jumlahDPP,
-      val.jumlahPPN,
-      val.jumlahPPNBM,
-      val.IDKeteranganTambahan ?? "",
-      val.FGUangMuka,
-      val.uangMukaDPP,
-      val.uangMukaPPN,
-      val.uangMukaPPNBM,
-      val.referensi ?? "",
-      val.uangMukaDPP,
-      "",
+      val.no_faktur,
+      val.invoice_date,
+      val.costumer_name ?? "",
+      val.address ?? "",
+      val.area ?? "",
+      val.product_code ?? "",
+      val.product_name,
+      val.packaging,
+      val.varian ?? "",
+      val.invoice_no ?? "",
+      val.qty,
+      val.price,
+      val.gross_amount ?? "",
+      val.discount ?? "",
+      val.dpp ?? "",
+      val.tax ?? "",
+      val.net_amount ?? "",
     ]);
-
-    val.efakturOutItem.map((vall, ii) => {
-      data.push([
-        "OF",
-        vall.kodeBarang,
-        vall.nama,
-        vall.hargaSatuan,
-        vall.jumlahBarang,
-        vall.hargaTotal,
-        vall.diskon,
-        vall.DPP,
-        vall.PPN,
-        vall.tarifPPNBM ?? "0",
-        vall.PPNBM,
-      ]);
+    let cek = data2.find((va, key) => {
+      if (va[2] == val.varian && va[0] == val.product_name) {
+        return va;
+      }
     });
+
+    if (cek) {
+      data2 = data2.map((mp) => {
+        mp[3] = val.qty_last;
+        mp[4] = val.invoice_date;
+        return mp;
+      });
+    } else {
+      data2.push([
+        val.product_name,
+        val.packaging,
+        val.varian,
+        val.qty_last,
+        val.invoice_date,
+      ]);
+    }
   });
+
   if (data.length) {
-    res.json([...subject, ...data]);
+    res.json([...subject, ...data, [], ...subject2, ...data2]);
   } else {
     res.status(400).json({ massage: "Data not result" });
   }
