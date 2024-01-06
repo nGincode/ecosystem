@@ -1,6 +1,7 @@
 const { user, npwp, efaktur, efakturIn, company } = require("../../models");
 const moment = require("moment/moment");
 const Crypto = require("crypto");
+const { Op } = require("sequelize");
 const numeral = require("numeral");
 
 const getId = async (req, res) => {
@@ -57,7 +58,7 @@ const putId = async (req, res) => {
 
 const get = async (req, res) => {
   const { users_id, users_uuid, email, username, permission } = req.user;
-  const { company_id } = req.query;
+  const { company_id, start_date, end_date } = req.query;
 
   if (!company_id) {
     return res.status(400).json({
@@ -78,28 +79,50 @@ const get = async (req, res) => {
 
   let EFAKTUR;
   if (permission.view === "all") {
-    EFAKTUR = await efakturIn.findAll({
-      where: { company_id: Company.id },
-      order: [["id", "DESC"]],
-    });
+    if (start_date && end_date) {
+      EFAKTUR = await efakturIn.findAll({
+        where: {
+          TANGGAL_FAKTUR: {
+            [Op.between]: [start_date, end_date],
+          },
+          company_id: Company.id,
+        },
+        order: [["id", "DESC"]],
+      });
+    } else {
+      EFAKTUR = await efakturIn.findAll({
+        where: {
+          date: {
+            [Op.between]: [start_date, end_date],
+          },
+          company_id: Company.id,
+        },
+        order: [["id", "DESC"]],
+      });
+    }
   } else {
-    // EFAKTUR = await efakturIn.findAll({
-    //   where: {
-    //     user_id: users_id,
-    //     company_id: Company.id,
-    //   },
-    //   include: [
-    //     {
-    //       model: efakturItem,
-    //       as: "efakturItem",
-    //       attributes: {
-    //         exclude: ["id"],
-    //       },
-    //     },
-    //   ],
-    //   attributes: { exclude: ["id"] },
-    //   order: [["id", "DESC"]],
-    // });
+    if (start_date && end_date) {
+      EFAKTUR = await efakturIn.findAll({
+        where: {
+          TANGGAL_FAKTUR: {
+            [Op.between]: [start_date, end_date],
+          },
+          user_id: users_id,
+          company_id: Company.id,
+        },
+        attributes: { exclude: ["id"] },
+        order: [["id", "DESC"]],
+      });
+    } else {
+      EFAKTUR = await efakturIn.findAll({
+        where: {
+          user_id: users_id,
+          company_id: Company.id,
+        },
+        attributes: { exclude: ["id"] },
+        order: [["id", "DESC"]],
+      });
+    }
   }
 
   if (!EFAKTUR) {

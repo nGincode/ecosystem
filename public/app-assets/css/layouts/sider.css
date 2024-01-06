@@ -154,7 +154,7 @@ body.collapse-btn-none.collapsed-active .hp-sidebar-collapse-button {
   width: 0;
 }
 .hp-sidebar-container .hp-sidebar-header-menu > ul > li + li {
-  margin-top: 50px;
+  margin-top: 20px;
 }
 .hp-sidebar-container .hp-sidebar-header-menu > ul li {
   list-style: none;
@@ -163,7 +163,7 @@ body.collapse-btn-none.collapsed-active .hp-sidebar-collapse-button {
   color: #0063f7;
   font-size: 12px;
   font-weight: 600;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   text-transform: uppercase;
   -webkit-transition: 0.3s;
   transition: 0.3s;

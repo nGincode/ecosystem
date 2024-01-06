@@ -29,6 +29,7 @@ import DebouncedInput from "../components/debouncedInput";
 
 
 export default function StockData({ userData, setuserData }: any) {
+    const [dateData, setdateData] = useState<any>([moment().add(-30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')]);
     const [pagePermission, setpagePermission] = useState([]);
     const [dataCreate, setdataCreate] = useState();
     const [search, setsearch] = useState('');
@@ -345,37 +346,35 @@ export default function StockData({ userData, setuserData }: any) {
 
     return (
         <>
+            <div className="col-12">
+                <h1 className="hp-mb-0 text-4xl font-bold">{Subject}</h1>
+            </div>
             <div className="row mb-32 gy-32">
-                <div className="col-12">
-                    <div className="row justify-content-between gy-32">
-                        <div className="col hp-flex-none w-auto">
-                            <nav aria-label="breadcrumb">
-                                <ol className="breadcrumb">
-                                    <li className="breadcrumb-item">
-                                        <Link href="/">Home</Link>
-                                    </li>
-                                    <li className="breadcrumb-item active">
-                                        {Subject}
-                                    </li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
 
                 {JSON.parse(localStorage.getItem('companyActive') as string)?.value && userData.company.length ? <>
-                    <div className="col-12 mt-10">
+                    <div className="col-12 mt-15">
                         <div className="row g-16 align-items-center justify-content-end">
-                            <div className="col-12 col-md-6 col-xl-4">
-                                <div className="align-items-center">
+
+                            <div className="col-12 col-md-3 col-xl-3">
+                                <div className="input-group align-items-center">
                                     <DebouncedInput
                                         value={search ?? ''}
                                         onChange={value => setsearch(String(value))}
+                                        className="form-control ps-8"
                                         placeholder="Search all columns..."
                                     />
                                 </div>
                             </div>
-
+                            <div className="col-12 col-md-3">
+                                <div className="input-group align-items-center">
+                                    <Input type="date" id="tanggal_mulai" defaultValue={dateData?.[0]} onChange={(val: any) => { setdateData([val.target.value, (document.getElementById('tanggal_akhir') as any)?.value]) }} label="Tanggal Mulai" variant="standard" name="start" />
+                                </div>
+                            </div>
+                            <div className="col-12 col-md-3">
+                                <div className="input-group align-items-center">
+                                    <Input type="date" id="tanggal_akhir" defaultValue={dateData?.[1]} onChange={(val: any) => { setdateData([(document.getElementById('tanggal_mulai') as any)?.value, val.target.value]) }} label="Tanggal Akhir" variant="standard" name="end" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="col-12">
@@ -390,6 +389,7 @@ export default function StockData({ userData, setuserData }: any) {
                                     urlFatch={URLAPI}
                                     modalData={modalData}
                                     Subject={Subject}
+                                    date={dateData}
                                     reload={dataCreate}
                                 />
                             </div>
@@ -441,7 +441,19 @@ export default function StockData({ userData, setuserData }: any) {
                             </div>
                         </div>
                     </div>
-                </> : null}
+                </> : <>
+                    <div className="col-12">
+                        <div className="card hp-contact-card mb-15 -mt-3 shadow-md">
+                            <div className="card-body px-0 text-center flex justify-center flex-wrap">
+                                <div className="text-center w-full text-gray-500">
+                                    <div className="flex justify-center -mt-10 -mb-7 ">
+                                        <Image src="/img/noResult.gif" width={200} height={200} alt="noResult" /> </div>
+                                    <div className="text-lg">{!userData.company.length ? "Requires company data" : !JSON.parse(localStorage.getItem('companyActive') as string)?.value ? "Please select company" : null}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </>}
             </div >
         </>
     )

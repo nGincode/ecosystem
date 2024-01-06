@@ -24,6 +24,7 @@ import DebouncedInput from "../../components/debouncedInput";
 
 
 export default function EfakturIn({ userData, setuserData }: any) {
+    const [dateData, setdateData] = useState<any>([moment().add(-1, 'months').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')]);
     const [pagePermission, setpagePermission] = useState([]);
     const [dataCreate, setdataCreate] = useState();
     const [search, setsearch] = useState('');
@@ -968,317 +969,32 @@ export default function EfakturIn({ userData, setuserData }: any) {
 
     return (
         <>
+            <div className="col-12">
+                <h1 className="hp-mb-0 text-4xl font-bold">{Subject}</h1>
+            </div>
             <div className="row mb-32 gy-32">
-                <div className="col-12">
-                    <div className="row justify-content-between gy-32">
-                        <div className="col hp-flex-none w-auto">
-                            <nav aria-label="breadcrumb">
-                                <ol className="breadcrumb">
-                                    <li className="breadcrumb-item">
-                                        <Link href="/">Home</Link>
-                                    </li>
-                                    <li className="breadcrumb-item active">
-                                        {Subject}
-                                    </li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-
                 {JSON.parse(localStorage.getItem('companyActive') as string)?.value && userData.company.length ? <>
-                    <div className="col-12 mt-10">
+                    <div className="col-12 mt-15">
                         <div className="row g-16 align-items-center justify-content-end">
-                            <div className="col-12 col-md-6 col-xl-4">
-                                <div className="align-items-center">
+
+                            <div className="col-12 col-md-3 col-xl-3">
+                                <div className="input-group align-items-center">
                                     <DebouncedInput
                                         value={search ?? ''}
                                         onChange={value => setsearch(String(value))}
+                                        className="form-control ps-8"
                                         placeholder="Search all columns..."
                                     />
                                 </div>
                             </div>
-
-                            {/* {pagePermission.find((val: any) => val == "create") ?
-                                <div className="col hp-flex-none w-auto">
-                                    <Button type="button" className="w-100 px-5" variant="gradient" color="cyan" data-bs-toggle="modal" data-bs-target="#addNew"><i className="ri-add-line remix-icon"></i> Add {Subject}</Button>
-                                </div> : null} */}
-
-                            <div className="modal fade -mt-1" id="addNew" tabIndex={-1} aria-labelledby="addNewLabel" role="dialog" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
-                                <div className="modal-dialog modal-xl modal-dialog-centered">
-                                    <div className="modal-content">
-                                        <div className="modal-header py-16 px-24">
-                                            <h5 className="modal-title font-bold" id="addNewLabel">Add {Subject}</h5>
-                                            <button type="button" className="btn-close hp-bg-none d-flex align-items-center justify-content-center" data-bs-dismiss="modal" aria-label="Close">
-                                                <i className="ri-close-line hp-text-color-dark-0 lh-1" style={{ fontSize: "24px" }}></i>
-                                            </button>
-                                        </div>
-
-                                        <div className="divider m-0"></div>
-                                        <form onSubmit={submitAdd} id="formCreate">
-                                            <div className="modal-body">
-                                                <div className="row gx-8">
-                                                    {modalData.length ? modalData?.map((val: any, i: number) => {
-                                                        return <div id={val.name + '_div'} className={val.full ? "col-12 col-md-12" : "col-12 col-md-6"} key={i}>
-                                                            {
-                                                                val.type === 'email' || val.type === 'number' || val.type === 'date' || val.type === 'text' ?
-                                                                    <div className="mb-24">
-                                                                        <Input type={val.type} className="border-b-1" variant="standard" label={convertCamelCase(val.label ?? val.name)} name={val.name} id={val.id} />
-                                                                    </div>
-                                                                    : val.type === 'group' ?
-                                                                        <div className="mb-24 -mt-4">
-                                                                            <label htmlFor={val.id} className="text-xs">
-                                                                                {convertCamelCase(val.label ?? val.name)}
-                                                                            </label>
-                                                                            <div className="input-group">
-                                                                                {val.group.map((vall: any, ii: number) => {
-                                                                                    return (<input key={ii} type={vall.type} defaultValue={vall.defaultValue} readOnly={vall.readOnly} placeholder={vall.placeholder} name={vall.name} className="form-control" />)
-                                                                                })}
-                                                                            </div>
-                                                                        </div>
-                                                                        : val.type === 'textarea' ?
-                                                                            <div className="mb-24">
-                                                                                <Textarea id={val.id} name={val.name} className="border-b-1 mt-2" variant="standard" label={convertCamelCase(val.label ?? val.name)}></Textarea>
-                                                                            </div>
-                                                                            : val.type === 'reactSelect' ?
-                                                                                <div className={val.search ? "mb-5 -mt-3" : "mb-24 -mt-3"}>
-                                                                                    {val.search &&
-                                                                                        <label htmlFor={val.id} className="text-xs">
-                                                                                            {convertCamelCase(val.label ?? val.name)}
-                                                                                        </label>
-                                                                                    }
-                                                                                    <Select
-                                                                                        id={val.id}
-                                                                                        name={val.name}
-                                                                                        data={val.select}
-                                                                                        search={val.search}
-                                                                                        label={convertCamelCase(val.label ?? val.name)}
-                                                                                        setSearchValue={(vall: any) => {
-                                                                                            if (val.name === 'detail') {
-                                                                                                if (vall === '080' || vall === '070') {
-                                                                                                    setmodalData([
-                                                                                                        {
-                                                                                                            name: 'detail',
-                                                                                                            label: 'Detail Transaction',
-                                                                                                            type: 'reactSelect',
-                                                                                                            select: [
-                                                                                                                { label: 'Kepada Pihak Yang Bukan Pemungut', value: '010' },
-                                                                                                                { label: 'Kepada Pemungut Bendaharawan', value: '020' },
-                                                                                                                { label: 'Kepada Pemungut Selain Bendaharawan', value: '030' },
-                                                                                                                { label: 'DPP Nilai Lain', value: '040' },
-                                                                                                                { label: 'Besaran Tertentu', value: '050' },
-                                                                                                                { label: 'Penyerahan Lainnya', value: '060' },
-                                                                                                                { label: 'Penyerahan Yang PPN-nya Tidak Dipungut', value: '070' },
-                                                                                                                { label: 'Penyerahan Yang PPN-nya Dibebaskan', value: '080' },
-                                                                                                            ],
-                                                                                                            required: true
-                                                                                                        },
-                                                                                                        {
-                                                                                                            name: 'keterangan_tambahan',
-                                                                                                            label: 'Keterangan Tambahan',
-                                                                                                            type: 'reactSelect',
-                                                                                                            select: vall === '080' ? keteranganTambhan08 : keteranganTambhan07,
-                                                                                                            required: true
-                                                                                                        },
-                                                                                                        {
-                                                                                                            name: 'jenis',
-                                                                                                            label: 'Jenis Faktur',
-                                                                                                            type: 'reactSelect',
-                                                                                                            select: [
-                                                                                                                { label: 'Faktur Pajak', value: '0' },
-                                                                                                                { label: 'Faktur Pajak Pengganti', value: '1' },
-                                                                                                            ],
-                                                                                                            required: true
-                                                                                                        },
-                                                                                                        {
-                                                                                                            label: 'Tanggal Dokument',
-                                                                                                            name: 'date',
-                                                                                                            type: 'date',
-                                                                                                            required: true
-                                                                                                        },
-                                                                                                        {
-                                                                                                            name: 'Nomor Seri Faktur Pajak',
-                                                                                                            type: 'group',
-                                                                                                            group: [
-                                                                                                                { name: 'seri2', type: 'number' },
-                                                                                                                { name: 'seri3', type: 'number' },
-                                                                                                                { name: 'seri4', type: 'number' },
-                                                                                                            ],
-                                                                                                            required: true
-                                                                                                        },
-                                                                                                        {
-                                                                                                            type: 'nik/npwp',
-                                                                                                            required: true
-                                                                                                        },
-                                                                                                        {
-                                                                                                            name: 'referensi',
-                                                                                                            label: 'Referensi Faktur',
-                                                                                                            type: 'textarea',
-                                                                                                        },
-                                                                                                        {
-                                                                                                            full: true,
-                                                                                                            type: 'efaktur',
-                                                                                                            required: true
-                                                                                                        }
-                                                                                                    ])
-                                                                                                } else {
-                                                                                                    setmodalData([
-                                                                                                        {
-                                                                                                            name: 'detail',
-                                                                                                            label: 'Detail Transaction',
-                                                                                                            type: 'reactSelect',
-                                                                                                            select: [
-                                                                                                                { label: 'Kepada Pihak Yang Bukan Pemungut', value: '010' },
-                                                                                                                { label: 'Kepada Pemungut Bendaharawan', value: '020' },
-                                                                                                                { label: 'Kepada Pemungut Selain Bendaharawan', value: '030' },
-                                                                                                                { label: 'DPP Nilai Lain', value: '040' },
-                                                                                                                { label: 'Besaran Tertentu', value: '050' },
-                                                                                                                { label: 'Penyerahan Lainnya', value: '060' },
-                                                                                                                { label: 'Penyerahan Yang PPN-nya Tidak Dipungut', value: '070' },
-                                                                                                                { label: 'Penyerahan Yang PPN-nya Dibebaskan', value: '080' },
-                                                                                                            ],
-                                                                                                            required: true
-                                                                                                        },
-                                                                                                        {
-                                                                                                            name: 'jenis',
-                                                                                                            label: 'Jenis Faktur',
-                                                                                                            type: 'reactSelect',
-                                                                                                            select: [
-                                                                                                                { label: 'Faktur Pajak', value: '0' },
-                                                                                                                { label: 'Faktur Pajak Pengganti', value: '1' },
-                                                                                                            ],
-                                                                                                            required: true
-                                                                                                        },
-                                                                                                        {
-                                                                                                            label: 'Tanggal Dokument',
-                                                                                                            name: 'date',
-                                                                                                            type: 'date',
-                                                                                                            required: true
-                                                                                                        },
-                                                                                                        {
-                                                                                                            name: 'Nomor Seri Faktur Pajak',
-                                                                                                            type: 'group',
-                                                                                                            group: [
-                                                                                                                { name: 'seri2', type: 'number' },
-                                                                                                                { name: 'seri3', type: 'number' },
-                                                                                                                { name: 'seri4', type: 'number' },
-                                                                                                            ],
-                                                                                                            required: true
-                                                                                                        },
-                                                                                                        {
-                                                                                                            type: 'nik/npwp',
-                                                                                                            required: true
-                                                                                                        },
-                                                                                                        {
-                                                                                                            name: 'referensi',
-                                                                                                            label: 'Referensi Faktur',
-                                                                                                            type: 'textarea',
-                                                                                                        },
-                                                                                                        {
-                                                                                                            full: true,
-                                                                                                            type: 'efaktur',
-                                                                                                            required: true
-                                                                                                        }
-                                                                                                    ])
-                                                                                                }
-                                                                                            }
-                                                                                        }}
-                                                                                    />
-                                                                                </div>
-                                                                                : val.type === 'efaktur' ?
-                                                                                    <div className="w-full -mt-5">
-                                                                                        {itemInputEfak.map((val: any, i: number) => {
-                                                                                            const tarifPPN = 11;
-                                                                                            if (!val.delete)
-                                                                                                return (<div key={i} className="mb-3">
-                                                                                                    <button type="button" className="absolute -mt-2 -ml-3" onClick={() => {
-                                                                                                        let dtItem: any = itemInputEfak.map((vall: any, ii: number) => { if (ii === i) { vall.delete = true; } return vall; });
-                                                                                                        setitemInputEfak(dtItem)
-                                                                                                    }} >
-                                                                                                        <div className="badge badge-danger px-2 py-1 bg-red-900 text-white border-none rounded-full" >x</div>
-                                                                                                    </button>
-                                                                                                    <div className="w-full text-right absolute">
-                                                                                                        <div className="badge badge-danger px-2 py-1 bg-cyan-900 text-white border-none rounded-full mr-7" >PPN {tarifPPN}%</div>
-                                                                                                    </div>
-                                                                                                    <div className="border-1 border-gray-500 p-2 rounded-lg shadow-sm">
-                                                                                                        <Input className="border-b-1" variant="standard" name='name[]' label="Nama" />
-                                                                                                        <div className="xl:flex">
-                                                                                                            <div className="mt-3 w-full">
-                                                                                                                <Input className="border-b-1" variant="standard" name='kode[]' label="Kode Barang" /></div>
-                                                                                                            <div className="mt-3 w-full"><Input name='harga[]' onChange={(el: any) => {
-                                                                                                                let harga = Number(el.target.value);
-                                                                                                                let qty: any = (document.getElementById(`qty_${i}`) as HTMLInputElement).value ?? 0;
-                                                                                                                let diskon: any = (document.getElementById(`diskon_${i}`) as HTMLInputElement).value ?? 0;
-                                                                                                                (document.getElementById(`dpp_${i}`) as HTMLInputElement).value = String((harga * qty) - diskon);
-                                                                                                                (document.getElementById(`ppn_${i}`) as HTMLInputElement).value = String((((harga * qty) - diskon) * (tarifPPN / 100)).toFixed(2)).replace(',', '.');
-
-                                                                                                            }} id={`harga_${i}`} className="border-b-1" type="number" variant="standard" label="Harga Satuan" /></div>
-                                                                                                            <div className="mt-3 w-full"><Input step="any" name='qty[]' id={`qty_${i}`}
-                                                                                                                onChange={(el: any) => {
-                                                                                                                    let harga: any = (document.getElementById(`harga_${i}`) as HTMLInputElement).value ?? 0;
-                                                                                                                    let qty = Number(el.target.value);
-                                                                                                                    let diskon: any = (document.getElementById(`diskon_${i}`) as HTMLInputElement).value ?? 0;
-                                                                                                                    (document.getElementById(`dpp_${i}`) as HTMLInputElement).value = String((harga * qty) - diskon);
-                                                                                                                    (document.getElementById(`ppn_${i}`) as HTMLInputElement).value = String((((harga * qty) - diskon) * (tarifPPN / 100)).toFixed(2)).replace(',', '.');
-
-                                                                                                                }} className="border-b-1" type="number" variant="standard" label="Qty" /></div>
-                                                                                                            <div className="mt-3 w-full"><Input step="any" id={`diskon_${i}`} name='diskon[]'
-                                                                                                                onChange={(el: any) => {
-                                                                                                                    let harga: any = (document.getElementById(`harga_${i}`) as HTMLInputElement).value ?? 0;
-                                                                                                                    let qty: any = (document.getElementById(`qty_${i}`) as HTMLInputElement).value ?? 0;
-                                                                                                                    let diskon: any = Number(el.target.value);
-                                                                                                                    (document.getElementById(`dpp_${i}`) as HTMLInputElement).value = String((harga * qty) - diskon);
-                                                                                                                    (document.getElementById(`ppn_${i}`) as HTMLInputElement).value = String((((harga * qty) - diskon) * (tarifPPN / 100)).toFixed(2)).replace(',', '.');
-
-                                                                                                                }}
-                                                                                                                className="border-b-1" type="number" variant="standard" label="Diskon" /></div>
-                                                                                                        </div>
-                                                                                                        <div className="xl:flex">
-                                                                                                            <div className="mt-3 w-full"><Input step="any" name='dpp[]' id={`dpp_${i}`} className="border-b-1" type="number" variant="standard" label="DPP" /></div>
-                                                                                                            <div className="mt-3 w-full"><Input step="any" name='ppn[]' id={`ppn_${i}`} className="border-b-1" type="number" variant="standard" label="PPN" /></div>
-                                                                                                            <div className="mt-3 w-full"><Input step="any" name='tarif_ppnbm[]' className="border-b-1" type="number" variant="standard" label="Tarif PPNBM" /></div>
-                                                                                                            <div className="mt-3 w-full"><Input step="any" name='ppnbm[]' className="border-b-1" type="number" variant="standard" label="PPNBM" /></div>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>)
-                                                                                        })}
-                                                                                        <Button type="button" onClick={() => {
-                                                                                            setitemInputEfak([...itemInputEfak, { delete: false }])
-                                                                                        }} className="w-full mt-2 flex justify-center" color="green">
-                                                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4">
-                                                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                                                                            </svg>
-                                                                                        </Button>
-                                                                                    </div>
-                                                                                    : val.type === 'nik/npwp' ?
-                                                                                        <Tabs value="noIdentitas">
-                                                                                            <TabsHeader>
-                                                                                                {tabData.map(({ label, value }) => (
-                                                                                                    <Tab key={value} value={value} onClick={() => settabIdentitas(value)}>
-                                                                                                        {label}
-                                                                                                    </Tab>
-                                                                                                ))}
-                                                                                            </TabsHeader>
-                                                                                            <TabsBody>
-                                                                                                {tabData.map(({ value, desc }) => (
-                                                                                                    <TabPanel key={value} value={value}>
-                                                                                                        {desc}
-                                                                                                    </TabPanel>
-                                                                                                ))}
-                                                                                            </TabsBody>
-                                                                                        </Tabs>
-                                                                                        : null
-                                                            }</div>
-                                                    }) : null}
-                                                </div>
-                                            </div>
-
-                                            <div className="modal-footer pt-0 px-24 pb-24">
-                                                <div className="divider"></div>
-                                                <Button type="submit" className="w-full" color="blue">Submit</Button>
-                                            </div>
-                                        </form>
-                                    </div>
+                            <div className="col-12 col-md-3">
+                                <div className="input-group align-items-center">
+                                    <Input type="date" id="tanggal_mulai" defaultValue={dateData?.[0]} onChange={(val: any) => { setdateData([val.target.value, (document.getElementById('tanggal_akhir') as any)?.value]) }} label="Tanggal Mulai" variant="standard" name="start" />
+                                </div>
+                            </div>
+                            <div className="col-12 col-md-3">
+                                <div className="input-group align-items-center">
+                                    <Input type="date" id="tanggal_akhir" defaultValue={dateData?.[1]} onChange={(val: any) => { setdateData([(document.getElementById('tanggal_mulai') as any)?.value, val.target.value]) }} label="Tanggal Akhir" variant="standard" name="end" />
                                 </div>
                             </div>
                         </div>
@@ -1288,6 +1004,7 @@ export default function EfakturIn({ userData, setuserData }: any) {
                             <div className="card-body px-0">
                                 <ReactTable
                                     search={search}
+                                    date={dateData}
                                     action={{
                                         delete: pagePermission.find((val: any) => val == "delete") ? URLAPI : null,
                                         edit: pagePermission.find((val: any) => val == "edit") ? null : null

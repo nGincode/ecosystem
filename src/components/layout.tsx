@@ -254,14 +254,15 @@ export default function layout({ children = null, logOut, userData }: any) {
                                     </div>
 
                                     <div className="hp-header-text-info col col-lg-14 col-xl-16 hp-header-start-text d-flex align-items-center hp-horizontal-none">
-                                        <div className="d-flex overflow-hidden rounded-4 hp-bg-color-black-0 hp-bg-color-dark-100" style={{ minWidth: "45px", width: "45px", height: "45px" }}>
+
+                                        {/* <div className="d-flex overflow-hidden rounded-4 hp-bg-color-black-0 hp-bg-color-dark-100" style={{ minWidth: "45px", width: "45px", height: "45px" }}>
                                             <img src="/app-assets/img/memoji/newspaper.svg" alt="Newspaper" height="80%" style={{ marginTop: "auto", marginLeft: "auto" }} />
                                         </div>
 
                                         <p className="hp-header-start-text-item hp-input-label fw-normal hp-text-color-black-100 hp-text-color-dark-0 ms-12 mb-0 lh-1 d-flex align-items-center">
                                             Apa kerjaan yang harus anda kerjakan duluan?&nbsp;&nbsp;
                                             <span className="hp-text-color-primary-1">Input data penjualan.</span>
-                                        </p>
+                                        </p> */}
                                     </div>
 
                                     <div className="hp-header-search d-none col">
@@ -281,7 +282,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                 </div>
                                             </div>
 
-                                            <div className="hover-dropdown-fade w-auto px-0 d-flex align-items-center position-relative">
+                                            {/* <div className="hover-dropdown-fade w-auto px-0 d-flex align-items-center position-relative">
                                                 <button type="button" className="btn btn-icon-only bg-transparent border-0 hp-hover-bg-black-10 hp-hover-bg-dark-100 hp-transition d-flex align-items-center justify-content-center" style={{ height: "40px" }}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" className="hp-text-color-black-80 hp-text-color-dark-30">
                                                         <path d="M12 6.44v3.33M12.02 2C8.34 2 5.36 4.98 5.36 8.66v2.1c0 .68-.28 1.7-.63 2.28l-1.27 2.12c-.78 1.31-.24 2.77 1.2 3.25a23.34 23.34 0 0 0 14.73 0 2.22 2.22 0 0 0 1.2-3.25l-1.27-2.12c-.35-.58-.63-1.61-.63-2.28v-2.1C18.68 5 15.68 2 12.02 2Z" stroke="currentColor" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round"></path>
@@ -466,7 +467,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> */}
 
                                             <div className="hover-dropdown-fade w-auto px-0 ms-6 position-relative">
                                                 <div className="hp-cursor-pointer rounded-4 border hp-border-color-dark-80">
@@ -485,7 +486,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                     <div className="rounded hp-bg-black-0 hp-bg-dark-100 px-18 py-24">
                                                         <span className="d-block h5 hp-text-color-black-100 hp-text-color-dark-0 mb-16">Profile Settings</span>
 
-                                                        <div className="divider mt-18 mb-16"></div>
+                                                        {/* <div className="divider mt-18 mb-16"></div>
 
                                                         <div className="row">
                                                             <div className="col-12">
@@ -507,9 +508,9 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                                     <span>Help Desk</span>
                                                                 </a>
                                                             </div>
-                                                        </div>
+                                                        </div> */}
 
-                                                        <div className="divider my-12"></div>
+                                                        {/* <div className="divider my-12"></div>
 
                                                         <div className="row">
                                                             <div className="col-12">
@@ -522,7 +523,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                                     <span>Pricing List</span>
                                                                 </a>
                                                             </div>
-                                                        </div>
+                                                        </div> */}
 
                                                         <div className="divider mt-12 mb-18"></div>
 

@@ -8,6 +8,7 @@ const {
 const moment = require("moment/moment");
 const Crypto = require("crypto");
 const numeral = require("numeral");
+const { Op } = require("sequelize");
 const fs = require("fs");
 
 const getId = async (req, res) => {
@@ -64,7 +65,7 @@ const putId = async (req, res) => {
 
 const get = async (req, res) => {
   const { users_id, users_uuid, email, username, permission } = req.user;
-  const { company_id } = req.query;
+  const { company_id, start_date, end_date } = req.query;
 
   if (!company_id) {
     return res.status(400).json({
@@ -85,38 +86,83 @@ const get = async (req, res) => {
 
   let EFAKTUR;
   if (permission.view === "all") {
-    EFAKTUR = await efakturOut.findAll({
-      where: { company_id: Company.id },
-      include: [
-        {
-          model: efakturOutItem,
-          as: "efakturOutItem",
-          attributes: {
-            exclude: ["id"],
+    if (start_date && end_date) {
+      EFAKTUR = await efakturOut.findAll({
+        where: {
+          company_id: Company.id,
+          date: {
+            [Op.between]: [start_date, end_date],
           },
         },
-      ],
-      attributes: { exclude: ["id"] },
-      order: [["id", "DESC"]],
-    });
+        include: [
+          {
+            model: efakturOutItem,
+            as: "efakturOutItem",
+            attributes: {
+              exclude: ["id"],
+            },
+          },
+        ],
+        attributes: { exclude: ["id"] },
+        order: [["id", "DESC"]],
+      });
+    } else {
+      EFAKTUR = await efakturOut.findAll({
+        where: { company_id: Company.id },
+        include: [
+          {
+            model: efakturOutItem,
+            as: "efakturOutItem",
+            attributes: {
+              exclude: ["id"],
+            },
+          },
+        ],
+        attributes: { exclude: ["id"] },
+        order: [["id", "DESC"]],
+      });
+    }
   } else {
-    EFAKTUR = await efakturOut.findAll({
-      where: {
-        user_id: users_id,
-        company_id: Company.id,
-      },
-      include: [
-        {
-          model: efakturOutItem,
-          as: "efakturOutItem",
-          attributes: {
-            exclude: ["id"],
+    if (start_date && end_date) {
+      EFAKTUR = await efakturOut.findAll({
+        where: {
+          date: {
+            [Op.between]: [start_date, end_date],
           },
+          user_id: users_id,
+          company_id: Company.id,
         },
-      ],
-      attributes: { exclude: ["id"] },
-      order: [["id", "DESC"]],
-    });
+        include: [
+          {
+            model: efakturOutItem,
+            as: "efakturOutItem",
+            attributes: {
+              exclude: ["id"],
+            },
+          },
+        ],
+        attributes: { exclude: ["id"] },
+        order: [["id", "DESC"]],
+      });
+    } else {
+      EFAKTUR = await efakturOut.findAll({
+        where: {
+          user_id: users_id,
+          company_id: Company.id,
+        },
+        include: [
+          {
+            model: efakturOutItem,
+            as: "efakturOutItem",
+            attributes: {
+              exclude: ["id"],
+            },
+          },
+        ],
+        attributes: { exclude: ["id"] },
+        order: [["id", "DESC"]],
+      });
+    }
   }
 
   if (!EFAKTUR) {

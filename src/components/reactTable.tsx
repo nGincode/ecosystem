@@ -82,7 +82,7 @@ const convertCamelCase = (text: any) => {
     }
 }
 
-export default function ReactTable({ search, action, modalData, dataFatch, urlFatch, Subject, reload }: any) {
+export default function ReactTable({ search, action, modalData, dataFatch, urlFatch, Subject, reload, date }: any) {
     const [dataEdit, setdataEdit] = useState<any>();
     const [click, setclick] = useState<any>();
     const [data, setdata] = useState<any>([]);
@@ -100,6 +100,11 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
     useEffect(() => {
         handleApi('view');
     }, [reload])
+
+    useEffect(() => {
+        handleApi('view');
+    }, [date]);
+
 
     const handleSubmit = (event: any) => {
         event.preventDefault();
@@ -626,10 +631,15 @@ export default function ReactTable({ search, action, modalData, dataFatch, urlFa
                 toast.error(error.response.data.massage);
             }
         } else if (type === 'view') {
+            let dateURL = '';
+            if (date) {
+                dateURL += 'start_date=' + date[0] + '&end_date=' + date[1];
+            }
+
             try {
                 await axios({
                     method: "GET",
-                    url: urlFatch + (companyActive ? "?company_id=" + JSON.parse(localStorage.getItem('companyActive') as string)?.value : ""),
+                    url: urlFatch + (companyActive ? "?company_id=" + JSON.parse(localStorage.getItem('companyActive') as string)?.value + '&' + dateURL : '?' + dateURL),
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }

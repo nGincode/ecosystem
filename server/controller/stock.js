@@ -66,7 +66,7 @@ const putId = async (req, res) => {
 
 const get = async (req, res) => {
   const { users_id, users_uuid, email, username, permission } = req.user;
-  const { company_id } = req.query;
+  const { company_id, start_date, end_date } = req.query;
 
   if (!company_id) {
     return res.status(400).json({
@@ -87,20 +87,47 @@ const get = async (req, res) => {
 
   let STOCK;
   if (permission.view === "all") {
-    STOCK = await stock.findAll({
-      where: { company_id: Company.id },
-      attributes: { exclude: ["id"] },
-      order: [["id", "DESC"]],
-    });
+    if (start_date && end_date) {
+      STOCK = await stock.findAll({
+        where: {
+          invoice_date: {
+            [Op.between]: [start_date, end_date],
+          },
+          company_id: Company.id,
+        },
+        attributes: { exclude: ["id"] },
+        order: [["id", "DESC"]],
+      });
+    } else {
+      STOCK = await stock.findAll({
+        where: { company_id: Company.id },
+        attributes: { exclude: ["id"] },
+        order: [["id", "DESC"]],
+      });
+    }
   } else {
-    STOCK = await stock.findAll({
-      where: {
-        user_id: users_id,
-        company_id: Company.id,
-      },
-      attributes: { exclude: ["id"] },
-      order: [["id", "DESC"]],
-    });
+    if (start_date && end_date) {
+      STOCK = await stock.findAll({
+        where: {
+          invoice_date: {
+            [Op.between]: [start_date, end_date],
+          },
+          user_id: users_id,
+          company_id: Company.id,
+        },
+        attributes: { exclude: ["id"] },
+        order: [["id", "DESC"]],
+      });
+    } else {
+      STOCK = await stock.findAll({
+        where: {
+          user_id: users_id,
+          company_id: Company.id,
+        },
+        attributes: { exclude: ["id"] },
+        order: [["id", "DESC"]],
+      });
+    }
   }
 
   if (!STOCK) {

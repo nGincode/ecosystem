@@ -123,23 +123,10 @@ export default function Npwp({ userData, setuserData }: any) {
 
     return (
         <>
+            <div className="col-12">
+                <h1 className="hp-mb-0 text-4xl font-bold">{Subject}</h1>
+            </div>
             <div className="row mb-32 gy-32">
-                <div className="col-12">
-                    <div className="row justify-content-between gy-32">
-                        <div className="col hp-flex-none w-auto">
-                            <nav aria-label="breadcrumb">
-                                <ol className="breadcrumb">
-                                    <li className="breadcrumb-item">
-                                        <Link href="/">Home</Link>
-                                    </li>
-                                    <li className="breadcrumb-item active">
-                                        {Subject}
-                                    </li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
 
                 {JSON.parse(localStorage.getItem('companyActive') as string)?.value && userData.company.length ? <>
                     <div className="col-12 mt-10">

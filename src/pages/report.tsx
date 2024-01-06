@@ -80,23 +80,10 @@ export default function Report({ userData, setuserData }: any) {
 
     return (
         <>
+            <div className="col-12">
+                <h1 className="hp-mb-0 text-4xl font-bold">{Subject}</h1>
+            </div>
             <div className="row mb-32 gy-32">
-                <div className="col-12">
-                    <div className="row justify-content-between gy-32">
-                        <div className="col hp-flex-none w-auto">
-                            <nav aria-label="breadcrumb">
-                                <ol className="breadcrumb">
-                                    <li className="breadcrumb-item">
-                                        <Link href="/">Home</Link>
-                                    </li>
-                                    <li className="breadcrumb-item active">
-                                        {Subject}
-                                    </li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
 
                 <div className="col-12 mt-10">
                     <div className="row g-16 align-items-center justify-content-end">
@@ -136,12 +123,12 @@ export default function Report({ userData, setuserData }: any) {
                                         </div>
                                         <div className="col-12 mb-5">
                                             <div className="input-group align-items-center">
-                                                <Input value={moment('2023-01-01', 'YYYY-MM-DD').format('YYYY-MM-DD')} type="date" id="first_date" name='first_date' label="Start Date" variant="standard" />
+                                                <Input type="date" id="first_date" name='first_date' label="Start Date" variant="standard" />
                                             </div>
                                         </div>
                                         <div className="col-12">
                                             <div className="input-group align-items-center">
-                                                <Input value={moment('2023-01-01', 'YYYY-MM-DD').format('YYYY-MM-DD')} type="date" id="end_date" name='end_date' label="End Date" variant="standard" />
+                                                <Input type="date" id="end_date" name='end_date' label="End Date" variant="standard" />
                                             </div>
                                         </div>
                                     </div>

@@ -1,17 +1,17 @@
 {
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
+  "/_error": "pages/_error.js",
   "/auth/login": "pages/auth/login.html",
   "/company": "pages/company.html",
-  "/_error": "pages/_error.js",
   "/efaktur/in": "pages/efaktur/in.html",
+  "/npwp": "pages/npwp.html",
   "/efaktur/out": "pages/efaktur/out.html",
   "/": "pages/index.html",
-  "/npwp": "pages/npwp.html",
   "/permission": "pages/permission.html",
   "/profile": "pages/profile.html",
   "/report": "pages/report.html",
-  "/stock": "pages/stock.html",
   "/users": "pages/users.html",
+  "/stock": "pages/stock.html",
   "/404": "pages/404.html"
 }
