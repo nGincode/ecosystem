@@ -1,11 +1,8 @@
-import React, { Component, useEffect, useState } from "react"
-import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
-import toast, { Toaster } from 'react-hot-toast';
-import { Input, Textarea, Button, Checkbox, IconButton } from "@material-tailwind/react";
+import React, { useEffect, useState } from "react"
+import toast from 'react-hot-toast';
+import { Input, Button, Checkbox, IconButton } from "@material-tailwind/react";
 import axios from "axios";
-import Link from "next/link";
 
-import Select from "../components/reactSelect";
 import ReactTable from "../components/reactTable";
 import DebouncedInput from "../components/debouncedInput"
 import ReactSelect from "../components/reactSelect";

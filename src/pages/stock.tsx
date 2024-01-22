@@ -442,7 +442,7 @@ export default function StockData({ userData, setuserData }: any) {
                         </div>
                     </div>
                 </> : <>
-                    <div className="col-12">
+                    <div className="col-12  mt-48">
                         <div className="card hp-contact-card mb-15 -mt-3 shadow-md">
                             <div className="card-body px-0 text-center flex justify-center flex-wrap">
                                 <div className="text-center w-full text-gray-500">

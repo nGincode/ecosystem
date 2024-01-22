@@ -1,20 +1,14 @@
-import React, { Component, useEffect, useState } from "react";
-import type { InferGetServerSidePropsType, GetServerSideProps } from 'next';
-import toast, { Toaster } from 'react-hot-toast';
-import { Input, Textarea, Button } from "@material-tailwind/react";
+import React, { useEffect, useState } from "react";
+import toast from 'react-hot-toast';
+import { Input, Button } from "@material-tailwind/react";
 import axios from "axios";
-import Link from "next/link";
-import XLSX, { read, utils, writeFile } from 'xlsx';
+import XLSX from 'xlsx';
 
 import Select from "../components/reactSelect";
-import ReactTable from "../components/reactTable";
 import DebouncedInput from "../components/debouncedInput";
-import moment from "moment";
 
 export default function Report({ userData, setuserData }: any) {
     const [pagePermission, setpagePermission] = useState([]);
-    const [dataCreate, setdataCreate] = useState();
-    const [userNullCom, setuserNullCom] = useState();
     const [search, setsearch] = useState('');
     const URLAPI = "/api/stock";
     const Subject = "Report";

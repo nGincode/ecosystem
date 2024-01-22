@@ -1,10 +1,9 @@
-import React, { Component, useEffect, useState } from "react"
-import toast, { Toaster } from 'react-hot-toast';
+import React, { useState } from "react"
+import toast from 'react-hot-toast';
 import { Input, Textarea, Button } from "@material-tailwind/react";
 import Image from "next/image";
 import axios from "axios";
 import moment from "moment"
-import Link from "next/link";
 
 export default function Profile({ userData, setuserData }: any) {
 

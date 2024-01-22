@@ -1,11 +1,9 @@
-import React, { Component, useEffect, useState } from "react";
-import toast, { Toaster } from 'react-hot-toast';
-import { Input, Textarea, Button } from "@material-tailwind/react";
+import React, { useEffect, useState } from "react";
+import toast from 'react-hot-toast';
+import { Input, Button } from "@material-tailwind/react";
 import axios from "axios";
-import Link from "next/link";
 import Image from "next/image";
 
-import Select from "../components/reactSelect";
 import ReactTable from "../components/reactTable";
 import DebouncedInput from "../components/debouncedInput"
 
@@ -225,7 +223,7 @@ export default function Npwp({ userData, setuserData }: any) {
                         </div>
                     </div>
                 </> : <>
-                    <div className="col-12">
+                    <div className="col-12  mt-48">
                         <div className="card hp-contact-card mb-15 -mt-3 shadow-md">
                             <div className="card-body px-0 text-center flex justify-center flex-wrap">
                                 <div className="text-center w-full text-gray-500">

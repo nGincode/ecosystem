@@ -1,5 +1,4 @@
 import React, { Component, useEffect, useState, useMemo } from "react"
-import Link from "next/link";
 
 import toast, { Toaster } from 'react-hot-toast';
 import axios from "axios";
@@ -87,8 +86,6 @@ export default function EfakturIn({ userData, setuserData }: any) {
         }
     ]);
     const [npwp, setnpwp] = useState([]);
-    const [tabIdentitas, settabIdentitas] = useState('');
-    const [itemInputEfak, setitemInputEfak] = useState<any>([{ delete: false }]);
     const URLAPI = "/api/efaktur/in";
     const Subject = "E-Faktur In";
 
@@ -199,175 +196,6 @@ export default function EfakturIn({ userData, setuserData }: any) {
                 toast.error(error.response.data.massage);
             }
         }
-    }
-
-    const submitAdd = (event: any) => {
-        event.preventDefault();
-        let noIdentitas = '';
-        let nameIdentitas = '';
-        let addressIdentitas = '';
-
-        if (!event.target.detail_val.value) {
-            return toast.error('Detail Transaksi Harus Terisi')
-        }
-        if (event.target.detail_val.value === '080') {
-            if (!event.target.keterangan_tambahan_val.value) {
-                return toast.error('Keterangan Tambahan Harus Terisi')
-            }
-        }
-        if (event.target.detail_val.value === '070') {
-            if (!event.target.keterangan_tambahan_val.value) {
-                return toast.error('Keterangan Tambahan Harus Terisi')
-            }
-        }
-        if (!event.target.jenis_val.value) {
-            return toast.error('Jenis Faktur Harus Terisi')
-        }
-        if (!event.target.date.value) {
-            return toast.error('Tanggal Faktur Harus Terisi')
-        }
-
-        if (!event.target.seri2.value || !event.target.seri3.value || !event.target.seri4.value) {
-            return toast.error('Nomor Faktur Harus Lengkap')
-        }
-
-
-        if (tabIdentitas === 'NPWP') {
-            if (!event.target.npwp.value) {
-                return toast.error('NPWP Harus Terisi')
-            }
-            if (!event.target.nameIdentitas_npwp.value) {
-                return toast.error('Nama Indetitas Harus Terisi')
-            }
-            if (!event.target.address_npwp.value) {
-                return toast.error('Alamat Harus Terisi')
-            }
-            noIdentitas = event.target.npwp.value;
-            nameIdentitas = event.target.nameIdentitas_npwp.value;
-            addressIdentitas = event.target.address_npwp.value;
-        } else if (tabIdentitas === 'NIK') {
-            if (!event.target.nik.value) {
-                return toast.error('NIK Harus Terisi')
-            }
-            if (!event.target.nameIdentitas_nik.value) {
-                return toast.error('Nama Indetitas Harus Terisi')
-            }
-            if (!event.target.address_nik.value) {
-                return toast.error('Alamat Harus Terisi')
-            }
-            noIdentitas = event.target.nik.value;
-            nameIdentitas = event.target.nameIdentitas_nik.value;
-            addressIdentitas = event.target.address_nik.value;
-        } else {
-            return toast.error('NPWP/NIK Belum dipilih')
-        }
-
-
-
-
-        let name = event.target['name[]'];
-        if (name.length > 1) {
-            let itemFaktur = [];
-            for (let i = 0; i < name.length; i++) {
-                itemFaktur.push({
-                    name: event.target['name[]'][i].value ?? null,
-                    kode: event.target['kode[]'][i].value ?? null,
-                    harga: event.target['harga[]'][i].value ?? null,
-                    qty: event.target['qty[]'][i].value ?? null,
-                    diskon: event.target['diskon[]'][i].value ?? null,
-                    dpp: event.target['dpp[]'][i].value ?? null,
-                    ppn: event.target['ppn[]'][i].value ?? null,
-                    ppnbm: event.target['ppnbm[]'][i].value ?? null,
-                    tarif_ppnbm: event.target['tarif_ppnbm[]'][i].value ?? null,
-                })
-
-            }
-
-
-            const data = {
-                company_id: JSON.parse(localStorage.getItem('companyActive') as string)?.value,
-                typeIdentitas: tabIdentitas,
-                noIdentitas: noIdentitas,
-                nameIdentitas: nameIdentitas,
-                addressIdentitas: addressIdentitas,
-                detail: event.target.detail_val.value,
-                jenis: event.target.jenis_val.value,
-                date: event.target.date.value,
-                referensi: event.target.referensi.value,
-                keterangan_tambahan: event.target.keterangan_tambahan_val?.value ?? null,
-                noFaktur: event.target.detail_val.value + event.target.seri2.value + event.target.seri3.value + event.target.seri4.value,
-                item: itemFaktur
-            };
-
-            handleApi('create', data);
-        } else if (event.target['name[]'].value) {
-            let itemFaktur = [{
-                name: event.target['name[]'].value ?? null,
-                kode: event.target['kode[]'].value ?? null,
-                harga: event.target['harga[]'].value ?? null,
-                qty: event.target['qty[]'].value ?? null,
-                diskon: event.target['diskon[]'].value ?? null,
-                dpp: event.target['dpp[]'].value ?? null,
-                ppn: event.target['ppn[]'].value ?? null,
-                ppnbm: event.target['ppnbm[]'].value ?? null,
-                tarif_ppnbm: event.target['tarif_ppnbm[]'].value ?? null,
-            }];
-
-            const data = {
-                company_id: JSON.parse(localStorage.getItem('companyActive') as string)?.value,
-                noIdentitas: noIdentitas,
-                nameIdentitas: nameIdentitas,
-                addressIdentitas: addressIdentitas,
-                detail: event.target.detail_val.value,
-                jenis: event.target.jenis_val.value,
-                date: event.target.date.value,
-                referensi: event.target.referensi.value,
-                keterangan_tambahan: event.target.keterangan_tambahan_val?.value ?? null,
-                noFaktur: event.target.detail_val.value + event.target.seri2.value + event.target.seri3.value + event.target.seri4.value,
-                item: itemFaktur
-            };
-
-            handleApi('create', data);
-        } else {
-            return toast.error('Item Faktur Harus Terisi')
-        }
-
-    };
-
-    const convertCamelCase = (text: any) => {
-        if (text) {
-            const result = text.replace(/([A-Z])/g, " $1");
-            return result.charAt(0).toUpperCase() + result.slice(1);
-        } else {
-            return '';
-        }
-    }
-
-    const ConvertToCSV = (objArray: any) => {
-        var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-        var str = '';
-
-        for (var i = 0; i < array.length; i++) {
-            var line = '';
-            for (var index in array[i]) {
-                if (line != '') line += ','
-
-                line += array[i][index];
-            }
-
-            str += line + '\r\n';
-        }
-
-
-        const csvFile = str;
-        var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
-        var url = URL.createObjectURL(blob);
-
-        var pom = document.createElement('a');
-        pom.href = url;
-
-        pom.setAttribute('download', ((JSON.parse(localStorage.getItem('companyActive') as string)?.label) ?? 'By') + '_EcosystemApp.csv');
-        pom.click();
     }
 
     const ConvertToXLXS = (objArray: any) => {
@@ -511,23 +339,6 @@ export default function EfakturIn({ userData, setuserData }: any) {
         } else {
             return false;
         }
-    }
-
-    const IDKetTambahan07 = (val: any) => {
-        let arr: any = [{
-            label: 'Senjata, Amunisi, Helm Anti Peluru',
-            value: '41'
-        }]
-
-        return arr.filter((vall: any) => vall.label === val)?.value ?? '';
-    }
-
-    const IDKetTambahan08 = (val: any) => {
-        let arr: any = [{
-            label: 'Senjata, Amunisi, Helm Anti Peluru',
-            value: '41'
-        }]
-        return arr.find((vall: any) => vall.label == val)?.value ?? '';
     }
 
     const importFile = (val: any, convert: any, csv: any) => {
@@ -815,14 +626,6 @@ export default function EfakturIn({ userData, setuserData }: any) {
 
     };
 
-    const keteranganTambhan07 = [
-        { label: '07', value: '0' },
-    ];
-
-    const keteranganTambhan08 = [
-        { label: 'Senjata, Amunisi, Helm Anti Peluru dan Jaket Atau Rompi Anti Peluru, Kendaraan Darat Khusus, Radar 7 Suku Cadang', value: '41' }
-    ];
-
     const tabData = [
         {
             label: "NIK",
@@ -874,97 +677,6 @@ export default function EfakturIn({ userData, setuserData }: any) {
                     </>,
             })
     };
-
-    const arrayUnique = (inputArr: any) => {
-        let key: any = ''
-        let tmpArr2: any = [];
-        let val: any = ''
-        const _arraySearch = (needle: any, haystack: any) => {
-            let fkey = ''
-            for (fkey in haystack) {
-                if (haystack.hasOwnProperty(fkey)) {
-                    if ((haystack[fkey] + '') === (needle + '')) {
-                        return fkey
-                    }
-                }
-            }
-            return false
-        }
-        for (key in inputArr) {
-            if (inputArr.hasOwnProperty(key)) {
-                val = inputArr[key]
-                if (_arraySearch(val, tmpArr2) === false) {
-                    tmpArr2.push(val);
-                }
-            }
-        }
-        return tmpArr2;
-        // return Array.from(new Set(arr));
-    }
-
-    const convertFileToBase64 = (file: any) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = reject;
-        });
-    }
-
-    const pdfRead = async (val: any) => {
-        const files = val.target.files;
-        if (files.length) {
-            let data: any = [];
-            let err: any = []
-            for (let index = 0; index < files.length; index++) {
-                if ('application/pdf' === files[0].type) {
-                    const pdf = await PDFJS.getDocument(URL.createObjectURL(files[index])).promise;
-
-                    const pageList = await Promise.all(Array.from({ length: pdf.numPages }, (_, i) => pdf.getPage(i + 1)));
-
-                    const textList = await Promise.all(pageList.map((p) => p.getTextContent()));
-
-                    const array = textList?.[0]?.items;
-                    if (array.length === 52) {
-                        let nama: any = array?.[10];
-                        let noFak: any = array?.[9];
-                        let ttd: any = array?.[43];
-
-                        const file = await convertFileToBase64(files[index]);
-
-                        if (nama ? 1 : 0 & noFak ? 1 : 0 & ttd ? 1 : 0) {
-                            if (String(nama['str']) !== String(ttd['str'])) {
-                                data.push({ files: file, nama: String(nama['str']).replaceAll('Nama : ', ''), noFaktur: String(noFak['str']).replaceAll('Kode dan Nomor Seri Faktur Pajak : ', '').replaceAll('.', '').replaceAll('-', ''), ttd: String(ttd['str']) });
-                            } else {
-                                err.push(`File ${files.length > 1 ? index + 1 : ''} Nama TTD Harus Directur `);
-                            }
-                        } else {
-                            err.push(`File ${files.length > 1 ? index + 1 : ''} Tidak Terdeteksi Nama dan No Faktur`);
-                        }
-                    } else {
-                        err.push(`File ${files.length > 1 ? index + 1 : ''} Format PDF Salah`);
-                    }
-                } else {
-                    err.push(`File ${files.length > 1 ? index + 1 : ''} Format bukan .pdf`);
-                }
-
-            }
-            if (err.length) {
-                toast.error(err.map((val: any) => `${val}\n`), {
-                    duration: 5500,
-                });
-            }
-
-            if (data.length) {
-                await handleApi('proof', arrayUnique(data));
-            }
-
-        } else {
-            toast.error(`File tidak terdeteksi`);
-        }
-
-        val.target.value = '';
-    }
 
 
     return (
@@ -1409,7 +1121,7 @@ export default function EfakturIn({ userData, setuserData }: any) {
                         </div>
                     </div>
                 </> : <>
-                    <div className="col-12">
+                    <div className="col-12  mt-48">
                         <div className="card hp-contact-card mb-15 -mt-3 shadow-md">
                             <div className="card-body px-0 text-center flex justify-center flex-wrap">
                                 <div className="text-center w-full text-gray-500">
