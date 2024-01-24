@@ -7,6 +7,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import * as PDFJS from 'pdfjs-dist';
 PDFJS.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS.version}/pdf.worker.js`;
 import XLSX, { read, utils, writeFile } from 'xlsx';
+import numeral from "numeral";
 
 export default function StockData({ userData, setuserData }: any) {
     const Subject = "Converter";
@@ -183,11 +184,11 @@ export default function StockData({ userData, setuserData }: any) {
                         penyatuan.keterangan = mp1.keterangan
                     }
                 } else if (mp1?.debit) {
-                    penyatuan.debit = mp1.debit
+                    penyatuan.debit = numeral(mp1.debit).value()
                 } else if (mp1?.kredit) {
-                    penyatuan.kredit = mp1.kredit
+                    penyatuan.kredit = numeral(mp1.kredit).value()
                 } else if (mp1?.saldo) {
-                    penyatuan.saldo = mp1.saldo
+                    penyatuan.saldo = numeral(mp1.saldo).value()
                 } else if (mp1?.cbg) {
                     penyatuan.cbg = mp1.cbg
                 } else if (mp1?.penutup) {
@@ -211,7 +212,6 @@ export default function StockData({ userData, setuserData }: any) {
         result.push(penyatuan);
         result.push(...penutupanArr);
         convertToExcel(result)
-
     }
 
     const pdfRead = async (val: any) => {
