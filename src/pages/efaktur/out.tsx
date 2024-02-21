@@ -1365,7 +1365,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                     </div>
                                 </div>
 
-                                <div className="mb-5">
+                                {/* <div className="mb-5">
                                     <label htmlFor="fileConvert">
                                         <span className="dropdown-item text-center rounded-lg  cursor-pointer" aria-hidden="true">Convert Format to ETax
                                             <div className="flex justify-center mt-3">
@@ -1429,7 +1429,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                             Download Format ETax
                                         </Link>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>

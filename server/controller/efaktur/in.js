@@ -392,6 +392,131 @@ const import_doccon = async (req, res) => {
   res.json(true);
 };
 
+const exprt = async (req, res) => {
+  const { company_id, first_date, end_date } = req.body;
+
+  if (!company_id) {
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
+  const Company = await company.findOne({
+    where: {
+      uuid: company_id,
+    },
+  });
+
+  if (!Company) {
+    return res.status(400).json({
+      massage: "Company not found",
+    });
+  }
+
+  let EFAKTUR;
+  if (permission.view === "all") {
+    if (first_date && end_date) {
+      EFAKTUR = await efakturIn.findAll({
+        where: {
+          TANGGAL_FAKTUR: {
+            [Op.between]: [first_date, end_date],
+          },
+          company_id: Company.id,
+        },
+        order: [["id", "DESC"]],
+      });
+    } else {
+      EFAKTUR = await efakturIn.findAll({
+        where: {
+          date: {
+            [Op.between]: [first_date, end_date],
+          },
+          company_id: Company.id,
+        },
+        order: [["id", "DESC"]],
+      });
+    }
+  } else {
+    if (first_date && end_date) {
+      EFAKTUR = await efakturIn.findAll({
+        where: {
+          TANGGAL_FAKTUR: {
+            [Op.between]: [first_date, end_date],
+          },
+          user_id: users_id,
+          company_id: Company.id,
+        },
+        attributes: { exclude: ["id"] },
+        order: [["id", "DESC"]],
+      });
+    } else {
+      EFAKTUR = await efakturIn.findAll({
+        where: {
+          user_id: users_id,
+          company_id: Company.id,
+        },
+        attributes: { exclude: ["id"] },
+        order: [["id", "DESC"]],
+      });
+    }
+  }
+
+  if (!EFAKTUR) {
+    return res.json({
+      message: "EFAKTUR not found",
+    });
+  }
+
+  const subject = [
+    [
+      "Date",
+      "No Faktur",
+      "NPWP",
+      "Address",
+      "Area",
+      "Product Code",
+      "Product Name",
+      "Packaging",
+      "Varian",
+      "Invoice No",
+      "Qty",
+      "Price",
+      "Groos Amount",
+      "Discount",
+      "DPP",
+      "TAX",
+      "Net Amount",
+    ],
+  ];
+
+  //  let data = EFAKTUR.map((val) => {
+  //   return moment(val.TANGGAL_FAKTUR).format("DD MMM YYYY"),val.NOMOR_FAKTUR,val.NPWP, val.NAMA,
+  //     address: val.ALAMAT_LENGKAP,
+  //     amountDPP: numeral(val.JUMLAH_DPP).format("0,0"),
+  //     amountPPN: numeral(val.JUMLAH_PPN).format("0,0"),
+  //     amountPPNBM: numeral(val.JUMLAH_PPNBM).format("0,0"),
+  //     json: val,
+  //     docControl: "View",
+  //     docControlJson: {
+  //       SJ_NO: val.SJ_NO,
+  //       SJ_TGLDOC: val.SJ_TGLDOC,
+  //       SJ_TGLTRM: val.SJ_TGLTRM,
+  //       TAG_NO: val.TAG_NO,
+  //       TAG_TGLDOC: val.TAG_TGLDOC,
+  //       TAG_TGLTRM: val.TAG_TGLTRM,
+  //       PEL_TGL: val.PEL_TGL,
+  //       PEL_NOM: val.PEL_NOM,
+  //       VIA: val.VIA,
+  //     },
+  //   };
+  // });
+
+  if (data.length) {
+    res.json([...subject, ...data]);
+  } else {
+    res.status(400).json({ massage: "Data not result" });
+  }
+};
+
 module.exports = {
   get,
   put,

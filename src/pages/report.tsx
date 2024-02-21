@@ -5,12 +5,14 @@ import axios from "axios";
 import XLSX from 'xlsx';
 
 import Select from "../components/reactSelect";
+import LoadingPage from "../components/loadingPage";
 import DebouncedInput from "../components/debouncedInput";
 
 export default function Report({ userData, setuserData }: any) {
     const [pagePermission, setpagePermission] = useState([]);
     const [search, setsearch] = useState('');
-    const URLAPI = "/api/stock";
+    const [loading, setloading] = useState(false);
+    const URLAPI = "/api";
     const Subject = "Report";
 
     if (typeof document !== "undefined") {
@@ -28,11 +30,20 @@ export default function Report({ userData, setuserData }: any) {
     }, [userData])
 
     const handleApi = async (url: any, data: any = null) => {
+        setloading(true)
         if (url === 'create') {
+            let url = '';
+            if (data.type == 'stock') {
+                url = '/stock'
+            } else if (data.type == 'pk') {
+                url = '/api/efaktur/out'
+            } else if (data.type == 'pm') {
+                url = '/api/efaktur/in'
+            }
             try {
                 await axios({
                     method: "POST",
-                    url: URLAPI + '/export',
+                    url: URLAPI + url + '/export',
                     data: {
                         ...data, company_id: JSON.parse(localStorage.getItem('companyActive') as string)?.value
                     },
@@ -41,9 +52,11 @@ export default function Report({ userData, setuserData }: any) {
                     }
                 }).then((res: any) => {
                     ConvertToXLXS(res.data);
+                    setloading(false)
                 });
             } catch (error: any) {
                 toast.error(error.response.data.massage);
+                setloading(false)
             }
         }
     }
@@ -59,21 +72,24 @@ export default function Report({ userData, setuserData }: any) {
     const submitAdd = (event: any) => {
         event.preventDefault();
 
-        if (event.target.first_date.value < event.target.end_date.value) {
-            toast.error('First Date Not Valid');
+        if (event.target.first_date.value > event.target.end_date.value) {
+            toast.error('Start Date Not Valid');
+        } else {
+            let data = {
+                type: event.target.type_val.value,
+                first_date: event.target.first_date.value,
+                end_date: event.target.end_date.value,
+            };
+            handleApi('create', data);
+
+
         }
-        let data = {
-            type: event.target.type_val.value,
-            first_date: event.target.first_date.value,
-            end_date: event.target.end_date.value,
-        };
-
-
-        handleApi('create', data);
     };
 
     return (
         <>
+
+            <LoadingPage process={loading} label="Downloading" />
             <div className="col-12">
                 <h1 className="hp-mb-0 text-4xl font-bold">{Subject}</h1>
             </div>
@@ -109,6 +125,14 @@ export default function Report({ userData, setuserData }: any) {
                                                     {
                                                         label: 'Report Stock',
                                                         value: 'stock'
+                                                    },
+                                                    {
+                                                        label: 'Report PK',
+                                                        value: 'pk'
+                                                    },
+                                                    {
+                                                        label: 'Report PM',
+                                                        value: 'pm'
                                                     }
                                                 ]}
                                                 required={true}
@@ -117,12 +141,12 @@ export default function Report({ userData, setuserData }: any) {
                                         </div>
                                         <div className="col-12 mb-5">
                                             <div className="input-group align-items-center">
-                                                <Input type="date" id="first_date" name='first_date' label="Start Date" variant="standard" />
+                                                <Input required type="date" id="first_date" name='first_date' label="Start Date" variant="standard" />
                                             </div>
                                         </div>
                                         <div className="col-12">
                                             <div className="input-group align-items-center">
-                                                <Input type="date" id="end_date" name='end_date' label="End Date" variant="standard" />
+                                                <Input required type="date" id="end_date" name='end_date' label="End Date" variant="standard" />
                                             </div>
                                         </div>
                                     </div>
