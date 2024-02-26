@@ -12,7 +12,7 @@ const auth = require("./auth");
 const permission = require("./permission");
 
 router.get("/", async (req, res) => {
-  // res.send("API Starting!");
+  res.send("API Starting!");
   // const { user } = require("../models");
   // const User = await user.findAll({
   //   attributes: [
