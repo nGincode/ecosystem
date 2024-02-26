@@ -17,18 +17,23 @@ const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
-  server.use(logger("dev"));
-  server.use(cookieParser());
-  server.use(cors({ origin: true }));
-  server.use(express.static(path.join(__dirname, "../public")));
-  server.use(express.json({ limit: "50mb" }));
-  server.use(express.urlencoded({ limit: "50mb", extended: true }));
-  server.use(fileUpload());
+  // server.use(logger("dev"));
+  // server.use(cookieParser());
+  // server.use(cors({ origin: true }));
+  // server.use(express.static(path.join(__dirname, "../public")));
+  // server.use(express.json({ limit: "50mb" }));
+  // server.use(express.urlencoded({ limit: "50mb", extended: true }));
+  // server.use(fileUpload());
 
-  server.use("/api", routes);
+  // server.use("/api", routes);
 
-  server.get("*", (req, res) => {
-    return handle(req, res);
+  // server.get("*", (req, res) => {
+  //   return handle(req, res);
+  // });
+
+  server.get("/", (req, res) => {
+    return "Oke";
+    // return handle(req, res);
   });
 
   server.listen(port, () => {
