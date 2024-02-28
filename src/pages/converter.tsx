@@ -511,9 +511,9 @@ export default function StockData({ userData, setuserData }: any) {
                     'Tanggal Transaksi': mp3['Tanggal Transaksi'],
                     'Uraian Transaksi': mp3['Uraian Transaksi'],
                     'Teller': mp3['Teller'],
-                    'Debet': mp3['Debet'],
-                    'Kredit': mp3['Kredit'],
-                    'Saldo': mp3['Saldo'],
+                    'Debet': numeral(mp3['Debet']).value(),
+                    'Kredit': numeral(mp3['Kredit']).value(),
+                    'Saldo': numeral(mp3['Saldo']).value(),
                 })
             })
             BRIData = [...BRIData, ...result];
