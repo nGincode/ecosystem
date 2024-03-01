@@ -1022,7 +1022,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
 
     return (
         <>
-            <div className="col-12 mb-2">
+            <div className="col-12 mb-5">
                 <h1 className="hp-mb-0 text-4xl font-bold">{Subject}</h1>
             </div>
             <div className="row mb-32 gy-32">
