@@ -15,8 +15,6 @@ const config = {
   dialect: dotenv.parsed.DATABASE_DIALECT,
 };
 
-console.log(config);
-
 const db = {};
 
 let sequelize;
