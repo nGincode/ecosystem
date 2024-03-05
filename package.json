@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "set DEV=1 && nodemon server/index.js ",
+    "dev": "nodemon server/index.js ",
     "build": "next build",
     "start": "node server/index.js",
     "lint": "next lint",
