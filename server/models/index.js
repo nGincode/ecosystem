@@ -11,7 +11,7 @@ const config = {
   database: dotenv.parsed.DATABASE,
   username: dotenv.parsed.DATABASE_USERNAME,
   password: dotenv.parsed.DATABASE_PASSWORD,
-  host: dotenv.parsed.HOSTNAME,
+  host: dotenv.parsed.DATABASE_HOST,
   dialect: dotenv.parsed.DATABASE_DIALECT,
 };
 
