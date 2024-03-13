@@ -78,8 +78,11 @@ export default function App({ Component, pageProps }: AppProps) {
                         setloadingFull(false);
                     });
                 } catch (error: any) {
-                    if (localStorage.getItem('token'))
+                    if (localStorage.getItem('token')) {
                         toast.error(error.response.data.massage);
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('client_id');
+                    }
                     setloadingFull(false);
                 }
             } else {
