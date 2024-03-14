@@ -890,16 +890,24 @@ export default function StockData({ userData, setuserData }: any) {
             step2.push(step2row);
             step2.map((mp3: any) => {
                 mp3.desc = mp3.desc?.join(' \n')
-                if (mp3.date || mp3.desc)
-                    result.push({
-                        TANGGAL: mp3.value_date ? moment(mp3.value_date + ' ' + year, 'DD MMM YYYY').format('DD/MM/YYYY') : null,
-                        POSTING: mp3.date ? moment(mp3.date + ' ' + year, 'DD MMM YYYY').format('DD/MM/YYYY') : null,
-                        KETERANGAN: mp3.desc,
-                        KREDIT: mp3.kredit ? numeral(mp3.kredit).value() : null,
-                        DEBIT: mp3.debit ? numeral(mp3.debit).value() : null,
-                        SALDO: mp3.saldo ? numeral(mp3.saldo).value() : null,
-                        TAHUN: year,
-                    })
+                if (mp3.date || mp3.desc) {
+                    if (mp3.desc && !mp3.date && !mp3.value_date && !mp3.kredit && !mp3.debit && !mp3.saldo) {
+                        result[result.length - 1].KETERANGAN = result[result.length - 1].KETERANGAN + ' ' + mp3.desc;
+                    } else if (!mp3.desc && !mp3.kredit && !mp3.debit && !mp3.saldo) {
+                    } else if (Number(mp3.desc) == mp3.saldo) {
+                        result[result.length - 1].KETERANGAN = result[result.length - 1].KETERANGAN + ' ' + mp3.desc;
+                    } else {
+                        result.push({
+                            TANGGAL: mp3.value_date ? moment(mp3.value_date + ' ' + year, 'DD MMM YYYY').format('DD/MM/YYYY') : null,
+                            POSTING: mp3.date ? moment(mp3.date + ' ' + year, 'DD MMM YYYY').format('DD/MM/YYYY') : null,
+                            KETERANGAN: mp3.desc,
+                            KREDIT: mp3.kredit ? numeral(mp3.kredit).value() : null,
+                            DEBIT: mp3.debit ? numeral(mp3.debit).value() : null,
+                            SALDO: mp3.saldo ? numeral(mp3.saldo).value() : null,
+                            TAHUN: mp3.saldo ? year : null,
+                        })
+                    }
+                }
             });
         })
         return result;
