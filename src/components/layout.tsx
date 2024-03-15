@@ -56,7 +56,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                                     if (PermissionLabel?.data?.find((find: any) => find.label == vall.label).data?.find((fd: any) => fd.link == valll.link)?.checklist?.find((find: any) => find == "view"))
                                                                         return (
                                                                             <li key={iii}>
-                                                                                <Link href={valll.link} className={router.asPath === valll.link ? "active" : ""}>
+                                                                                <Link href={valll.link} onClick={() => document.getElementById('menuClose')?.click()} className={router.asPath === valll.link ? "active" : ""}>
                                                                                     <div className="flex">
                                                                                         <span className="submenu-item-icon">
                                                                                             {valll.icon}
@@ -70,7 +70,7 @@ export default function layout({ children = null, logOut, userData }: any) {
                                                         </li>
                                                         :
                                                         <li>
-                                                            <Link href={vall.link} className={`${(router.asPath === vall.link ? "active" : "")}`}>
+                                                            <Link href={vall.link} onClick={() => document.getElementById('menuClose')?.click()} className={`${(router.asPath === vall.link ? "active" : "")}`}>
                                                                 <div className="tooltip-item in-active" data-bs-toggle="tooltip" data-bs-placement="right" title="" data-bs-original-title={vall.label} aria-label={vall.label}></div>
                                                                 <span>
                                                                     <span className="submenu-item-icon">

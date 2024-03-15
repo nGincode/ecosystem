@@ -79,7 +79,6 @@ export default function App({ Component, pageProps }: AppProps) {
                     });
                 } catch (error: any) {
                     if (localStorage.getItem('token')) {
-                        toast.error(error.response.data.massage);
                         localStorage.removeItem('token');
                         localStorage.removeItem('client_id');
                     }
