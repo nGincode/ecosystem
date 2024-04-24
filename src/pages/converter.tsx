@@ -1502,7 +1502,7 @@ export default function StockData({ userData, setuserData }: any) {
             var pom = document.createElement('a');
             pom.href = url;
 
-            pom.setAttribute('download', (localStorage.getItem('companyActive') ? (JSON.parse(localStorage.getItem('companyActive') as string)?.label) + '_' : '') + 'BukPot Lampiran 3.csv');
+            pom.setAttribute('download', (localStorage.getItem('companyActive') ? (JSON.parse(localStorage.getItem('companyActive') as string)?.label) + '_' : '') + 'BukPot Lampiran III.csv');
             pom.click();
         }
 
@@ -1581,6 +1581,9 @@ export default function StockData({ userData, setuserData }: any) {
                     let error: any = [];
                     let result: any = [];
                     rows.map((mp: any, key: any) => {
+                        if (mp["NPWP"].length !== 15) {
+                            error.push('Baris : ' + (key + 2) + ' NPWP Harus 16 Angka')
+                        }
                         if (mp["JENIS PPH"]) {
                             let pasal = pphPenghasilan[mp["JENIS PPH"]?.replaceAll('Pasal ', '')];
                             if (pasal) {
@@ -1650,7 +1653,7 @@ export default function StockData({ userData, setuserData }: any) {
             var pom = document.createElement('a');
             pom.href = url;
 
-            pom.setAttribute('download', (localStorage.getItem('companyActive') ? (JSON.parse(localStorage.getItem('companyActive') as string)?.label) + '_' : '') + 'PK.csv');
+            pom.setAttribute('download', (localStorage.getItem('companyActive') ? (JSON.parse(localStorage.getItem('companyActive') as string)?.label) + '_' : '') + 'BukPot LampKhus 1A.csv');
             pom.click();
         }
 
@@ -1663,110 +1666,199 @@ export default function StockData({ userData, setuserData }: any) {
 
                 if (sheets.length) {
                     const rows: any = utils.sheet_to_json(wb.Sheets[sheets[0]], { raw: false });
-                    console.log(Object.keys(rows[0]));
-
                     if (JSON.stringify([
-                        "NO",
-                        "NAMA PEMOTONG/ PEMUNGUT",
-                        "NPWP",
-                        "JENIS PPH",
-                        "JENIS PENGHASILAN",
-                        "OBJEK POTPUT (Rupiah)",
-                        "PPH POTPUT",
-                        "NO BUKTI",
-                        "TANGGAL BUKTI",
-                        "ALAMAT PEMOTONG/ PEMUNGUT",
-                        "NTPN"
+                        "Jenis Harta",
+                        "Kelompok Harta",
+                        "Nama Harta",
+                        "Bln Perolehan",
+                        "Thn Perolehan",
+                        "Jenis Penyusutan Komersial",
+                        "Jenis Penyusutan Fiskal",
+                        "Harga Perolehan",
+                        "Nilai Sisa Buku",
+                        "Penyusutan Fiskal Tahun Ini",
+                        "Keterangan Nama Harta"
                     ]) != JSON.stringify(Object.keys(rows[0]))) {
                         return toast.error('Judul Tabel Tidak Valid')
                     }
 
-                    // const subject = ["NO", "NAMA PEMOTONG/ PEMUNGUT", "NPWP", "JENIS PPH", "JENIS PENGHASILAN", "OBJEK POTPUT (Rupiah)", "PPH POTPUT", "NO BUKTI", "TANGGAL BUKTI", "ALAMAT PEMOTONG/ PEMUNGUT", "NTPN"];
+                    const subject = [
+                        "Jenis Harta",
+                        "Kelompok Harta",
+                        "Jenis Usaha",
+                        "Nama Harta",
+                        "Bln Perolehan",
+                        "Thn Perolehan",
+                        "Jenis Penyusutan Komersial",
+                        "Jenis Penyusutan Fiskal",
+                        "Harga Perolehan",
+                        "Nilai Sisa Buku",
+                        "Penyusutan Fiskal Tahun Ini",
+                        "Keterangan Nama Harta"
+                    ];
 
-                    // const pphPenghasilan: any = {
-                    //     "22": [
-                    //         { "kode": "01", "name": "Badan Usaha Industri Semen" },
-                    //         { "kode": "02", "name": "Badan Usaha Industri Farmasi" },
-                    //         { "kode": "03", "name": "Badan Usaha Industri Kertas" },
-                    //         { "kode": "04", "name": "Badan Usaha Industri Baja" },
-                    //         { "kode": "05", "name": "Badan Usaha Industri Otomotif" },
-                    //         { "kode": "06", "name": "Pembelian Barang Oleh Bendaharawan" },
-                    //         { "kode": "07", "name": "Nilai Impor Bank Devisa/Ditjen Bea dan Cukai" },
-                    //         { "kode": "08", "name": "Hasil Lelang" },
-                    //         { "kode": "09", "name": "Penjualan BBM, BBG dan Pelumas" },
-                    //         { "kode": "10", "name": "Pembelian Barang Keperluan Industri dlm Sektor Perhutanan" },
-                    //         { "kode": "11", "name": "Pembelian Barang Keperluan dlm Sektor Perkebunan" },
-                    //         { "kode": "12", "name": "Pembelian Barang Keperluan dlm Sektor Pertanian" },
-                    //         { "kode": "13", "name": "Pembelian Barang Keperluan dlm Sektor Perikanan" },
-                    //         { "kode": "14", "name": "Penjualan Emas Batangan oleh Badan Usaha" },
-                    //         { "kode": "15", "name": "Ekspor Komoditas Tambang, Minerba dan Mineral Bukan Logam" },
-                    //         { "kode": "16", "name": "Pembelian Barang oleh Badan Tertentu" },
-                    //         { "kode": "17", "name": "Penjualan Kendaraan Bermotor DN" },
-                    //         { "kode": "26", "name": "SKPPKP" }
-                    //     ],
-                    //     "23": [
-                    //         { "kode": "18", "name": "Pembelian Minerba dan Mineral Bukan Logam dari Pemegang IUP" },
-                    //         { "kode": "19", "name": "Dividen" },
-                    //         { "kode": "20", "name": "Bunga" },
-                    //         { "kode": "21", "name": "Royalti" },
-                    //         { "kode": "22", "name": "Hadiah dan Penghargaan" },
-                    //         { "kode": "23", "name": "Bunga Simpanan yang Dibayarkan oleh Koperasi" },
-                    //         { "kode": "24", "name": "Imbalan/Jasa Lainnya" },
-                    //         { "kode": "25", "name": "Sewa dan Penghasilan Lain Sehubungan dgn Penggunaan Harta" },
-                    //         { "kode": "26", "name": "SKPPKP" }
-                    //     ],
-                    //     "26": [
-                    //         { "kode": "18", "name": "Pembelian Minerba dan Mineral Bukan Logam dari Pemegang IUP" },
-                    //         { "kode": "19", "name": "Dividen" },
-                    //         { "kode": "20", "name": "Bunga" },
-                    //         { "kode": "21", "name": "Royalti" },
-                    //         { "kode": "22", "name": "Hadiah dan Penghargaan" },
-                    //         { "kode": "23", "name": "Bunga Simpanan yang Dibayarkan oleh Koperasi" },
-                    //         { "kode": "24", "name": "Imbalan/Jasa Lainnya" },
-                    //         { "kode": "25", "name": "Sewa dan Penghasilan Lain Sehubungan dgn Penggunaan Harta" },
-                    //         { "kode": "26", "name": "SKPPKP" }
-                    //     ],
-                    // }
+                    const jenisHarta = [
+                        {
+                            "Kode": "1",
+                            "Nama": "Harta Berwujud",
+                            "Daftar": "Penyusutan Fiskal"
+                        },
+                        {
+                            "Kode": "2",
+                            "Nama": "Kelompok Bangunan",
+                            "Daftar": "Penyusutan Fiskal"
+                        },
+                        {
+                            "Kode": "3",
+                            "Nama": "Harta Tak Berwujud",
+                            "Daftar": "Amortisasi Fiskal"
+                        }
+                    ];
 
-                    // let error: any = [];
-                    // let result: any = [];
-                    // rows.map((mp: any, key: any) => {
-                    //     if (mp["JENIS PPH"]) {
-                    //         let pasal = pphPenghasilan[mp["JENIS PPH"]?.replaceAll('Pasal ', '')];
-                    //         if (pasal) {
-                    //             let penghasilan = pasal.find((f: any) => f.name == mp["JENIS PENGHASILAN"]);
-                    //             if (penghasilan) {
-                    //                 result.push([
-                    //                     mp["NO"],
-                    //                     mp["NAMA PEMOTONG/ PEMUNGUT"],
-                    //                     mp["NPWP"],
-                    //                     mp["JENIS PPH"]?.replaceAll('Pasal ', ''),
-                    //                     penghasilan.kode,
-                    //                     mp["OBJEK POTPUT (Rupiah)"],
-                    //                     mp["PPH POTPUT"],
-                    //                     mp["NO BUKTI"],
-                    //                     moment(mp["TANGGAL BUKTI"], 'D/M/YY').format('DD/MM/YYYY'),
-                    //                     mp["ALAMAT PEMOTONG/ PEMUNGUT"],
-                    //                     mp["NTPN"]
-                    //                 ])
-                    //             } else {
-                    //                 error.push('Baris : ' + (key + 2) + ' Jenis Penghasilan Dan PPH Tidak Dibolehkan')
-                    //             }
-                    //         } else {
-                    //             error.push('Baris : ' + (key + 2) + ' Jenis PPH Tidak Valid')
-                    //         }
-                    //     }
-                    // })
-                    // if (error.length) {
-                    //     toast.error(error.filter((value: any, index: any, array: any) => array.indexOf(value) === index).map((val: any) => {
-                    //         return val + '\n'
-                    //     }, {
-                    //         duration: 6000,
-                    //     }));
+                    const kelompokHarta = [
+                        {
+                            "Kode": "1",
+                            "Nama": "Kelompok 1"
+                        },
+                        {
+                            "Kode": "2",
+                            "Nama": "Kelompok 2"
+                        },
+                        {
+                            "Kode": "3",
+                            "Nama": "Kelompok 3"
+                        },
+                        {
+                            "Kode": "4",
+                            "Nama": "Kelompok 4"
+                        },
+                        {
+                            "Kode": "5",
+                            "Nama": "Permanen"
+                        },
+                        {
+                            "Kode": "6",
+                            "Nama": "Tidak Permanen"
+                        },
+                    ];
+                    const penyutusanKomersial = [
+                        {
+                            "Kode": "1",
+                            "Nama": "GL - Garis Lurus"
+                        },
+                        {
+                            "Kode": "2",
+                            "Nama": "JAT - Jumlah Angka Tahun"
+                        },
+                        {
+                            "Kode": "3",
+                            "Nama": "SM - Saldo Menurun"
+                        },
+                        {
+                            "Kode": "4",
+                            "Nama": "SMG - Saldo Menurun Ganda"
+                        },
+                        {
+                            "Kode": "5",
+                            "Nama": "JJJ - Jumlah Jam Jasa"
+                        },
+                        {
+                            "Kode": "6",
+                            "Nama": "JSP - Jumlah Satuan Produksi"
+                        },
+                        {
+                            "Kode": "7",
+                            "Nama": "ML - Metode Lainnya"
+                        },
+                    ]
+                    const penyusutanFiskal = [
+                        {
+                            "Kode": "1",
+                            "Nama": "GL - Garis Lurus"
+                        },
+                        {
+                            "Kode": "2",
+                            "Nama": "SM - Saldo Menurun"
+                        },
+                    ]
 
-                    // } else {
-                    //     ConvertToCSV([subject, ...result]);
-                    // }
+                    let error: any = [];
+                    let result: any = [];
+                    rows.map((mp: any, key: any) => {
+                        if (mp["Bln Perolehan"] < 1 && mp["Bln Perolehan"] > 12) {
+                            error.push('Bulan Tidak Valid')
+                        }
+
+                        let JenisHarta = '';
+                        jenisHarta.find((f: any) => {
+                            if (f.Nama == mp["Jenis Harta"]) {
+                                JenisHarta = f.Kode
+                            }
+                        });
+                        if (!JenisHarta) {
+                            error.push('Jenis Harta Tidak Valid')
+                        }
+
+
+                        let KelompokHarta = '';
+                        kelompokHarta.find((f: any) => {
+                            if (f.Nama == mp["Kelompok Harta"]) {
+                                KelompokHarta = f.Kode
+                            }
+                        });
+                        if (!KelompokHarta) {
+                            error.push('Kelompok Harta Tidak Valid')
+                        }
+
+
+                        let PenyutusanKomersial = '';
+                        penyutusanKomersial.find((f: any) => {
+                            if (f.Nama == mp["Jenis Penyusutan Komersial"]) {
+                                PenyutusanKomersial = f.Kode
+                            }
+                        });
+                        if (!PenyutusanKomersial) {
+                            error.push('Jenis Penyusutan Komersial Tidak Valid')
+                        }
+
+
+                        let PenyusutanFiskal = '';
+                        penyusutanFiskal.find((f: any) => {
+                            if (f.Nama == mp["Jenis Penyusutan Fiskal"]) {
+                                PenyusutanFiskal = f.Kode
+                            }
+                        });
+                        if (!PenyusutanFiskal) {
+                            error.push('Jenis Penyusutan Fiskal Tidak Valid')
+                        }
+
+                        result.push([
+                            JenisHarta,
+                            KelompokHarta,
+                            JenisHarta + "" + KelompokHarta,
+                            mp["Nama Harta"],
+                            mp["Bln Perolehan"],
+                            mp["Thn Perolehan"],
+                            PenyutusanKomersial,
+                            PenyusutanFiskal,
+                            mp["Harga Perolehan"],
+                            mp["Nilai Sisa Buku"],
+                            mp["Penyusutan Fiskal Tahun Ini"],
+                            mp["Keterangan Nama Harta"]
+                        ])
+                    })
+
+
+                    if (error.length) {
+                        toast.error(error.filter((value: any, index: any, array: any) => array.indexOf(value) === index).map((val: any) => {
+                            return val + '\n'
+                        }, {
+                            duration: 6000,
+                        }));
+
+                    } else {
+                        ConvertToCSV([subject, ...result]);
+                    }
                 }
             }
             reader.readAsArrayBuffer(file);
