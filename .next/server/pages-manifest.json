@@ -1,18 +1,18 @@
 {
   "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/auth/login": "pages/auth/login.html",
   "/company": "pages/company.html",
   "/efaktur/in": "pages/efaktur/in.html",
   "/converter": "pages/converter.html",
-  "/": "pages/index.html",
   "/npwp": "pages/npwp.html",
   "/efaktur/out": "pages/efaktur/out.html",
+  "/": "pages/index.html",
   "/permission": "pages/permission.html",
-  "/report": "pages/report.html",
-  "/users": "pages/users.html",
   "/profile": "pages/profile.html",
+  "/report": "pages/report.html",
   "/stock": "pages/stock.html",
-  "/_error": "pages/_error.js",
+  "/users": "pages/users.html",
   "/404": "pages/404.html"
 }

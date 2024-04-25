@@ -1044,16 +1044,89 @@ export default function StockData({ userData, setuserData }: any) {
     }
 
     const convertToPdfBNI = async (textList: any) => {
-        let result: any = [];
-        await textList.map((mp: any) => {
+        let res: any = [];
+        await textList.map((mp: any, key: any) => {
             let step1: any = [];
+            let start = false;
+            let tahun = "";
             mp.items.map((mp1: any, k: any, array: any) => {
-                step1.push(mp1.str);
-            })
-            result.push(step1)
-        })
-        console.log(result);
+                let split = mp1.str.split(' ');
+                if (split.length == 2 && moment(mp1.str, 'DD/MM/YYYY HH.mm.ss').format('DD/MM/YYYY') != 'Invalid date') {
+                    start = true;
+                }
 
+                if (mp1.str.indexOf('Ending Balance') != -1) {
+                    start = false;
+                }
+                if (start) {
+                    if (split.length == 2 && moment(mp1.str, 'DD/MM/YYYY HH.mm.ss').format('DD/MM/YYYY') != 'Invalid date') {
+                        step1.push({ tanggal: moment(mp1.str, 'DD/MM/YYYY HH.mm.ss').format('DD/MM/YYYY') });
+                    } else if (mp1.str == 'K') {
+                        step1[step1.length - 3] = "";
+                        step1[step1.length - 2] = "";
+                        step1.push({ kredit: array[k - 2].str });
+                        step1.push({ saldo: array[k + 2].str });
+                    } else if (mp1.str == "D") {
+                        step1[step1.length - 3] = "";
+                        step1[step1.length - 2] = "";
+                        step1.push({ debit: array[k - 2].str });
+                        step1.push({ saldo: array[k + 2].str });
+                    } else {
+                        step1.push(mp1.str);
+                    }
+                }
+            })
+
+            let step2: any = [];
+            let row: any = {};
+            let tgl = 0;
+            let saldo = false;
+            step1.map((mp2: any) => {
+                if (mp2?.tanggal) {
+                    tgl += 1;
+                    if (tgl == 1) {
+                        if (!tahun) {
+                            tahun = moment(mp2.tanggal, "DD/MM/YYYY").format('YYYY');
+                        }
+                        row = { TANGGAL: mp2.tanggal }
+                        saldo = true;
+                    } else {
+                        tgl = 0;
+                    }
+                } else if (mp2?.kredit) {
+                    row = { ...row, KREDIT: mp2.kredit, DEBIT: 0 }
+                } else if (mp2?.debit) {
+                    row = { ...row, DEBIT: mp2.debit, KREDIT: 0 }
+                } else if (mp2?.saldo) {
+                    row = { ...row, SALDO: mp2.saldo, TAHUN: tahun }
+                    step2.push(row)
+                    row = {}
+                    saldo = false
+                } else if (saldo) {
+                    if (row?.KETERANGAN) {
+                        row = { ...row, KETERANGAN: row.KETERANGAN + mp2 }
+                    } else {
+                        row = { ...row, KETERANGAN: mp2 }
+                    }
+                }
+            })
+
+            res.push(step2.map((mp3: any) => {
+                return {
+                    TANGGAL: mp3.TANGGAL,
+                    KETERANGAN: mp3.KETERANGAN,
+                    DEBIT: numeral(mp3.DEBIT).value(),
+                    KREDIT: numeral(mp3.KREDIT).value(),
+                    SALDO: numeral(mp3.SALDO).value(),
+                    TAHUN: mp3.TAHUN,
+                }
+            }))
+        })
+
+        let result: any = [];
+        res.map((val: any) => {
+            result.push(...val)
+        })
         return result;
 
     }
@@ -1178,14 +1251,14 @@ export default function StockData({ userData, setuserData }: any) {
                         const pageList = await Promise.all(Array.from({ length: pdf.numPages }, (_, i) => pdf.getPage(i + 1)));
                         const textList = await Promise.all(pageList.map((p) => p.getTextContent()));
                         arrayData = [...arrayData, ...await convertToPdfBNI(textList)];
-                        // if (index == files.length - 1) {
-                        //     if (arrayData.length) {
-                        //         convertToExcel(_.sortBy(arrayData, ['TAHUN']), 'MAYBANK DEBIT KREDIT');
-                        //         arrayData = [];
-                        //     } else {
-                        //         toast.error(`Format tidak valid`);
-                        //     }
-                        // }
+                        if (index == files.length - 1) {
+                            if (arrayData.length) {
+                                convertToExcel(_.sortBy(arrayData, ['TAHUN']), 'BNI DEBIT KREDIT');
+                                arrayData = [];
+                            } else {
+                                toast.error(`Format tidak valid`);
+                            }
+                        }
                     }
                 } else {
                     err.push(`File ${files.length > 1 ? index + 1 : ''} Format bukan .pdf`);
@@ -2323,8 +2396,8 @@ export default function StockData({ userData, setuserData }: any) {
                                     </Link>
                                 </div>
                             </div>
-                            {/* 
-                            <div className="mb-5">
+
+                            {/* <div className="mb-5">
                                 <label htmlFor="fileConvert8">
                                     <span className="dropdown-item text-center rounded-lg  cursor-pointer" aria-hidden="true">Convert MAYBANK
                                         <div className="flex justify-center mt-3">
@@ -2372,7 +2445,7 @@ export default function StockData({ userData, setuserData }: any) {
                                         Example Format
                                     </Link>
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div className="mb-5">
                                 <label htmlFor="fileConvert9">
@@ -2418,11 +2491,11 @@ export default function StockData({ userData, setuserData }: any) {
                                     <input type="file" id="fileConvert9" name="file" multiple accept="application/pdf" style={{ display: "none" }} onChange={(val: any) => pdfRead(val, 'BNI')} />
                                 </label>
                                 <div className="text-center mt-1">
-                                    <Link href="/format/Format Bank BNI">
+                                    <Link href="/format/Format BNI.pdf">
                                         Example Format
                                     </Link>
                                 </div>
-                            </div> */}
+                            </div>
                         </div>
                     </div>
                 </div>
