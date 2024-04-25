@@ -9,7 +9,6 @@ import * as PDFJS from 'pdfjs-dist';
 PDFJS.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS.version}/pdf.worker.js`;
 import XLSX, { read, utils, writeFile } from 'xlsx';
 import numeral from "numeral";
-import { isNumber } from "lodash";
 
 export default function StockData({ userData, setuserData }: any) {
     const Subject = "Converter";
@@ -24,6 +23,7 @@ export default function StockData({ userData, setuserData }: any) {
 
     const convertToPdfBCA = async (textList: any) => {
         let valid = false;
+        let priode = '';
         let year = '';
         let ulang = await textList.map((mp: any) => {
             let tgl = false;
@@ -37,11 +37,16 @@ export default function StockData({ userData, setuserData }: any) {
                         valid = true
                     }
                 }
-                if (ke == 47) {
-                    if (mp1.str.split(' ').length == 2) {
+                if (mp1.str.indexOf("PERIODE") != -1 && !year) {
+                    priode = mp1.str;
+                }
+                if (priode && !year) {
+                    let pr = mp1.str.split(' ');
+                    if (pr.length == 2 && pr[1].length == 4) {
                         year = mp1.str.split(' ')[1];
                     }
                 }
+
                 if (mp1.str == 'TANGGAL') tgl = true;
                 if (mp1.str == 'Bersambung') {
                     brs = true;
@@ -229,7 +234,12 @@ export default function StockData({ userData, setuserData }: any) {
         if (valid && year) {
             return data
         } else {
-            toast.error(`Format tidak valid`);
+            if (!valid) {
+                toast.error(`Tidak Menemukan Tulisan Rekening Giro`);
+            }
+            if (!year) {
+                toast.error(`Tidak Menemukan Tahun`);
+            }
             return []
 
         }
@@ -1528,7 +1538,19 @@ export default function StockData({ userData, setuserData }: any) {
                         "ALAMAT PEMOTONG/ PEMUNGUT",
                         "NTPN"
                     ]) != JSON.stringify(Object.keys(rows[0]))) {
-                        return toast.error('Judul Tabel Tidak Valid')
+                        if (JSON.stringify([
+                            "NO",
+                            "NAMA PEMOTONG/ PEMUNGUT",
+                            "NPWP",
+                            "JENIS PPH",
+                            "JENIS PENGHASILAN",
+                            "OBJEK POTPUT (Rupiah)",
+                            "PPH POTPUT",
+                            "NO BUKTI",
+                            "TANGGAL BUKTI",
+                        ]) != JSON.stringify(Object.keys(rows[0]))) {
+                            return toast.error('Judul Tabel Tidak Valid')
+                        }
                     }
 
                     const subject = ["NO", "NAMA PEMOTONG/ PEMUNGUT", "NPWP", "JENIS PPH", "JENIS PENGHASILAN", "OBJEK POTPUT (Rupiah)", "PPH POTPUT", "NO BUKTI", "TANGGAL BUKTI", "ALAMAT PEMOTONG/ PEMUNGUT", "NTPN"];
@@ -1599,8 +1621,8 @@ export default function StockData({ userData, setuserData }: any) {
                                         mp["PPH POTPUT"].replaceAll('.', '').replaceAll(',', '').replaceAll(' ', ''),
                                         mp["NO BUKTI"],
                                         moment(mp["TANGGAL BUKTI"], 'M/D/YY').format('DD/MM/YYYY'),
-                                        mp["ALAMAT PEMOTONG/ PEMUNGUT"],
-                                        mp["NTPN"]
+                                        mp["ALAMAT PEMOTONG/ PEMUNGUT"] ?? "-",
+                                        mp["NTPN"] ?? "-"
                                     ])
                                 } else {
                                     error.push('Baris : ' + (key + 2) + ' Jenis Penghasilan Dan PPH Tidak Dibolehkan')

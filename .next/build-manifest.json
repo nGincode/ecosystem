@@ -5,8 +5,8 @@
   "devFiles": [],
   "ampDevFiles": [],
   "lowPriorityFiles": [
-    "static/uUbVWzgqHLES2ZYOBHBiy/_buildManifest.js",
-    "static/uUbVWzgqHLES2ZYOBHBiy/_ssgManifest.js"
+    "static/XtojWetwouFcCLPKP60IX/_buildManifest.js",
+    "static/XtojWetwouFcCLPKP60IX/_ssgManifest.js"
   ],
   "rootMainFiles": [],
   "pages": {
@@ -52,7 +52,7 @@
       "static/chunks/2b7b2d2a-4e9e97873d2042c6.js",
       "static/chunks/29107295-52d5ccd9ad2558b9.js",
       "static/chunks/77-cc7ef1c61d734d84.js",
-      "static/chunks/pages/converter-52c4accec76e41ca.js"
+      "static/chunks/pages/converter-476e066bb5bdac49.js"
     ],
     "/efaktur/in": [
       "static/chunks/webpack-509c53b67f47b32a.js",
