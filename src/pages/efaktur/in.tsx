@@ -1,3 +1,6 @@
+///bug no faktur bisa sama
+
+
 import React, { Component, useEffect, useState, useMemo } from "react"
 
 import toast, { Toaster } from 'react-hot-toast';
@@ -112,12 +115,14 @@ export default function EfakturIn({ userData, setuserData }: any) {
                         setdataCreate(res.data.status);
                         toast.success(res.data.massage);
                         ($('.btn-close') as any).trigger("click");
-                        (document.getElementById('formCreate') as HTMLFormElement).reset();
+                        (document.getElementById('formCreate') as HTMLFormElement)?.reset();
                     }
 
                 });
             } catch (error: any) {
-                toast.error(error.response.data.massage);
+                console.log(error);
+
+                // toast.error(error.response.data.massage);
             }
         } else if (url === 'view_npwp') {
             let companyActive = JSON.parse(localStorage.getItem('companyActive') as string)?.value;
@@ -136,32 +141,6 @@ export default function EfakturIn({ userData, setuserData }: any) {
                 } catch (error: any) {
                     toast.error(error.response.data.massage);
                 }
-            }
-        } else if (url === 'proof') {
-            try {
-                await axios({
-                    method: "POST",
-                    url: '/api/efaktur/out/proof',
-                    data: data,
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`
-                    }
-                }).then((res: any) => {
-                    if (res.data?.success.length) {
-                        toast.success(res.data.success.map((val: any) => `No Faktur : ${val.Efaktur} Berhasil\n`), {
-                            duration: 6000,
-                        });
-                        setdataCreate(res.data.success)
-                    }
-                    if (res.data?.error.length) {
-                        toast.error(res.data.error.map((val: any) => `No Faktur : ${val.Efaktur} Tidak ditemukan\n`), {
-                            duration: 6000,
-                        });
-                    }
-
-                });
-            } catch (error: any) {
-                toast.error(error.response.data.massage);
             }
         } else if (url === 'export_doccon') {
             try {
@@ -182,6 +161,8 @@ export default function EfakturIn({ userData, setuserData }: any) {
             }
         } else if (url === 'import_doccon') {
             try {
+                console.log(data);
+
                 await axios({
                     method: "POST",
                     url: '/api/efaktur/in/import_doccon',
@@ -205,13 +186,13 @@ export default function EfakturIn({ userData, setuserData }: any) {
         for (let index = 0; index < objArray.length; index++) {
             array['A' + (index + 3)] = { t: 's', v: index + 1 };
             array['B' + (index + 3)] = { t: 's', v: objArray[index].NAMA };
-            array['D' + (index + 3)] = { t: 'd', z: 'yyyy-mm-dd', v: '0000-00-00' };
-            array['E' + (index + 3)] = { t: 'd', z: 'yyyy-mm-dd', v: '0000-00-00' };
-            array['G' + (index + 3)] = { t: 'd', z: 'yyyy-mm-dd', v: '0000-00-00' };
-            array['H' + (index + 3)] = { t: 'd', z: 'yyyy-mm-dd', v: '0000-00-00' };
-            array['M' + (index + 3)] = { t: 'd', z: 'yyyy-mm-dd', v: '0000-00-00' };
+            array['D' + (index + 3)] = { t: 'd' };
+            array['E' + (index + 3)] = { t: 'd' };
+            array['G' + (index + 3)] = { t: 'd' };
+            array['H' + (index + 3)] = { t: 'd' };
+            array['M' + (index + 3)] = { t: 'd' };
             array['I' + (index + 3)] = { t: 's', v: objArray[index].NOMOR_FAKTUR };
-            array['J' + (index + 3)] = { t: 'd', v: objArray[index].TANGGAL_FAKTUR, z: 'yyyy-mm-dd' };
+            array['J' + (index + 3)] = { t: 'd', v: objArray[index].TANGGAL_FAKTUR };
             array['K' + (index + 3)] = { z: '#,##0', t: 'n', v: objArray[index].JUMLAH_DPP };
             array['L' + (index + 3)] = { z: '#,##0', t: 'n', v: objArray[index].JUMLAH_PPN };
         }
@@ -558,41 +539,38 @@ export default function EfakturIn({ userData, setuserData }: any) {
                     const data = rows.map((val: any, i: number) => {
                         if (i > 0) {
 
-                            if (rows2[i]["__EMPTY"] && moment(rows2[i]["__EMPTY"]).format('YYYY-MM-DD') == 'Invalid date') {
+                            if (rows2[i]["__EMPTY"] && moment(rows2[i]["__EMPTY"], "M/D/YY").format('YYYY-MM-DD') == 'Invalid date') {
                                 err.push(`Row : ${i + 3} Date Not Valid\n`);
                             }
-                            if (rows2[i]["__EMPTY_1"] && moment(rows2[i]["__EMPTY_1"]).format('YYYY-MM-DD') == 'Invalid date') {
+                            if (rows2[i]["__EMPTY_1"] && moment(rows2[i]["__EMPTY_1"], "M/D/YY").format('YYYY-MM-DD') == 'Invalid date') {
                                 err.push(`Row : ${i + 3} Date Not Valid\n`);
                             }
-                            if (rows2[i]["__EMPTY_2"] && moment(rows2[i]["__EMPTY_2"]).format('YYYY-MM-DD') == 'Invalid date') {
+                            if (rows2[i]["__EMPTY_2"] && moment(rows2[i]["__EMPTY_2"], "M/D/YY").format('YYYY-MM-DD') == 'Invalid date') {
                                 err.push(`Row : ${i + 3} Date Not Valid\n`);
                             }
-                            if (rows2[i]["__EMPTY_3"] && moment(rows2[i]["__EMPTY_3"]).format('YYYY-MM-DD') == 'Invalid date') {
+                            if (rows2[i]["__EMPTY_3"] && moment(rows2[i]["__EMPTY_3"], "M/D/YY").format('YYYY-MM-DD') == 'Invalid date') {
                                 err.push(`Row : ${i + 3} Date Not Valid\n`);
                             }
-                            if (rows2[i]["__EMPTY_4"] && moment(rows2[i]["__EMPTY_4"]).format('YYYY-MM-DD') == 'Invalid date') {
+                            if (rows2[i]["__EMPTY_4"] && moment(rows2[i]["__EMPTY_4"], "M/D/YY").format('YYYY-MM-DD') == 'Invalid date') {
                                 err.push(`Row : ${i + 3} Date Not Valid\n`);
                             }
-                            if (rows2[i]["Pelunasan"] && moment(rows2[i]["Pelunasan"]).format('YYYY-MM-DD') == 'Invalid date') {
-                                err.push(`Row : ${i + 3} Date Not Valid\n`);
-                            }
-                            if (rows2[i]["__EMPTY_4"] && moment(rows2[i]["__EMPTY_4"]).format('YYYY-MM-DD') == 'Invalid date') {
+                            if (rows2[i]["Pelunasan"] && moment(rows2[i]["Pelunasan"], "M/D/YY").format('YYYY-MM-DD') == 'Invalid date') {
                                 err.push(`Row : ${i + 3} Date Not Valid\n`);
                             }
 
                             return {
                                 "suplier": val.Suplier,
                                 "no_surat_jalan": val["Surat Jalan"],
-                                "tgl_surat_jalan": rows2[i]["__EMPTY"],
-                                "terima_surat_jalan": rows2[i]["__EMPTY_1"],
+                                "tgl_surat_jalan": rows2[i]["__EMPTY"] ? moment(rows2[i]["__EMPTY"], "M/D/YY").format('YYYY-MM-DD') : null,
+                                "terima_surat_jalan": rows2[i]["__EMPTY_1"] ? moment(rows2[i]["__EMPTY_1"], "M/D/YY").format('YYYY-MM-DD') : null,
                                 "no_tagihan": val["Faktur/Tagihan/Invoice"],
-                                "tgl_tagihan": rows2[i]["__EMPTY_2"],
-                                "terima_tagihan": rows2[i]["__EMPTY_3"],
+                                "tgl_tagihan": rows2[i]["__EMPTY_2"] ? moment(rows2[i]["__EMPTY_2"], "M/D/YY").format('YYYY-MM-DD') : null,
+                                "terima_tagihan": rows2[i]["__EMPTY_3"] ? moment(rows2[i]["__EMPTY_3"], "M/D/YY").format('YYYY-MM-DD') : null,
                                 "no_faktur": val["Faktur Pajak"],
-                                "tgl_faktur": rows2[i]["__EMPTY_4"],
+                                "tgl_faktur": rows2[i]["__EMPTY_4"] ? moment(rows2[i]["__EMPTY_4"], "M/D/YY").format('YYYY-MM-DD') : null,
                                 "dpp_faktur": val["Nilai Barang"],
                                 "ppn_faktur": val["__EMPTY_5"],
-                                "tgl_lunas": rows2[i]["Pelunasan"],
+                                "tgl_lunas": rows2[i]["Pelunasan"] ? moment(rows2[i]["Pelunasan"], "M/D/YY").format('YYYY-MM-DD') : null,
                                 "nominal_lunas": val["__EMPTY_6"],
                                 "via_lunas": val["__EMPTY_7"],
                             }

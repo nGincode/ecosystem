@@ -106,7 +106,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
 
                 });
             } catch (error: any) {
-                toast.error(error.response.data.massage);
+                toast.error(error.response?.data?.massage);
             }
         } else if (url === 'view_npwp') {
             let companyActive = JSON.parse(localStorage.getItem('companyActive') as string)?.value;
@@ -483,210 +483,6 @@ export default function EfakturOut({ userData, setuserData }: any) {
         return arr.find((vall: any) => vall.label == val)?.value ?? '';
     }
 
-    const convertToExcel = async (data: any) => {
-        let data1 = data.map((mp: any) => {
-            if (mp.tanggal)
-                return {
-                    tanggal: mp.tanggal,
-                    keterangan: mp.keterangan,
-                    cbg: mp.cbg,
-                    kredit: mp.kredit,
-                    debit: mp.debit,
-                    saldo: mp.saldo,
-                }
-        }).filter((f: any) => f);
-        let data2 = data.filter((mp: any) => {
-            if (mp.title)
-                return {
-                    title: mp.title,
-                    saldo: mp.saldo
-                }
-        });
-
-        const ws1 = XLSX.utils.json_to_sheet(data1);
-        const ws2 = XLSX.utils.json_to_sheet(data2);
-
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, ws1, "Data 1");
-        XLSX.utils.book_append_sheet(workbook, ws2, "Data 2");
-
-        XLSX.writeFile(workbook, "BCA DEBIT KREDIT.xlsx", { compression: true });
-    }
-
-    const convertToPdfRekeningGiroBCA = async (textList: any) => {
-        let ulang = await textList.map((mp: any) => {
-            let tgl = false;
-            let brs = false;
-
-            let arr: any = [];
-            let batastgl = false;
-            mp.items.map((mp1: any) => {
-                if (mp1.str == 'TANGGAL') tgl = true;
-                if (mp1.str == 'Bersambung') {
-                    brs = true;
-                    tgl = false;
-                }
-                if (tgl && !brs) {
-                    return mp1.str
-                }
-            }).filter((fl: any, k: number) => fl).map((mp2: any, kk: number, values: any) => {
-                let split: any = mp2.split('/');
-
-                if (split.length == 2) {
-                    if (split?.[0].length == 2 && split?.[1].length == 2) {
-                        if (!batastgl) {
-                            arr.push({ tanggal: mp2 })
-                        } else {
-                            arr.push(mp2)
-                        }
-                        batastgl = true
-                    } else {
-                        if (mp2.indexOf(',') !== -1 && mp2.indexOf('.') !== -1) {
-                            if (batastgl) {
-                                if (mp2.indexOf('DB') !== -1 || values[kk + 1].indexOf('DB') !== -1 || values[kk + 2].indexOf('DB') !== -1) {
-                                    values[kk + 1] = values[kk + 1].replace('DB', '');
-                                    values[kk + 2] = values[kk + 2].replace('DB', '');
-                                    arr.push({ debit: mp2.replace('DB', '') })
-                                } else {
-                                    arr.push({ kredit: mp2 })
-                                }
-
-                            } else {
-                                arr.push({ saldo: mp2 })
-                            }
-                            batastgl = false;
-                        } else {
-                            arr.push(mp2)
-                        }
-                    }
-                } else {
-                    if (mp2.indexOf(',') !== -1 && mp2.indexOf('.') !== -1) {
-                        if (batastgl) {
-                            if (mp2.indexOf('DB') !== -1 || values[kk + 1].indexOf('DB') !== -1 || values[kk + 2].indexOf('DB') !== -1) {
-                                values[kk + 1] = values[kk + 1].replace('DB', '');
-                                values[kk + 2] = values[kk + 2].replace('DB', '');
-                                arr.push({ debit: mp2.replace('DB', '') })
-                            } else {
-                                arr.push({ kredit: mp2 })
-                            }
-
-                        } else {
-                            arr.push({ saldo: mp2 })
-                        }
-                        batastgl = false;
-
-                    } else {
-                        arr.push(mp2)
-                    }
-                }
-
-
-            })
-
-            return arr;
-        })
-        let ulang1 = await ulang.map((mp1: any) => {
-            let aryy: any = []
-            mp1.map((mp2: any, key: number, values: any) => {
-                if (key > 8) {
-                    if (mp2?.kredit || mp2?.debit) {
-                        if (Number(values[key - 2])) {
-                            aryy[key - 11] = { cbg: values[key - 2] }
-                        }
-                        aryy.push(mp2)
-                    } else {
-                        aryy.push(mp2)
-                    }
-                }
-            })
-            return aryy
-        })
-
-        let saldoAwal = false;
-        let penutup = false;
-        let penutupTulis = false;
-        let ulang2 = await ulang1.map((mp1: any) => {
-            return mp1.map((mp2: any, key: number, values: any) => {
-                if (mp2 == 'SALDO' && values[key + 2] == 'AWAL' && penutup) {
-                    penutupTulis = true;
-                    return { penutup: mp2 }
-                } else {
-                    if (penutupTulis) {
-                        return { penutup: mp2 }
-                    } else {
-                        if (mp2 == 'SALDO' && values[key + 2] == 'AWAL') {
-                            saldoAwal = true;
-                            penutup = true
-                        }
-                        if (mp2?.kredit && saldoAwal) {
-                            let dt = { saldo: mp2.kredit }
-                            saldoAwal = false;
-                            return dt
-                        } else {
-                            if (mp2?.tanggal || mp2?.saldo || mp2?.debit || mp2?.kredit || mp2?.cbg) {
-                                return mp2;
-                            } else {
-                                return { keterangan: mp2 };
-                            }
-                        }
-                    }
-                }
-            })
-        })
-
-        let result: any = [];
-        let penyatuan: any = {}
-
-        let penutupanArr = []
-        let penutupanObj: any = {}
-        await ulang2.map((mp: any) => {
-            mp.map((mp1: any) => {
-                if (mp1?.tanggal) {
-                    if (penyatuan?.tanggal) {
-                        result.push(penyatuan);
-                        penyatuan = {};
-                        penyatuan.tanggal = mp1.tanggal
-                    } else {
-                        penyatuan.tanggal = mp1.tanggal
-                    }
-                } else if (mp1?.keterangan) {
-                    if (penyatuan.keterangan) {
-                        penyatuan.keterangan = penyatuan.keterangan + ' ' + mp1.keterangan
-                    } else {
-                        penyatuan.keterangan = mp1.keterangan
-                    }
-                } else if (mp1?.debit) {
-                    penyatuan.debit = mp1.debit
-                } else if (mp1?.kredit) {
-                    penyatuan.kredit = mp1.kredit
-                } else if (mp1?.saldo) {
-                    penyatuan.saldo = mp1.saldo
-                } else if (mp1?.cbg) {
-                    penyatuan.cbg = mp1.cbg
-                } else if (mp1?.penutup) {
-                    if (!mp1?.penutup?.saldo) {
-                        if (penutupanObj.title) {
-                            penutupanObj.title = penutupanObj.title + ' ' + mp1?.penutup
-                        } else {
-                            penutupanObj.title = mp1?.penutup
-                        }
-                    } else {
-                        penutupanObj.saldo = mp1?.penutup.saldo
-                        penutupanArr.push(penutupanObj)
-                        penutupanObj = {}
-                    }
-
-                }
-            })
-
-        });
-        penutupanArr.push(penutupanObj)
-        result.push(penyatuan);
-        result.push(...penutupanArr);
-        convertToExcel(result)
-
-    }
-
     const importFile = (val: any, convert: any) => {
         const files = val.target.files;
         if (files.length) {
@@ -966,37 +762,35 @@ export default function EfakturOut({ userData, setuserData }: any) {
 
                     const textList = await Promise.all(pageList.map((p) => p.getTextContent()));
 
-                    // const array = textList?.[0]?.items;
-                    // if (array.length === 52 || array.length === 61) {
-                    //     let nama: any = '';
-                    //     let noFak: any = '';
-                    //     let ttd: any = '';
-                    //     if (array.length === 52) {
-                    //         ttd = array?.[43];
-                    //         noFak = array?.[9];
-                    //         nama = array?.[10];
-                    //     } else if (array.length === 61) {
-                    //         ttd = array?.[51];
-                    //         noFak = array?.[8];
-                    //         nama = array?.[9];
-                    //     }
+                    const array = textList?.[0]?.items;
+                    if (array.length === 52 || array.length === 61) {
+                        let nama: any = '';
+                        let noFak: any = '';
+                        let ttd: any = '';
+                        if (array.length === 52) {
+                            ttd = array?.[43];
+                            noFak = array?.[9];
+                            nama = array?.[10];
+                        } else if (array.length === 61) {
+                            ttd = array?.[51];
+                            noFak = array?.[8];
+                            nama = array?.[9];
+                        }
 
-                    //     const file = await convertFileToBase64(files[index]);
+                        const file = await convertFileToBase64(files[index]);
 
-                    //     if (nama ? 1 : 0 & noFak ? 1 : 0 & ttd ? 1 : 0) {
-                    //         if (String(nama['str']) !== String(ttd['str'])) {
-                    //             data.push({ files: file, nama: String(nama['str']).replaceAll('Nama : ', ''), noFaktur: String(noFak['str']).replaceAll('Kode dan Nomor Seri Faktur Pajak : ', '').replaceAll('.', '').replaceAll('-', ''), ttd: String(ttd['str']) });
-                    //         } else {
-                    //             err.push(`File ${files.length > 1 ? index + 1 : ''} Nama TTD Harus Directur `);
-                    //         }
-                    //     } else {
-                    //         err.push(`File ${files.length > 1 ? index + 1 : ''} Tidak Terdeteksi Nama dan No Faktur`);
-                    //     }
-                    // } else {
-                    //     err.push(`File ${files.length > 1 ? index + 1 : ''} Format PDF Salah`);
-                    // }
-
-                    convertToPdfRekeningGiroBCA(textList)
+                        if (nama ? 1 : 0 & noFak ? 1 : 0 & ttd ? 1 : 0) {
+                            if (String(nama['str']) !== String(ttd['str'])) {
+                                data.push({ files: file, nama: String(nama['str']).replaceAll('Nama : ', ''), noFaktur: String(noFak['str']).replaceAll('Kode dan Nomor Seri Faktur Pajak : ', '').replaceAll('.', '').replaceAll('-', ''), ttd: String(ttd['str']) });
+                            } else {
+                                err.push(`File ${files.length > 1 ? index + 1 : ''} Nama TTD Harus Directur `);
+                            }
+                        } else {
+                            err.push(`File ${files.length > 1 ? index + 1 : ''} Tidak Terdeteksi Nama dan No Faktur`);
+                        }
+                    } else {
+                        err.push(`File ${files.length > 1 ? index + 1 : ''} Format PDF Salah`);
+                    }
                 } else {
                     err.push(`File ${files.length > 1 ? index + 1 : ''} Format bukan .pdf`);
                 }
@@ -1010,7 +804,7 @@ export default function EfakturOut({ userData, setuserData }: any) {
             }
 
             if (data.length) {
-                // await handleApi('proof', data);
+                await handleApi('proof', data);
             }
 
         } else {
@@ -1364,72 +1158,6 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                         </Link>
                                     </div>
                                 </div>
-
-                                {/* <div className="mb-5">
-                                    <label htmlFor="fileConvert">
-                                        <span className="dropdown-item text-center rounded-lg  cursor-pointer" aria-hidden="true">Convert Format to ETax
-                                            <div className="flex justify-center mt-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" id="Layer_1" viewBox="0 0 303.188 303.188" className="w-12 h-12">
-                                                    <g>
-                                                        <polygon style={{ fill: "#E8E8E8" }} points="219.821,0 32.842,0 32.842,303.188 270.346,303.188 270.346,50.525  " />
-                                                        <g>
-                                                            <rect x="90.902" y="61.704" style={{ fill: "007934" }} width="119.89" height="119.89" />
-                                                            <rect x="101.303" y="72.105" style={{ fill: "#FFFFFF" }} width="99.088" height="99.088" />
-                                                            <polygon style={{ fill: "#007934" }} points="192.62,137.423 162.041,137.423 171.073,148.703 162.041,159.982 192.62,159.982     183.588,148.703   " />
-                                                            <polygon style={{ fill: "#007934" }} points="183.875,97.886 154.609,97.886 148.122,105.987 141.635,97.886 112.369,97.886     133.489,124.262 112.369,150.638 183.875,150.638 162.755,124.262   " />
-                                                            <polygon style={{ fill: "#FFFFFF" }} points="124.911,101.616 120.676,101.616 156.944,146.908 161.178,146.908   " />
-                                                        </g>
-                                                        <polygon style={{ fill: "#007934" }} points="227.64,25.263 32.842,25.263 32.842,0 219.821,0  " />
-                                                        <g>
-                                                            <path style={{ fill: "#A4A9AD" }} d="M135.998,273.871H121l-9.353-14.997l-9.254,14.997h-14.67l15.917-24.547l-14.965-23.432h14.374    l8.664,14.834l8.336-14.834h14.801l-15.194,24.449L135.998,273.871z" />
-                                                            <path style={{ fill: "#A4A9AD" }} d="M141.38,273.871v-47.979h12.963v37.511h18.477v10.469h-31.44V273.871z" />
-                                                            <path style={{ fill: "#A4A9AD" }} d="M211.872,259.3c0,2.976-0.755,5.617-2.265,7.925c-1.509,2.309-3.687,4.102-6.53,5.382    c-2.845,1.28-6.181,1.92-10.01,1.92c-3.194,0-5.874-0.225-8.04-0.673s-4.42-1.23-6.761-2.346v-11.552    c2.473,1.269,5.043,2.259,7.713,2.97c2.669,0.711,5.119,1.067,7.351,1.067c1.925,0,3.336-0.333,4.233-1.001    c0.897-0.667,1.346-1.526,1.346-2.576c0-0.656-0.181-1.231-0.541-1.723c-0.361-0.492-0.941-0.99-1.739-1.493    c-0.8-0.503-2.927-1.531-6.384-3.085c-3.129-1.422-5.475-2.8-7.039-4.135c-1.564-1.334-2.724-2.866-3.479-4.595    c-0.755-1.728-1.132-3.774-1.132-6.137c0-4.419,1.607-7.865,4.823-10.337c3.217-2.472,7.636-3.708,13.259-3.708    c4.966,0,10.031,1.148,15.194,3.446l-3.971,10.009c-4.485-2.056-8.357-3.085-11.617-3.085c-1.686,0-2.91,0.295-3.676,0.886    c-0.767,0.591-1.148,1.324-1.148,2.199c0,0.941,0.486,1.784,1.46,2.527c0.974,0.744,3.615,2.101,7.926,4.07    c4.135,1.859,7.007,3.856,8.614,5.989C211.068,253.376,211.872,256.063,211.872,259.3z" />
-                                                        </g>
-                                                        <polygon style={{ fill: "#D1D3D3" }} points="219.821,50.525 270.346,50.525 219.821,0  " />
-                                                    </g>
-                                                </svg>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="50px" height="50px" viewBox="0 0 24 24" fill="none">
-                                                    <path d="M10 7L15 12L10 17" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                </svg>
-                                                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" id="Layer_1" viewBox="0 0 303.188 303.188" className="w-12 h-12">
-                                                    <g>
-                                                        <polygon style={{ fill: "#E4E4E4" }} points="219.821,0 32.842,0 32.842,303.188 270.346,303.188 270.346,50.525  " />
-                                                        <polygon style={{ fill: "#007934" }} points="227.64,25.263 32.842,25.263 32.842,0 219.821,0  " />
-                                                        <g>
-                                                            <g>
-                                                                <path style={{ fill: "#A4A9AD" }} d="M114.872,227.984c-2.982,0-5.311,1.223-6.982,3.666c-1.671,2.444-2.507,5.814-2.507,10.109     c0,8.929,3.396,13.393,10.188,13.393c2.052,0,4.041-0.285,5.967-0.856c1.925-0.571,3.86-1.259,5.808-2.063v10.601     c-3.872,1.713-8.252,2.57-13.14,2.57c-7.004,0-12.373-2.031-16.107-6.094c-3.734-4.062-5.602-9.934-5.602-17.615     c0-4.803,0.904-9.023,2.714-12.663c1.809-3.64,4.411-6.438,7.808-8.395c3.396-1.957,7.39-2.937,11.98-2.937     c5.016,0,9.808,1.09,14.378,3.27l-3.841,9.871c-1.713-0.805-3.428-1.481-5.141-2.031     C118.681,228.26,116.841,227.984,114.872,227.984z" />
-                                                                <path style={{ fill: "#A4A9AD" }} d="M166.732,250.678c0,2.878-0.729,5.433-2.191,7.665c-1.459,2.232-3.565,3.967-6.315,5.205     c-2.751,1.237-5.977,1.856-9.681,1.856c-3.089,0-5.681-0.217-7.775-0.65c-2.095-0.434-4.274-1.191-6.538-2.27v-11.172     c2.391,1.227,4.877,2.186,7.458,2.872c2.582,0.689,4.951,1.032,7.109,1.032c1.862,0,3.227-0.322,4.095-0.969     c0.867-0.645,1.302-1.476,1.302-2.491c0-0.635-0.175-1.19-0.524-1.666c-0.349-0.477-0.91-0.958-1.682-1.444     c-0.772-0.486-2.83-1.48-6.173-2.983c-3.026-1.375-5.296-2.708-6.809-3.999s-2.634-2.771-3.364-4.443s-1.095-3.65-1.095-5.936     c0-4.273,1.555-7.605,4.666-9.997c3.109-2.391,7.384-3.587,12.822-3.587c4.803,0,9.7,1.111,14.694,3.333l-3.841,9.681     c-4.337-1.989-8.082-2.984-11.234-2.984c-1.63,0-2.814,0.286-3.555,0.857s-1.111,1.28-1.111,2.127     c0,0.91,0.471,1.725,1.412,2.443c0.941,0.72,3.496,2.031,7.665,3.936c3.999,1.799,6.776,3.729,8.331,5.792     C165.955,244.949,166.732,247.547,166.732,250.678z" />
-                                                                <path style={{ fill: "#A4A9AD" }} d="M199.964,218.368h14.027l-15.202,46.401H184.03l-15.139-46.401h14.092l6.316,23.519     c1.312,5.227,2.031,8.865,2.158,10.918c0.148-1.481,0.443-3.333,0.889-5.555c0.443-2.222,0.835-3.967,1.174-5.236     L199.964,218.368z" />
-                                                            </g>
-                                                        </g>
-                                                        <polygon style={{ fill: "#D1D3D3" }} points="219.821,50.525 270.346,50.525 219.821,0  " />
-                                                        <g>
-                                                            <rect x="134.957" y="80.344" style={{ fill: "#007934" }} width="33.274" height="15.418" />
-                                                            <rect x="175.602" y="80.344" style={{ fill: "#007934" }} width="33.273" height="15.418" />
-                                                            <rect x="134.957" y="102.661" style={{ fill: "#007934" }} width="33.274" height="15.419" />
-                                                            <rect x="175.602" y="102.661" style={{ fill: "#007934" }} width="33.273" height="15.419" />
-                                                            <rect x="134.957" y="124.979" style={{ fill: "#007934" }} width="33.274" height="15.418" />
-                                                            <rect x="175.602" y="124.979" style={{ fill: "#007934" }} width="33.273" height="15.418" />
-                                                            <rect x="94.312" y="124.979" style={{ fill: "#007934" }} width="33.273" height="15.418" />
-                                                            <rect x="134.957" y="147.298" style={{ fill: "#007934" }} width="33.274" height="15.418" />
-                                                            <rect x="175.602" y="147.298" style={{ fill: "#007934" }} width="33.273" height="15.418" />
-                                                            <rect x="94.312" y="147.298" style={{ fill: "#007934" }} width="33.273" height="15.418" />
-                                                            <g>
-                                                                <path style={{ fill: "#007934" }} d="M127.088,116.162h-10.04l-6.262-10.041l-6.196,10.041h-9.821l10.656-16.435L95.406,84.04h9.624     l5.8,9.932l5.581-9.932h9.909l-10.173,16.369L127.088,116.162z" />
-                                                            </g>
-                                                        </g>
-                                                    </g>
-                                                </svg>
-                                            </div>
-                                        </span>
-                                        <input type="file" id="fileConvert" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style={{ display: "none" }} onChange={(val: any) => importFile(val, true)} />
-                                    </label>
-                                    <div className="text-center mt-1">
-                                        <Link href="/format/Format Import Efaktur PK.xlsx">
-                                            Download Format ETax
-                                        </Link>
-                                    </div>
-                                </div> */}
                             </div>
                         </div>
                     </div>

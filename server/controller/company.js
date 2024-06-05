@@ -4,6 +4,8 @@ const { user, company, companyUser } = require("../models");
 const { Op } = require("sequelize");
 const Crypto = require("crypto");
 const moment = require("moment/moment");
+const directoryPath = "../../../../public/files";
+const fs = require("fs");
 
 const getId = async (req, res) => {
   const { users_id, users_uuid, email, username } = req.user;
@@ -68,6 +70,17 @@ const putId = async (req, res) => {
     }
   }
 
+  if (name !== Company.name) {
+    const cekCompanyName = await company.findOne({
+      where: { name: name },
+    });
+    if (cekCompanyName) {
+      return res.status(400).json({
+        massage: "Company name has been used",
+      });
+    }
+  }
+
   if (!Company) {
     return res.status(400).json({
       massage: "Company not found",
@@ -78,6 +91,14 @@ const putId = async (req, res) => {
     return res.status(400).json({
       massage: "Users not found",
     });
+  }
+
+  if (!fs.existsSync(directoryPath + "/" + Company.name)) {
+    try {
+      fs.rename(directoryPath + "/" + Company.name, directoryPath + "/" + name);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   const data = {
@@ -263,7 +284,6 @@ const get = async (req, res) => {
 };
 
 const put = async (req, res) => {
-  const { users_id, users_uuid } = req.user;
   const {
     name,
     phone,
@@ -380,6 +400,20 @@ const post = async (req, res) => {
     return res.status(400).json({
       massage: "Company has been used",
     });
+  }
+
+  const cekCompanyName = await company.findOne({
+    where: { name: name },
+  });
+
+  if (cekCompanyName) {
+    return res.status(400).json({
+      massage: "Name company has been used",
+    });
+  }
+
+  if (!fs.existsSync(directoryPath + "/" + name)) {
+    fs.mkdirSync(directoryPath + "/" + name);
   }
 
   const data = {
