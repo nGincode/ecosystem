@@ -1,13 +1,12 @@
 {
-  "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
+  "/_app": "pages/_app.js",
   "/auth/login": "pages/auth/login.html",
   "/company": "pages/company.html",
   "/efaktur/in": "pages/efaktur/in.html",
   "/file": "pages/file.html",
-  "/_error": "pages/_error.js",
-  "/efaktur/out": "pages/efaktur/out.html",
   "/converter": "pages/converter.html",
+  "/efaktur/out": "pages/efaktur/out.html",
   "/": "pages/index.html",
   "/npwp": "pages/npwp.html",
   "/permission": "pages/permission.html",
@@ -15,5 +14,6 @@
   "/report": "pages/report.html",
   "/stock": "pages/stock.html",
   "/users": "pages/users.html",
+  "/_error": "pages/_error.js",
   "/404": "pages/404.html"
 }

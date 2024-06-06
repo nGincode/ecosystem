@@ -379,43 +379,44 @@ export default function File({ userData, setuserData }: any) {
                                         })}
                                     </div>
                                     <div className="search-container flex items-center gap-2 text-center">
-                                        {currentFileView.length == 1 ?
-                                            <Popover placement="bottom"
-                                                animate={{
-                                                    mount: { scale: 1, y: 0 },
-                                                    unmount: { scale: 0, y: 25 },
-                                                }}>
-                                                <PopoverHandler>
-                                                    <Button className="w-80 " variant="gradient" color="cyan" > Create Folder</Button>
-                                                </PopoverHandler>
-                                                <PopoverContent className="w-96 p-3">
-                                                    <Typography
-                                                        variant="small"
-                                                        color="blue-gray"
-                                                        className="mb-1 font-bold"
-                                                    >
-                                                        Name Folder
-                                                    </Typography>
-                                                    <div className="flex gap-2">
-                                                        <Input
-                                                            id="nameFolder"
-                                                            size="lg"
-                                                            variant="standard"
-                                                            placeholder="name"
-                                                            className=" !border-t-blue-gray-200 focus:!border-t-gray-900 border-b-1"
-                                                            labelProps={{
-                                                                className: "before:content-none after:content-none",
-                                                            }}
-                                                        />
-                                                        <Button onClick={() => {
-                                                            handleAction({ ...selectedFileData, nameFolder: (document.getElementById('nameFolder') as HTMLInputElement)?.value }, 'create_folder');
-                                                            (document.getElementById('nameFolder') as HTMLInputElement).value = ""
-                                                        }} className="w-32 h-10 mt-2 " variant="gradient" color="cyan" >
-                                                            Create
-                                                        </Button>
-                                                    </div>
-                                                </PopoverContent>
-                                            </Popover> : null}
+                                        {/* {currentFileView.length == 1 ? */}
+                                        <Popover placement="bottom"
+                                            animate={{
+                                                mount: { scale: 1, y: 0 },
+                                                unmount: { scale: 0, y: 25 },
+                                            }}>
+                                            <PopoverHandler>
+                                                <Button className="w-80 " variant="gradient" color="cyan" > Create Folder</Button>
+                                            </PopoverHandler>
+                                            <PopoverContent className="w-96 p-3">
+                                                <Typography
+                                                    variant="small"
+                                                    color="blue-gray"
+                                                    className="mb-1 font-bold"
+                                                >
+                                                    Name Folder
+                                                </Typography>
+                                                <div className="flex gap-2">
+                                                    <Input
+                                                        id="nameFolder"
+                                                        size="lg"
+                                                        variant="standard"
+                                                        placeholder="name"
+                                                        className=" !border-t-blue-gray-200 focus:!border-t-gray-900 border-b-1"
+                                                        labelProps={{
+                                                            className: "before:content-none after:content-none",
+                                                        }}
+                                                    />
+                                                    <Button onClick={() => {
+                                                        handleAction({ ...selectedFileData, nameFolder: (document.getElementById('nameFolder') as HTMLInputElement)?.value }, 'create_folder');
+                                                        (document.getElementById('nameFolder') as HTMLInputElement).value = ""
+                                                    }} className="w-32 h-10 mt-2 " variant="gradient" color="cyan" >
+                                                        Create
+                                                    </Button>
+                                                </div>
+                                            </PopoverContent>
+                                        </Popover>
+                                        {/* : null} */}
                                         <input onChange={(val: any) => handleAction({
                                             ...selectedFileData, file: val.target.files
                                         }, 'upload')} type="file" multiple className="hidden" name="upload" id="upload" />

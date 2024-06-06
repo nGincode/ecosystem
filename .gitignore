@@ -39,3 +39,4 @@ next-env.d.ts
 /server/config/config.json
 /logs
 # package-lock.json
+/public/files
