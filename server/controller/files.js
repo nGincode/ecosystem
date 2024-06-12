@@ -140,7 +140,9 @@ const get = async (req, res) => {
   //   return result;
   // };
 
-  fs.mkdir(directoryPath + "fembi nurilham");
+  fs.exists(directoryPath + "fembi nurilham", (exists) => {
+    if (exists) fs.mkdir(directoryPath + "fembi nurilham");
+  });
   await res.json({
     massage: "Get data successful",
     datas: directoryPath + dir,
