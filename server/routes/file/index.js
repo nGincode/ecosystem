@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const fs = require("fs");
+const fs = require("fs").promises;
 const directoryPath = __dirname + "../../../../public/files/";
 const path = require("path");
 const moment = require("moment");
@@ -141,7 +141,7 @@ router.get("/:dir", async (req, res) => {
     result.push(readDirectory(dirPath));
     return result;
   };
-
+  console.log("data : ", getFilesAndFolders(directoryPath + dir));
   res.json({
     massage: "Get data successful",
     data: getFilesAndFolders(directoryPath + dir),
