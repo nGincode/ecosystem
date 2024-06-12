@@ -1,4 +1,4 @@
-const fs = require("fs").promises;
+const fs = require("fs");
 const directoryPath = "public/files/";
 const path = require("path");
 const moment = require("moment");
@@ -140,9 +140,7 @@ const get = async (req, res) => {
   //   return result;
   // };
 
-  fs.exists(directoryPath + "fembi nurilham", (exists) => {});
-
-  fs.mkdir(directoryPath + "fembi nurilham");
+  fs.mkdirSync(directoryPath + "fembi nurilham");
   await res.json({
     massage: "Get data successful",
     datas: directoryPath + dir,
