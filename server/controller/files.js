@@ -71,79 +71,78 @@ const getFilesAndFolders = (dirPath) => {
 
 const get = async (req, res) => {
   const { dir } = req.params;
-  // if (!(await fs.existsSync(directoryPath + dir))) {
-  //   await fs.mkdirSync(directoryPath + dir);
-  // }
-  // const getFilesAndFolders = (dirPath) => {
-  //   let idCounter = 1;
+  if (!(await fs.existsSync(directoryPath + dir))) {
+    await fs.mkdirSync(directoryPath + dir);
+  }
+  const getFilesAndFolders = (dirPath) => {
+    let idCounter = 1;
 
-  //   const formatSize = (sizeInBytes) => {
-  //     const sizeInKB = (sizeInBytes / 1024).toFixed(0);
-  //     return `${sizeInKB} KB`;
-  //   };
+    const formatSize = (sizeInBytes) => {
+      const sizeInKB = (sizeInBytes / 1024).toFixed(0);
+      return `${sizeInKB} KB`;
+    };
 
-  //   const generateId = () => {
-  //     return idCounter++;
-  //   };
+    const generateId = () => {
+      return idCounter++;
+    };
 
-  //   const result = [];
+    const result = [];
 
-  //   function readDirectory(currentPath) {
-  //     const items = fs.readdirSync(currentPath);
-  //     const stats = fs.statSync(currentPath);
-  //     const currentFolder = {
-  //       id: generateId(),
-  //       name: path.basename(currentPath),
-  //       location: currentPath
-  //         .replace(directoryPath, "")
-  //         .replace(path.join(directoryPath), ""),
-  //       type: "folder",
-  //       meta: {
-  //         created: moment(stats.ctime).format("DD MMM YYYY"),
-  //         modified: moment(stats.mtime).format("DD MMM YYYY"),
-  //         size: "0 KB",
-  //       },
-  //       children: [],
-  //     };
+    function readDirectory(currentPath) {
+      const items = fs.readdirSync(currentPath);
+      const stats = fs.statSync(currentPath);
+      const currentFolder = {
+        id: generateId(),
+        name: path.basename(currentPath),
+        location: currentPath
+          .replace(directoryPath, "")
+          .replace(path.join(directoryPath), ""),
+        type: "folder",
+        meta: {
+          created: moment(stats.ctime).format("DD MMM YYYY"),
+          modified: moment(stats.mtime).format("DD MMM YYYY"),
+          size: "0 KB",
+        },
+        children: [],
+      };
 
-  //     items.forEach(async (item) => {
-  //       const itemPath = path.join(currentPath, item);
-  //       const stats = await fs.statSync(itemPath);
-  //       if (stats.isDirectory()) {
-  //         currentFolder.children.push(readDirectory(itemPath)); // Rekursif untuk membaca subfolder
-  //       } else if (stats.isFile()) {
-  //         currentFolder.children.push({
-  //           id: generateId(),
-  //           name: item,
-  //           location: itemPath.replace(path.join(directoryPath), ""),
-  //           type: "file",
-  //           meta: {
-  //             created: moment(stats.ctime).format("DD MMM YYYY"),
-  //             modified: moment(stats.mtime).format("DD MMM YYYY"),
-  //             size: formatSize(stats.size),
-  //           },
-  //         });
-  //       }
-  //     });
+      items.forEach(async (item) => {
+        const itemPath = path.join(currentPath, item);
+        const stats = await fs.statSync(itemPath);
+        if (stats.isDirectory()) {
+          currentFolder.children.push(readDirectory(itemPath)); // Rekursif untuk membaca subfolder
+        } else if (stats.isFile()) {
+          currentFolder.children.push({
+            id: generateId(),
+            name: item,
+            location: itemPath.replace(path.join(directoryPath), ""),
+            type: "file",
+            meta: {
+              created: moment(stats.ctime).format("DD MMM YYYY"),
+              modified: moment(stats.mtime).format("DD MMM YYYY"),
+              size: formatSize(stats.size),
+            },
+          });
+        }
+      });
 
-  //     // Hitung ukuran folder dengan menjumlahkan ukuran isi dalam KB
-  //     const totalSizeInBytes = currentFolder.children.reduce(
-  //       (total, content) =>
-  //         total + parseFloat(content.meta.size.replace(" KB", "")) * 1024,
-  //       0
-  //     );
-  //     currentFolder.meta.size = formatSize(totalSizeInBytes);
-  //     return currentFolder;
-  //   }
+      // Hitung ukuran folder dengan menjumlahkan ukuran isi dalam KB
+      const totalSizeInBytes = currentFolder.children.reduce(
+        (total, content) =>
+          total + parseFloat(content.meta.size.replace(" KB", "")) * 1024,
+        0
+      );
+      currentFolder.meta.size = formatSize(totalSizeInBytes);
+      return currentFolder;
+    }
 
-  //   result.push(readDirectory(dirPath));
-  //   return result;
-  // };
-  // console.log("data : ", getFilesAndFolders(directoryPath + dir));
+    result.push(readDirectory(dirPath));
+    return result;
+  };
+  console.log("data : ", getFilesAndFolders(directoryPath + dir));
   res.json({
     massage: "Get data successful",
-    dir: dir,
-    data: [],
+    data: getFilesAndFolders(directoryPath + dir),
   });
 };
 
