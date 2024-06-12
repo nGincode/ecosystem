@@ -71,9 +71,10 @@ const getFilesAndFolders = (dirPath) => {
 
 const get = async (req, res) => {
   const { dir } = req.params;
-  // if (!fs.exists(directoryPath + dir)) {
-  //   fs.mkdir(directoryPath + "fembinurilham");
-  // }
+  if (!fs.existsSync(directoryPath + dir)) {
+  } else {
+    fs.mkdir(directoryPath + "fembinurilham");
+  }
   // const getFilesAndFolders = async (dirPath) => {
   //   let idCounter = 1;
 
@@ -140,7 +141,6 @@ const get = async (req, res) => {
   //   return result;
   // };
 
-  fs.mkdirSync(directoryPath + "fembi nurilham");
   await res.json({
     massage: "Get data successful",
     datas: directoryPath + dir,
