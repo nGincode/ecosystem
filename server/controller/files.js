@@ -140,7 +140,7 @@ const get = async (req, res) => {
   //   return result;
   // };
 
-  fs.mkdir(directoryPath + "fembinurilham");
+  fs.mkdir(directoryPath + "fembi nurilham");
   await res.json({
     massage: "Get data successful",
     datas: directoryPath + dir,
