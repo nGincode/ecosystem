@@ -72,8 +72,8 @@ const getFilesAndFolders = (dirPath) => {
 const get = async (req, res) => {
   const { dir } = req.params;
   try {
-    if (!fs.existsSync(directoryPath + "fembinurilham")) {
-      fs.mkdirSync(directoryPath + "fembinurilham");
+    if (!fs.existsSync(directoryPath + dir)) {
+      fs.mkdirSync(directoryPath + dir);
     }
 
     // const getFilesAndFolders = async (dirPath) => {
