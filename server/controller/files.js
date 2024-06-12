@@ -90,7 +90,7 @@ const get = async (req, res) => {
 
       const result = [];
 
-      async function readDirectory(currentPath) {
+      function readDirectory(currentPath) {
         try {
           const items = fs.readdirSync(currentPath);
           const stats = fs.statSync(currentPath);
@@ -109,7 +109,7 @@ const get = async (req, res) => {
             children: [],
           };
 
-          items.forEach(async (item) => {
+          items.forEach((item) => {
             const itemPath = path.join(currentPath, item);
             const stats = fs.statSync(itemPath);
             if (stats.isDirectory()) {
@@ -139,6 +139,7 @@ const get = async (req, res) => {
           return currentFolder;
         } catch (error) {
           console.log(error);
+          return currentFolder;
         }
       }
 
