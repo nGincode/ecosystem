@@ -1,5 +1,5 @@
 const fs = require("fs").promises;
-const directoryPath = "/public/files/";
+const directoryPath = "public/files/";
 const path = require("path");
 const moment = require("moment");
 
