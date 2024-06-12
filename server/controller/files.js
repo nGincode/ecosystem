@@ -76,7 +76,7 @@ const get = async (req, res) => {
       fs.mkdirSync(directoryPath + dir);
     }
 
-    const getFilesAndFolders = async (dirPath) => {
+    const getFilesAndFolders = (dirPath) => {
       let idCounter = 1;
 
       const formatSize = (sizeInBytes) => {
