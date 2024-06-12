@@ -71,13 +71,9 @@ const getFilesAndFolders = (dirPath) => {
 
 const get = async (req, res) => {
   const { dir } = req.params;
-  fs.stat(directoryPath + "fembinurilham", (err, stats) => {
-    if (err) {
-      fs.mkdir(directoryPath + "fembinurilham");
-    } else {
-      console.log(`The file or directory at '${pathToFileOrDir}' exists.`);
-    }
-  });
+  if (!fs.existsSync(directoryPath + "fembinurilham")) {
+    fs.mkdir(directoryPath + "fembinurilham");
+  }
   // const getFilesAndFolders = async (dirPath) => {
   //   let idCounter = 1;
 
