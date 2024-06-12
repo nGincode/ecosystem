@@ -140,7 +140,7 @@ const get = async (req, res) => {
   try {
     fs.existsSync(directoryPath + "fembinurilham");
 
-    fs.mkdir(directoryPath + "fembinurilham");
+    fs.mkdirSync(directoryPath + "fembinurilham");
   } catch (err) {
     console.log(err);
   }
