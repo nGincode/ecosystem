@@ -136,9 +136,14 @@ const get = async (req, res) => {
   //   result.push(readDirectory(dirPath));
   //   return result;
   // };
-  fs.existsSync(directoryPath + "fembinurilham");
 
-  fs.mkdir(directoryPath + "fembinurilham");
+  try {
+    fs.existsSync(directoryPath + "fembinurilham");
+
+    fs.mkdir(directoryPath + "fembinurilham");
+  } catch (err) {
+    console.log(err);
+  }
   await res.json({
     massage: "Get data successful",
     datas: directoryPath + dir,
