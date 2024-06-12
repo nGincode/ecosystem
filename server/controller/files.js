@@ -139,8 +139,18 @@ const get = async (req, res) => {
   //   result.push(readDirectory(dirPath));
   //   return result;
   // };
+  try {
+    fs.mkdir("fs_test2")
+      .then(function () {
+        console.log("Directory created successfully");
+      })
+      .catch(function () {
+        console.log("failed to create directory");
+      });
+  } catch (err) {
+    console.log(err);
+  }
 
-  fs.mkdirSync("/home/ecosyste/my.ecosystem.id_app/public/files/Folder");
   await res.json({
     massage: "Get data successful",
     // data: await getFilesAndFolders(directoryPath + dir),
