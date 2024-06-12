@@ -73,8 +73,8 @@ const getFilesAndFolders = (dirPath) => {
 
 router.get("/:dir", async (req, res) => {
   const { dir } = req.params;
-  if (!fs.existsSync(directoryPath + dir)) {
-    fs.mkdirSync(directoryPath + dir);
+  if (!(await fs.existsSync(directoryPath + dir))) {
+    await fs.mkdirSync(directoryPath + dir);
   }
   const getFilesAndFolders = (dirPath) => {
     let idCounter = 1;
@@ -108,9 +108,9 @@ router.get("/:dir", async (req, res) => {
         children: [],
       };
 
-      items.forEach((item) => {
+      items.forEach(async (item) => {
         const itemPath = path.join(currentPath, item);
-        const stats = fs.statSync(itemPath);
+        const stats = await fs.statSync(itemPath);
         if (stats.isDirectory()) {
           currentFolder.children.push(readDirectory(itemPath)); // Rekursif untuk membaca subfolder
         } else if (stats.isFile()) {
@@ -178,8 +178,8 @@ router.post("/", async (req, res) => {
     }
   } else if (type == "rename") {
   } else if (type == "create_folder") {
-    if (!fs.existsSync(directoryPath + location + "/" + name)) {
-      fs.mkdirSync(directoryPath + location + "/" + name);
+    if (!(await fs.existsSync(directoryPath + location + "/" + name))) {
+      await fs.mkdirSync(directoryPath + location + "/" + name);
     }
     res.json({
       status: 200,
