@@ -72,7 +72,7 @@ const getFilesAndFolders = (dirPath) => {
 const get = async (req, res) => {
   const { dir } = req.params;
   if (!(await fs.existsSync(directoryPath + dir))) {
-    await fs.mkdirSync(directoryPath + dir);
+    await fs.mkdir(directoryPath + dir);
   }
   // const getFilesAndFolders = async (dirPath) => {
   //   let idCounter = 1;
@@ -140,7 +140,7 @@ const get = async (req, res) => {
   //   return result;
   // };
 
-  res.json({
+  await res.json({
     massage: "Get data successful",
     // data: await getFilesAndFolders(directoryPath + dir),
   });
