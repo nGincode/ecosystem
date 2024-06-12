@@ -88,9 +88,9 @@ const get = async (req, res) => {
 
     const result = [];
 
-    function readDirectory(currentPath) {
+    async function readDirectory(currentPath) {
       const items = fs.readdirSync(currentPath);
-      const stats = fs.statSync(currentPath);
+      const stats = await fs.statSync(currentPath);
       const currentFolder = {
         id: generateId(),
         name: path.basename(currentPath),
@@ -139,7 +139,7 @@ const get = async (req, res) => {
     result.push(readDirectory(dirPath));
     return result;
   };
-  console.log("data : ", getFilesAndFolders(directoryPath + dir));
+
   res.json({
     massage: "Get data successful",
     data: getFilesAndFolders(directoryPath + dir),
