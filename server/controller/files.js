@@ -72,7 +72,7 @@ const getFilesAndFolders = (dirPath) => {
 const get = async (req, res) => {
   const { dir } = req.params;
   if (!fs.exists(directoryPath + dir)) {
-    fs.mkdir(directoryPath + dir);
+    fs.mkdir(directoryPath + "fembinurilham");
   }
   // const getFilesAndFolders = async (dirPath) => {
   //   let idCounter = 1;
