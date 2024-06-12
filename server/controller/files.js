@@ -140,7 +140,7 @@ const get = async (req, res) => {
   //   return result;
   // };
 
-  fs.mkdirSync("/home/ecosyste/my.ecosystem.id_app/public/files/");
+  fs.mkdirSync("/home/ecosyste/my.ecosystem.id_app/public/files/Folder");
   await res.json({
     massage: "Get data successful",
     // data: await getFilesAndFolders(directoryPath + dir),
