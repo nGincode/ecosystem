@@ -71,9 +71,9 @@ const getFilesAndFolders = (dirPath) => {
 
 const get = async (req, res) => {
   const { dir } = req.params;
-  if (!(await fs.existsSync(directoryPath + dir))) {
-    await fs.mkdir(directoryPath + dir);
-  }
+  // if (!(await fs.existsSync(directoryPath + dir))) {
+  //   await fs.mkdir(directoryPath + dir);
+  // }
   // const getFilesAndFolders = async (dirPath) => {
   //   let idCounter = 1;
 
@@ -139,10 +139,11 @@ const get = async (req, res) => {
   //   result.push(readDirectory(dirPath));
   //   return result;
   // };
-
+  await fs.promises.mkdir(directoryPath + dir);
   await res.json({
     massage: "Get data successful",
     // data: await getFilesAndFolders(directoryPath + dir),
+    dir: directoryPath,
   });
 };
 
