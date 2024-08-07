@@ -337,6 +337,18 @@ export default function File({ userData, setuserData }: any) {
         document.addEventListener('click', handleOutsideClick);
     };
 
+    let metaSize = 0;
+    currentFileView[currentIndex]?.map((m: any) => metaSize += Number(m.meta.size.replaceAll(' KB', '')))
+    function formatKilobytes(kilobytes: number) {
+        if (kilobytes === 0) return '0 KB';
+        const sizes = ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+        // Menggunakan logaritma basis 1024 untuk menentukan satuan
+        const i = Math.floor(Math.log(kilobytes) / Math.log(1024));
+        // Memformat hasil konversi dengan 2 desimal
+        const formattedSize = parseFloat((kilobytes / Math.pow(1024, i)).toFixed(2));
+        return `${formattedSize} ${sizes[i]}`;
+    }
+
 
     return (
         <>
@@ -356,7 +368,7 @@ export default function File({ userData, setuserData }: any) {
                                                 setCurrentIndex(0);
                                             }}
                                         >
-                                            {JSON.parse(localStorage.getItem('companyActive') as string)?.label}
+                                            {JSON.parse(localStorage.getItem('companyActive') as string)?.label} ({formatKilobytes(metaSize)})
                                         </span>
                                         {breadcumb.map((b, i) => {
                                             return (
@@ -458,7 +470,7 @@ export default function File({ userData, setuserData }: any) {
                                     ).map((file) => {
                                         return (
                                             <div
-                                                key={file.id + file.name ?? "0000"}
+                                                key={(file.id + file.name) ? (file.id + file.name) : "0000"}
                                                 className={`files-list ${file.id === selectedFile ? 'active' : ''}`}
                                                 onClick={() => handleSelectFile(file)}
                                                 onDoubleClick={() => handleFolderClick(file)}

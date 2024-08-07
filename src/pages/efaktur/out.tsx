@@ -16,6 +16,8 @@ import XLSX, { read, utils, writeFile } from 'xlsx';
 import Select from "../../components/reactSelect";
 import ReactTable from "../../components/reactTable";
 import DebouncedInput from "../../components/debouncedInput";
+import DateRangePicker from 'react-bootstrap-daterangepicker';
+import 'bootstrap-daterangepicker/daterangepicker.css';
 
 
 export default function EfakturOut({ userData, setuserData }: any) {
@@ -82,8 +84,6 @@ export default function EfakturOut({ userData, setuserData }: any) {
         }
     ]);
     const [npwp, setnpwp] = useState([]);
-    const [tabIdentitas, settabIdentitas] = useState('');
-    const [itemInputEfak, setitemInputEfak] = useState<any>([{ delete: false }]);
     const URLAPI = "/api/efaktur/out";
     const Subject = "E-Faktur Out";
 
@@ -168,181 +168,6 @@ export default function EfakturOut({ userData, setuserData }: any) {
                 toast.error(error.response.data.massage);
             }
         }
-    }
-
-    const submitAdd = (event: any) => {
-        event.preventDefault();
-        let noIdentitas = '';
-        let nameIdentitas = '';
-        let addressIdentitas = '';
-
-        if (!event.target.detail_val.value) {
-            return toast.error('Detail Transaksi Harus Terisi')
-        }
-        if (event.target.detail_val.value === '080') {
-            if (!event.target.keterangan_tambahan_val.value) {
-                return toast.error('Keterangan Tambahan Harus Terisi')
-            }
-        }
-        if (event.target.detail_val.value === '070') {
-            if (!event.target.keterangan_tambahan_val.value) {
-                return toast.error('Keterangan Tambahan Harus Terisi')
-            }
-        }
-        if (!event.target.jenis_val.value) {
-            return toast.error('Jenis Faktur Harus Terisi')
-        }
-        if (!event.target.date.value) {
-            return toast.error('Tanggal Faktur Harus Terisi')
-        }
-
-        if (!event.target.seri2.value || !event.target.seri3.value || !event.target.seri4.value) {
-            return toast.error('Nomor Faktur Harus Lengkap')
-        }
-
-
-        if (tabIdentitas === 'NPWP') {
-            if (!event.target.npwp.value) {
-                return toast.error('NPWP Harus Terisi')
-            }
-            if (!event.target.nameIdentitas_npwp.value) {
-                return toast.error('Nama Indetitas Harus Terisi')
-            }
-            if (!event.target.address_npwp.value) {
-                return toast.error('Alamat Harus Terisi')
-            }
-            noIdentitas = event.target.npwp.value;
-            nameIdentitas = event.target.nameIdentitas_npwp.value;
-            addressIdentitas = event.target.address_npwp.value;
-        } else if (tabIdentitas === 'NIK') {
-            if (!event.target.nik.value) {
-                return toast.error('NIK Harus Terisi')
-            }
-            if (!event.target.nameIdentitas_nik.value) {
-                return toast.error('Nama Indetitas Harus Terisi')
-            }
-            if (!event.target.address_nik.value) {
-                return toast.error('Alamat Harus Terisi')
-            }
-            noIdentitas = event.target.nik.value;
-            nameIdentitas = event.target.nameIdentitas_nik.value;
-            addressIdentitas = event.target.address_nik.value;
-        } else {
-            return toast.error('NPWP/NIK Belum dipilih')
-        }
-
-
-
-
-        let name = event.target['name[]'];
-        if (name.length > 1) {
-            let itemFaktur = [];
-            for (let i = 0; i < name.length; i++) {
-                itemFaktur.push({
-                    name: event.target['name[]'][i].value ?? null,
-                    kode: event.target['kode[]'][i].value ?? null,
-                    harga: event.target['harga[]'][i].value ?? null,
-                    qty: event.target['qty[]'][i].value ?? null,
-                    diskon: event.target['diskon[]'][i].value ?? null,
-                    dpp: event.target['dpp[]'][i].value ?? null,
-                    ppn: event.target['ppn[]'][i].value ?? null,
-                    ppnbm: event.target['ppnbm[]'][i].value ?? null,
-                    tarif_ppnbm: event.target['tarif_ppnbm[]'][i].value ?? null,
-                })
-
-            }
-
-
-            const data = {
-                company_id: JSON.parse(localStorage.getItem('companyActive') as string)?.value,
-                typeIdentitas: tabIdentitas,
-                noIdentitas: noIdentitas,
-                nameIdentitas: nameIdentitas,
-                addressIdentitas: addressIdentitas,
-                detail: event.target.detail_val.value,
-                jenis: event.target.jenis_val.value,
-                date: event.target.date.value,
-                referensi: event.target.referensi.value,
-                keterangan_tambahan: event.target.keterangan_tambahan_val?.value ?? null,
-                noFaktur: event.target.detail_val.value + event.target.seri2.value + event.target.seri3.value + event.target.seri4.value,
-                item: itemFaktur
-            };
-
-            handleApi('create', data);
-        } else if (event.target['name[]'].value) {
-            let itemFaktur = [{
-                name: event.target['name[]'].value ?? null,
-                kode: event.target['kode[]'].value ?? null,
-                harga: event.target['harga[]'].value ?? null,
-                qty: event.target['qty[]'].value ?? null,
-                diskon: event.target['diskon[]'].value ?? null,
-                dpp: event.target['dpp[]'].value ?? null,
-                ppn: event.target['ppn[]'].value ?? null,
-                ppnbm: event.target['ppnbm[]'].value ?? null,
-                tarif_ppnbm: event.target['tarif_ppnbm[]'].value ?? null,
-            }];
-
-            const data = {
-                company_id: JSON.parse(localStorage.getItem('companyActive') as string)?.value,
-                noIdentitas: noIdentitas,
-                nameIdentitas: nameIdentitas,
-                addressIdentitas: addressIdentitas,
-                detail: event.target.detail_val.value,
-                jenis: event.target.jenis_val.value,
-                date: event.target.date.value,
-                referensi: event.target.referensi.value,
-                keterangan_tambahan: event.target.keterangan_tambahan_val?.value ?? null,
-                noFaktur: event.target.detail_val.value + event.target.seri2.value + event.target.seri3.value + event.target.seri4.value,
-                item: itemFaktur
-            };
-
-            handleApi('create', data);
-        } else {
-            return toast.error('Item Faktur Harus Terisi')
-        }
-
-    };
-
-    const convertCamelCase = (text: any) => {
-        if (text) {
-            const result = text.replace(/([A-Z])/g, " $1");
-            return result.charAt(0).toUpperCase() + result.slice(1);
-        } else {
-            return '';
-        }
-    }
-
-    const keteranganTambhan07 = [
-        { label: '07', value: '0' },
-    ]
-
-    const keteranganTambhan08 = [{ label: 'Senjata, Amunisi, Helm Anti Peluru dan Jaket Atau Rompi Anti Peluru, Kendaraan Darat Khusus, Radar 7 Suku Cadang', value: '41' },]
-
-    const arrayUnique = (inputArr: any) => {
-        let key: any = ''
-        let tmpArr2: any = [];
-        let val: any = ''
-        const _arraySearch = (needle: any, haystack: any) => {
-            let fkey = ''
-            for (fkey in haystack) {
-                if (haystack.hasOwnProperty(fkey)) {
-                    if ((haystack[fkey] + '') === (needle + '')) {
-                        return fkey
-                    }
-                }
-            }
-            return false
-        }
-        for (key in inputArr) {
-            if (inputArr.hasOwnProperty(key)) {
-                val = inputArr[key]
-                if (_arraySearch(val, tmpArr2) === false) {
-                    tmpArr2.push(val);
-                }
-            }
-        }
-        return tmpArr2;
-        // return Array.from(new Set(arr));
     }
 
     const convertFileToBase64 = (file: any) => {
@@ -584,8 +409,11 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                     NPWPDetec = NpWp;
                                     NAMEDetec = valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '');
                                 } else if (valll['NPWP/NIK']?.length === 16) {
-                                    NPWPDetec = '000000000000000';
-                                    NAMEDetec = `${NpWp}#NIK#NAMA#${valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '')}`;
+                                    NPWPDetec = NpWp;
+                                    NAMEDetec = valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '');
+
+                                    // NPWPDetec = '000000000000000';
+                                    // NAMEDetec = `${NpWp}#NIK#NAMA#${valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '')}`;
                                 } else {
                                     err.push(countRows + " : " + "NPWP Tidak Valid");
                                 }
@@ -837,12 +665,15 @@ export default function EfakturOut({ userData, setuserData }: any) {
                             </div>
                             <div className="col-12 col-md-3">
                                 <div className="input-group align-items-center">
-                                    <Input type="date" id="tanggal_mulai" defaultValue={dateData?.[0]} onChange={(val: any) => { setdateData([val.target.value, (document.getElementById('tanggal_akhir') as any)?.value]) }} label="Tanggal Mulai" variant="standard" name="start" />
-                                </div>
-                            </div>
-                            <div className="col-12 col-md-3">
-                                <div className="input-group align-items-center">
-                                    <Input type="date" id="tanggal_akhir" defaultValue={dateData?.[1]} onChange={(val: any) => { setdateData([(document.getElementById('tanggal_mulai') as any)?.value, val.target.value]) }} label="Tanggal Akhir" variant="standard" name="end" />
+                                    <DateRangePicker
+                                        onCallback={(start, end) => {
+                                            setdateData([moment(start).format('YYYY-MM-DD'), moment(end).format('YYYY-MM-DD')])
+
+                                        }}
+                                        initialSettings={{ startDate: moment(dateData?.[0]).format('DD/MM/YYYY'), endDate: moment(dateData?.[1]).format('DD/MM/YYYY') }}
+                                    >
+                                        <input type="text" className="form-control text-center rounded-none ps-8 bg-transparent border-t-0 border-l-0 border-r-0 border-b-2" />
+                                    </DateRangePicker>
                                 </div>
                             </div>
                         </div>

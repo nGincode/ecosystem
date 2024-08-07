@@ -567,6 +567,7 @@ export default function StockData({ userData, setuserData }: any) {
 
             return result;
         } else {
+            let Err = false
             let out = await textList.map((mp: any) => {
                 let start = false;
                 let tgl = 0;
@@ -612,18 +613,24 @@ export default function StockData({ userData, setuserData }: any) {
                         step2desc += mp2?.desc
                     } else {
                         step2.push({ ...mp2 })
-                        if (step2desc) {
+                        if (step2[step2.length - 2]?.desc) {
                             step2[step2.length - 2].desc = step2desc
                             step2desc = '';
                         }
                     }
 
                 })
-                step2[step2.length - 1].desc = step2desc;
+                if (step2[step2.length - 1]?.desc) {
+                    step2[step2.length - 1].desc = step2desc;
+                } else {
+                    Err = true
+                }
 
                 return step2;
 
             })
+
+            if (Err) return []
 
             let result: any = [];
             out.map((mp: any) => {
@@ -1215,6 +1222,8 @@ export default function StockData({ userData, setuserData }: any) {
     const convertToPdfBSINEW = async (textList: any) => {
         let res: any = [];
         let start = 0;
+
+        let err = false;
         await textList.map((mp: any, key: any) => {
             let step1: any = [];
             mp.items.map((mp1: any, k: any, array: any) => {
@@ -1266,7 +1275,8 @@ export default function StockData({ userData, setuserData }: any) {
                 array.saldo = "";
                 array.tanggal = mp3.tanggal;
                 let idr = false;
-                mp3.ket.map((m: any, ky: any, arr: any) => {
+                if (!mp3.ket) err = true;
+                mp3.ket?.map((m: any, ky: any, arr: any) => {
                     if (m === "IDR") {
                         idr = true;
                     }
@@ -1291,6 +1301,8 @@ export default function StockData({ userData, setuserData }: any) {
             })
             res.push(...step4)
         })
+
+        if (err) return [];
 
         let result = res.map((mp4: any) => {
             return {
@@ -1665,8 +1677,11 @@ export default function StockData({ userData, setuserData }: any) {
                                     NPWPDetec = NpWp;
                                     NAMEDetec = valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '');
                                 } else if (valll['NPWP/NIK']?.length === 16) {
-                                    NPWPDetec = '000000000000000';
-                                    NAMEDetec = `${NpWp}#NIK#NAMA#${valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '')}`;
+                                    NPWPDetec = NpWp;
+                                    NAMEDetec = valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '');
+
+                                    // NPWPDetec = '000000000000000';
+                                    // NAMEDetec = `${NpWp}#NIK#NAMA#${valll['Nama NPWP/NIK']?.replaceAll(',', '').replaceAll('.', '').replaceAll('-', '').replaceAll('"', '')}`;
                                 } else {
                                     err.push(countRows + " : " + "NPWP Tidak Valid");
                                 }

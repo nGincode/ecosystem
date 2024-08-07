@@ -23,6 +23,8 @@ import Image from "next/image";
 import Select from "../../components/reactSelect";
 import ReactTable from "../../components/reactTable";
 import DebouncedInput from "../../components/debouncedInput";
+import DateRangePicker from 'react-bootstrap-daterangepicker';
+import 'bootstrap-daterangepicker/daterangepicker.css';
 
 
 export default function EfakturIn({ userData, setuserData }: any) {
@@ -679,12 +681,15 @@ export default function EfakturIn({ userData, setuserData }: any) {
                             </div>
                             <div className="col-12 col-md-3">
                                 <div className="input-group align-items-center">
-                                    <Input type="date" id="tanggal_mulai" defaultValue={dateData?.[0]} onChange={(val: any) => { setdateData([val.target.value, (document.getElementById('tanggal_akhir') as any)?.value]) }} label="Tanggal Mulai" variant="standard" name="start" />
-                                </div>
-                            </div>
-                            <div className="col-12 col-md-3">
-                                <div className="input-group align-items-center">
-                                    <Input type="date" id="tanggal_akhir" defaultValue={dateData?.[1]} onChange={(val: any) => { setdateData([(document.getElementById('tanggal_mulai') as any)?.value, val.target.value]) }} label="Tanggal Akhir" variant="standard" name="end" />
+                                    <DateRangePicker
+                                        onCallback={(start, end) => {
+                                            setdateData([moment(start).format('YYYY-MM-DD'), moment(end).format('YYYY-MM-DD')])
+
+                                        }}
+                                        initialSettings={{ startDate: moment(dateData?.[0]).format('DD/MM/YYYY'), endDate: moment(dateData?.[1]).format('DD/MM/YYYY') }}
+                                    >
+                                        <input type="text" className="form-control text-center rounded-none ps-8 bg-transparent border-t-0 border-l-0 border-r-0 border-b-2" />
+                                    </DateRangePicker>
                                 </div>
                             </div>
                         </div>
