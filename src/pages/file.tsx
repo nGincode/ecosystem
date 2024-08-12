@@ -104,7 +104,6 @@ export default function File({ userData, setuserData }: any) {
         })?.filter((val: any) => val !== undefined)?.[0]?.checklist ?? [])
     }, [userData, refresh]);
 
-    console.log(currentFileView);
 
     interface File {
         id: number;

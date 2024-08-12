@@ -389,10 +389,10 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                 let jumlahBarang = RPtoNumber(valll['Jumlah Barang']);
                                 let hargaTotal = RPtoNumber(valll['Harga Total']);
                                 let diskon = RPtoNumber(valll['Diskon']);
-                                let dpp = Math.round(RPtoNumber(valll['DPP']));
-                                let ppn = Math.round(RPtoNumber(valll['PPN']));
+                                let dpp = RPtoNumber(valll['DPP']);
+                                let ppn = RPtoNumber(valll['PPN']);
                                 let tarif_ppnbm = RPtoNumber(valll['Tarif PPNBM']);
-                                let ppnbm = Math.round(RPtoNumber(valll['PPNBM']));
+                                let ppnbm = RPtoNumber(valll['PPNBM']);
                                 let jenis_transaksi = jenisTransaksi(valll['Jenis Transaksi']);
                                 let jenis_faktur = jenisFaktur(valll['Jenis Faktur']);
                                 let IDKet = '';
@@ -425,14 +425,14 @@ export default function EfakturOut({ userData, setuserData }: any) {
                                     let jumlahPPNBM = 0;
                                     let jumlahDPP = 0;
                                     dtRes.map((vallll: any) => {
-                                        jumlahDPP += Math.round(RPtoNumber(vallll['DPP']));
-                                        jumlahPPNBM += Math.round(RPtoNumber(vallll['PPNBM']));
-                                        jumlahPPN += Math.round(RPtoNumber(vallll['PPN']));
+                                        jumlahDPP += RPtoNumber(vallll['DPP']);
+                                        jumlahPPNBM += RPtoNumber(vallll['PPNBM']);
+                                        jumlahPPN += RPtoNumber(vallll['PPN']);
                                     });
 
-                                    let totalPPN = Math.round(jumlahPPN);
-                                    let totalPPNBM = Math.round(jumlahPPNBM);
-                                    let totalDPP = Math.round(jumlahDPP);
+                                    let totalPPN = jumlahPPN;
+                                    let totalPPNBM = jumlahPPNBM;
+                                    let totalDPP = jumlahDPP;
 
                                     data.push([
                                         "FK",
