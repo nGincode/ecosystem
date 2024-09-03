@@ -3,10 +3,13 @@ import toast from 'react-hot-toast';
 import { Input, Button } from "@material-tailwind/react";
 import axios from "axios";
 import XLSX from 'xlsx';
+import DateRangePicker from 'react-bootstrap-daterangepicker';
+import 'bootstrap-daterangepicker/daterangepicker.css';
 
 import Select from "../components/reactSelect";
 import LoadingPage from "../components/loadingPage";
 import DebouncedInput from "../components/debouncedInput";
+import moment from "moment";
 
 export default function Report({ userData, setuserData }: any) {
     const [pagePermission, setpagePermission] = useState([]);
@@ -72,19 +75,17 @@ export default function Report({ userData, setuserData }: any) {
     const submitAdd = (event: any) => {
         event.preventDefault();
 
-        if (event.target.first_date.value > event.target.end_date.value) {
-            toast.error('Start Date Not Valid');
-        } else {
-            let data = {
-                type: event.target.type_val.value,
-                first_date: event.target.first_date.value,
-                end_date: event.target.end_date.value,
-            };
-            handleApi('create', data);
+        let data = {
+            type: event.target.type_val.value,
+            first_date: values[0],
+            end_date: values[1],
+        };
+        handleApi('create', data);
 
 
-        }
     };
+
+    const [values, setvalue] = useState([moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')]);
 
     return (
         <>
@@ -139,15 +140,17 @@ export default function Report({ userData, setuserData }: any) {
                                                 label={`Type Report`}
                                             />
                                         </div>
-                                        <div className="col-12 mb-5">
-                                            <div className="input-group align-items-center">
-                                                <Input required type="date" id="first_date" name='first_date' label="Start Date" variant="standard" />
-                                            </div>
-                                        </div>
-                                        <div className="col-12">
-                                            <div className="input-group align-items-center">
-                                                <Input required type="date" id="end_date" name='end_date' label="End Date" variant="standard" />
-                                            </div>
+
+                                        <div className="input-group align-items-center">
+                                            <DateRangePicker
+                                                onCallback={(start, end) => {
+                                                    setvalue([moment(start).format('YYYY-MM-DD'), moment(end).format('YYYY-MM-DD')])
+
+                                                }}
+                                                initialSettings={{ startDate: moment(values?.[0]).format('DD/MM/YYYY'), endDate: moment(values?.[1]).format('DD/MM/YYYY') }}
+                                            >
+                                                <input type="text" className="form-control text-center rounded-none ps-8 bg-transparent border-t-0 border-l-0 border-r-0 border-b-2" />
+                                            </DateRangePicker>
                                         </div>
                                     </div>
                                 </div>

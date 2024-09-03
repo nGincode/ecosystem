@@ -4,6 +4,8 @@ import Image from "next/image";
 
 import Chart from "../components/chart";
 import Skelaton from '../components/skelaton';
+import axios from "axios";
+import numeral from "numeral";
 
 export default function Index({ userData, setuserData }: any) {
 
@@ -17,6 +19,33 @@ export default function Index({ userData, setuserData }: any) {
         (document as any).title = "Dashboard";
     }
 
+    const [data, setdata] = useState<any>();
+
+    useEffect(() => {
+        const handleApiFirst = async (url: any, data: any = null) => {
+            if (url === 'view') {
+                let companyActive = JSON.parse(localStorage.getItem('companyActive') as string)?.value;
+                if (userData.company.length && companyActive) {
+                    try {
+                        await axios({
+                            method: "GET",
+                            url: '/api/dashboard',
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem("token")}`
+                            }
+                        }).then((res: any) => {
+                            setdata(res?.data?.data)
+                            console.log(res);
+
+                        });
+                    } catch (error: any) {
+                        toast.error(error.response.data.massage);
+                    }
+                }
+            }
+        }
+        handleApiFirst('view');
+    }, [userData]);
 
     return (
         <div className="row mb-32 g-32">
@@ -32,15 +61,14 @@ export default function Index({ userData, setuserData }: any) {
                                 <div className="card shadow-md  hp-dashboard-feature-card hp-border-color-black-0 hp-border-color-dark-80 hp-cursor-pointer">
                                     <div className="card-body">
                                         <div className="d-flex align-items-center justify-content-center hp-dashboard-feature-card-icon rounded-3 hp-bg-black-20 hp-bg-dark-80" style={{ width: "48px", height: "48px" }}>
-                                            <svg className="hp-text-color-black-bg hp-text-color-dark-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                <path d="M18.809 6.25h1.36c-.19-.27-.39-.52-.6-.77l-.76.77ZM18.52 4.42c-.25-.21-.5-.41-.77-.6v1.36l.77-.76ZM19.58 5.481l2.95-2.95c.29-.29.29-.77 0-1.06a.754.754 0 0 0-1.06 0l-2.95 2.95c.38.33.73.69 1.06 1.06ZM17.752 3c0-.41-.34-.75-.75-.75-.4 0-.72.32-.74.71.52.25 1.02.53 1.49.86V3ZM21.752 7c0-.41-.34-.75-.75-.75h-.83c.33.47.62.97.86 1.49.4-.02.72-.34.72-.74ZM12.75 14.75h.3c.39 0 .7-.35.7-.78 0-.54-.15-.62-.49-.74l-.51-.18v1.7Z" fill="currentColor"></path>
-                                                <path d="M21.04 7.74c-.01 0-.02.01-.04.01h-4c-.1 0-.19-.02-.29-.06a.782.782 0 0 1-.41-.41.868.868 0 0 1-.05-.28V3c0-.01.01-.02.01-.04C14.96 2.35 13.52 2 12 2 6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10c0-1.52-.35-2.96-.96-4.26Zm-7.29 4.08c.64.22 1.5.69 1.5 2.16 0 1.25-.99 2.28-2.2 2.28h-.3v.25c0 .41-.34.75-.75.75s-.75-.34-.75-.75v-.25h-.08c-1.33 0-2.42-1.12-2.42-2.5 0-.42.34-.76.75-.76s.75.34.75.75c0 .55.41 1 .92 1h.08v-2.22l-1-.35c-.64-.22-1.5-.69-1.5-2.16 0-1.25.99-2.28 2.2-2.28h.3V7.5c0-.41.34-.75.75-.75s.75.34.75.75v.25h.08c1.33 0 2.42 1.12 2.42 2.5 0 .41-.34.75-.75.75s-.75-.34-.75-.75c0-.55-.41-1-.92-1h-.08v2.22l1 .35Z" fill="currentColor"></path>
-                                                <path d="M10.25 10.03c0 .54.15.62.49.74l.51.18v-1.7h-.3c-.38 0-.7.35-.7.78Z" fill="currentColor"></path>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8">
+                                                <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clipRule="evenodd" />
                                             </svg>
+
                                         </div>
 
                                         <div className="d-flex mt-12">
-                                            <span className="h4 mb-0 d-block hp-text-color-black-bg hp-text-color-dark-0 fw-medium me-4"> Income </span>
+                                            <span className="h4 mb-0 d-block hp-text-color-black-bg hp-text-color-dark-0 fw-medium me-4"> Users </span>
                                             <div>
                                                 <svg className="hp-text-color-success-1" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
                                                     <path fill="currentColor" d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81v8.37C2 19.83 4.17 22 7.81 22h8.37c3.64 0 5.81-2.17 5.81-5.81V7.81C22 4.17 19.83 2 16.19 2zm1.06 10.33c0 .41-.34.75-.75.75s-.75-.34-.75-.75V9.31l-7.72 7.72c-.15.15-.34.22-.53.22s-.38-.07-.53-.22a.754.754 0 010-1.06l7.72-7.72h-3.02c-.41 0-.75-.34-.75-.75s.34-.75.75-.75h4.83c.41 0 .75.34.75.75v4.83z"></path>
@@ -48,8 +76,7 @@ export default function Index({ userData, setuserData }: any) {
                                             </div>
                                         </div>
 
-                                        <span className="hp-caption mt-4 d-block fw-normal hp-text-color-black-60"> April 2022 </span>
-                                        <span className="d-block mt-12 mb-8 h3"> $13,908 </span>
+                                        <span className="d-block mt-12 mb-8 h3">{data?.countUser} </span>
                                     </div>
                                 </div>
                             </div>
@@ -58,23 +85,26 @@ export default function Index({ userData, setuserData }: any) {
                                 <div className="card hp-dashboard-feature-card hp-border-color-black-0 hp-border-color-dark-80 hp-cursor-pointer">
                                     <div className="card-body">
                                         <div className="d-flex align-items-center justify-content-center hp-dashboard-feature-card-icon rounded-3 hp-bg-black-20 hp-bg-dark-80" style={{ width: "48px", height: "48px" }}>
-                                            <svg className="hp-text-color-black-bg hp-text-color-dark-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                <path d="M10.25 10.03c0 .54.15.62.49.74l.51.18v-1.7h-.3c-.38 0-.7.35-.7.78ZM12.75 14.75h.3c.39 0 .7-.35.7-.78 0-.54-.15-.62-.49-.74l-.51-.18v1.7Z" fill="currentColor"></path>
-                                                <path d="m19.58 5.48-2.05 2.05c-.15.15-.34.22-.53.22s-.38-.07-.53-.22a.754.754 0 0 1 0-1.06l2.05-2.05C16.76 2.92 14.49 2 12 2 6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10c0-2.49-.92-4.76-2.42-6.52Zm-5.83 6.34c.64.23 1.5.69 1.5 2.16 0 1.25-.99 2.28-2.2 2.28h-.3v.25c0 .41-.34.75-.75.75s-.75-.34-.75-.75v-.25h-.08c-1.33 0-2.42-1.12-2.42-2.5 0-.42.34-.76.75-.76s.75.34.75.75c0 .55.41 1 .92 1h.08v-2.22l-1-.35c-.64-.23-1.5-.69-1.5-2.16 0-1.25.99-2.28 2.2-2.28h.3V7.5c0-.41.34-.75.75-.75s.75.34.75.75v.25h.08c1.33 0 2.42 1.12 2.42 2.5 0 .41-.34.75-.75.75s-.75-.34-.75-.75c0-.55-.41-1-.92-1h-.08v2.22l1 .35ZM22.69 1.71a.782.782 0 0 0-.41-.41.868.868 0 0 0-.28-.05h-4c-.41 0-.75.34-.75.75s.34.75.75.75h2.19l-1.67 1.67c.38.33.73.68 1.06 1.06l1.67-1.67V6c0 .41.34.75.75.75s.75-.34.75-.75V2c0-.1-.02-.19-.06-.29Z" fill="currentColor"></path>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8">
+                                                <path fillRule="evenodd" d="M3 2.25a.75.75 0 0 0 0 1.5v16.5h-.75a.75.75 0 0 0 0 1.5H15v-18a.75.75 0 0 0 0-1.5H3ZM6.75 19.5v-2.25a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1-.75-.75ZM6 6.75A.75.75 0 0 1 6.75 6h.75a.75.75 0 0 1 0 1.5h-.75A.75.75 0 0 1 6 6.75ZM6.75 9a.75.75 0 0 0 0 1.5h.75a.75.75 0 0 0 0-1.5h-.75ZM6 12.75a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 0 1.5h-.75a.75.75 0 0 1-.75-.75ZM10.5 6a.75.75 0 0 0 0 1.5h.75a.75.75 0 0 0 0-1.5h-.75Zm-.75 3.75A.75.75 0 0 1 10.5 9h.75a.75.75 0 0 1 0 1.5h-.75a.75.75 0 0 1-.75-.75ZM10.5 12a.75.75 0 0 0 0 1.5h.75a.75.75 0 0 0 0-1.5h-.75ZM16.5 6.75v15h5.25a.75.75 0 0 0 0-1.5H21v-12a.75.75 0 0 0 0-1.5h-4.5Zm1.5 4.5a.75.75 0 0 1 .75-.75h.008a.75.75 0 0 1 .75.75v.008a.75.75 0 0 1-.75.75h-.008a.75.75 0 0 1-.75-.75v-.008Zm.75 2.25a.75.75 0 0 0-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 0 0 .75-.75v-.008a.75.75 0 0 0-.75-.75h-.008ZM18 17.25a.75.75 0 0 1 .75-.75h.008a.75.75 0 0 1 .75.75v.008a.75.75 0 0 1-.75.75h-.008a.75.75 0 0 1-.75-.75v-.008Z" clipRule="evenodd" />
                                             </svg>
+
                                         </div>
 
                                         <div className="d-flex mt-12">
-                                            <span className="h4 mb-0 d-block hp-text-color-black-bg hp-text-color-dark-0 fw-medium me-4"> Expenses </span>
+                                            <span className="h4 mb-0 d-block hp-text-color-black-bg hp-text-color-dark-0 fw-medium me-4"> Company </span>
                                             <div>
-                                                <svg className="hp-text-color-danger-1" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                                {/* <svg className="hp-text-color-danger-1" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
                                                     <path fill="currentColor" d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81v8.37C2 19.83 4.17 22 7.81 22h8.37c3.64 0 5.81-2.17 5.81-5.81V7.81C22 4.17 19.83 2 16.19 2zm1.34 5.53l-7.72 7.72h3.02c.41 0 .75.34.75.75s-.34.75-.75.75H8c-.41 0-.75-.34-.75-.75v-4.83c0-.41.34-.75.75-.75s.75.34.75.75v3.02l7.72-7.72c.15-.15.34-.22.53-.22s.38.07.53.22c.29.29.29.77 0 1.06z"></path>
+                                                </svg> */}
+
+                                                <svg className="hp-text-color-success-1" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                                    <path fill="currentColor" d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81v8.37C2 19.83 4.17 22 7.81 22h8.37c3.64 0 5.81-2.17 5.81-5.81V7.81C22 4.17 19.83 2 16.19 2zm1.06 10.33c0 .41-.34.75-.75.75s-.75-.34-.75-.75V9.31l-7.72 7.72c-.15.15-.34.22-.53.22s-.38-.07-.53-.22a.754.754 0 010-1.06l7.72-7.72h-3.02c-.41 0-.75-.34-.75-.75s.34-.75.75-.75h4.83c.41 0 .75.34.75.75v4.83z"></path>
                                                 </svg>
                                             </div>
                                         </div>
 
-                                        <span className="hp-caption mt-4 d-block fw-normal hp-text-color-black-60"> April 2022 </span>
-                                        <span className="d-block mt-12 mb-8 h3"> $7,949 </span>
+                                        <span className="d-block mt-12 mb-8 h3"> {data?.countCompany} </span>
                                     </div>
                                 </div>
                             </div>
@@ -83,18 +113,19 @@ export default function Index({ userData, setuserData }: any) {
                                 <div className="card hp-dashboard-feature-card hp-border-color-black-0 hp-border-color-dark-80 hp-cursor-pointer">
                                     <div className="card-body">
                                         <div className="d-flex align-items-center justify-content-center hp-dashboard-feature-card-icon rounded-3 hp-bg-black-20 hp-bg-dark-80" style={{ width: "48px", height: "48px" }}>
-                                            <svg className="hp-text-color-black-bg hp-text-color-dark-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                <path d="m11.94 2.212-2.41 5.61H7.12c-.4 0-.79.03-1.17.11l1-2.4.04-.09.06-.16c.03-.07.05-.13.08-.18 1.16-2.69 2.46-3.53 4.81-2.89ZM18.731 8.09l-.02-.01c-.6-.17-1.21-.26-1.83-.26h-6.26l2.25-5.23.03-.07c.14.05.29.12.44.17l2.21.93c1.23.51 2.09 1.04 2.62 1.68.09.12.17.23.25.36.09.14.16.28.2.43.04.09.07.17.09.26.15.51.16 1.09.02 1.74ZM18.288 9.52c-.45-.13-.92-.2-1.41-.2h-9.76c-.68 0-1.32.13-1.92.39a4.894 4.894 0 0 0-2.96 4.49v1.95c0 .24.02.47.05.71.22 3.18 1.92 4.88 5.1 5.09.23.03.46.05.71.05h7.8c3.7 0 5.65-1.76 5.84-5.26.01-.19.02-.39.02-.59V14.2a4.9 4.9 0 0 0-3.47-4.68Zm-3.79 7.23h-5c-.41 0-.75-.34-.75-.75s.34-.75.75-.75h5c.41 0 .75.34.75.75s-.34.75-.75.75Z" fill="currentColor"></path>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8">
+                                                <path d="M4.5 3.75a3 3 0 0 0-3 3v.75h21v-.75a3 3 0 0 0-3-3h-15Z" />
+                                                <path fillRule="evenodd" d="M22.5 9.75h-21v7.5a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3v-7.5Zm-18 3.75a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5h-3Z" clipRule="evenodd" />
                                             </svg>
+
                                         </div>
 
                                         <div className="d-flex mt-12">
-                                            <span className="h4 mb-0 d-block hp-text-color-black-bg hp-text-color-dark-0 fw-medium me-4"> Balance </span>
+                                            <span className="h4 mb-0 d-block hp-text-color-black-bg hp-text-color-dark-0 fw-medium me-4"> NPWP </span>
                                             <div></div>
                                         </div>
 
-                                        <span className="hp-caption mt-4 d-block fw-normal hp-text-color-black-60"> April 2022 </span>
-                                        <span className="d-block mt-12 mb-8 h3"> $5,129 </span>
+                                        <span className="d-block mt-12 mb-8 h3">  {data?.countNpwp} </span>
                                     </div>
                                 </div>
                             </div>
@@ -106,18 +137,14 @@ export default function Index({ userData, setuserData }: any) {
                             <div className="mb-18 col-12">
                                 <div className="row align-items-center justify-content-between">
                                     <div className="hp-flex-none w-auto col">
-                                        <span className="d-block hp-p1-body">Balance</span>
-                                        <span className="d-block mt-4 h3 fw-semibold hp-text-color-black-bg hp-text-color-dark-0"> $12.389 </span>
-                                    </div>
-
-                                    <div className="hp-flex-none w-auto col">
-                                        <span className="hp-p1-body d-block">Past 30 Days</span>
+                                        <span className="d-block hp-p1-body">File Management</span>
+                                        <span className="d-block mt-4 h3 fw-semibold hp-text-color-black-bg hp-text-color-dark-0"> {numeral(data?.folder?.[0]?.meta?.size).format('0,0')} KB </span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="overflow-hidden col-12 mb-n24">
-                                <Chart />
+                                <Chart data={data?.folder?.[0]?.children} />
                             </div>
                         </div>
                     </div>
@@ -125,101 +152,45 @@ export default function Index({ userData, setuserData }: any) {
                     <div className="col-12">
                         <div className="row align-items-center justify-content-between">
                             <div className="col-sm-6 col-12">
-                                <span className="h3 fw-semibold hp-text-color-black-bg hp-text-color-dark-0 d-block mb-0"> History </span>
-                                <p className="hp-p1-body mt-4 mb-0">Transection of last 6 months</p>
+                                <span className="h3 fw-semibold hp-text-color-black-bg hp-text-color-dark-0 d-block mb-0"> Users </span>
                             </div>
 
                             <div className="col"></div>
                         </div>
 
                         <div className="row mt-24 mx-0">
-                            <div className="hp-bg-black-0 hp-bg-dark-100 border hp-border-color-black-10 hp-border-color-dark-80 p-12 mb-16 col-12 rounded-5">
-                                <div className="row align-items-center justify-content-between">
-                                    <div className="mb-16 mb-sm-0 col-sm-6 col-12">
-                                        <div className="row align-items-center">
-                                            <div className="hp-flex-none w-auto pe-0 col">
-                                                <div className="hp-cursor-pointer border hp-border-color-dark-80 me-16" style={{ borderRadius: "15px" }}>
-                                                    <div className="overflow-hidden m-4 d-flex hp-bg-danger-4" style={{ minWidth: "64px", width: "64px", height: "64px", borderRadius: "15px" }}>
-                                                        <Image width={100} height={100} src="/app-assets/img/memoji/user-avatar-5.png" alt="User" />
+                            {data?.User.map((mp: any, i: number) => {
+                                return (<div key={i} className="hp-bg-black-0 hp-bg-dark-100 border hp-border-color-black-10 hp-border-color-dark-80 p-12 mb-16 col-12 rounded-5">
+                                    <div className="row align-items-center justify-content-between">
+                                        <div className="mb-16 mb-sm-0 col-sm-6 col-12">
+                                            <div className="row align-items-center">
+                                                <div className="hp-flex-none w-auto pe-0 col">
+                                                    <div className="hp-cursor-pointer border hp-border-color-dark-80 me-16" style={{ borderRadius: "15px" }}>
+                                                        <div className="overflow-hidden m-4 d-flex hp-bg-danger-4" style={{ minWidth: "64px", width: "64px", height: "64px", borderRadius: "15px" }}>
+                                                            <Image width={100} height={100} src={mp.img ?? "/app-assets/img/users/user-" + Math.floor(Math.random() * (21 - 1) + 1) + ".svg"} alt="User" />
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <div className="hp-flex-none w-auto ps-0 col">
-                                                <span className="d-block h4 mb-0">Edward Adams</span>
-                                                <span className="d-block hp-p1-body mt-4">Product Designer</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="text-sm-end text-start col-sm-3 col-6" style={{ minHeight: "50px" }}>
-                                        <span className="d-block h4 fw-normal mb-0"> $ 7734.32 </span>
-                                        <span className="d-block hp-p1-body mt-4">30432</span>
-                                    </div>
-
-                                    <div className="text-end col-sm-3 col-6" style={{ minHeight: "50px" }}>
-                                        <span className="h4">23.23%</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="hp-bg-black-0 hp-bg-dark-100 border hp-border-color-black-10 hp-border-color-dark-80 p-12 mb-16 col-12 rounded-5">
-                                <div className="row align-items-center justify-content-between">
-                                    <div className="mb-16 mb-sm-0 col-sm-6 col-12">
-                                        <div className="row align-items-center">
-                                            <div className="hp-flex-none w-auto pe-0 col">
-                                                <div className="hp-cursor-pointer border hp-border-color-dark-80 me-16" style={{ borderRadius: "15px" }}>
-                                                    <div className="overflow-hidden m-4 d-flex hp-bg-info-4" style={{ minWidth: "64px", width: "64px", height: "64px", borderRadius: "15px" }}>
-                                                        <Image width={100} height={100} src="/app-assets/img/memoji/user-avatar-6.png" alt="User" />
-                                                    </div>
+                                                <div className="hp-flex-none w-auto ps-0 col">
+                                                    <span className="d-block h4 mb-0">{mp?.fullName}</span>
+                                                    <span className="d-block hp-p1-body mt-4">{mp?.username ? '@' + mp?.username : ''}</span>
                                                 </div>
                                             </div>
-                                            <div className="hp-flex-none w-auto ps-0 col">
-                                                <span className="d-block h4 mb-0">John Doe</span>
-                                                <span className="d-block hp-p1-body mt-4">Product Designer</span>
-                                            </div>
+                                        </div>
+
+                                        <div className="text-sm-end text-start col-sm-3 col-6" style={{ minHeight: "50px" }}>
+                                            <span className="d-block h4 fw-normal mb-0">{mp?.phone} </span>
+                                            <span className="d-block hp-p1-body mt-4">{mp?.email}</span>
+                                        </div>
+
+                                        <div className="text-end col-sm-3 col-6 mt-5" style={{ minHeight: "50px" }}>
+                                            <span className="h4">{mp?.status}</span>
                                         </div>
                                     </div>
+                                </div>)
+                            })}
 
-                                    <div className="text-sm-end text-start col-sm-3 col-6" style={{ minHeight: "50px" }}>
-                                        <span className="d-block h4 fw-normal mb-0"> $ 7614.43 </span>
-                                        <span className="d-block hp-p1-body mt-4">949</span>
-                                    </div>
-
-                                    <div className="text-end col-sm-3 col-6" style={{ minHeight: "50px" }}>
-                                        <span className="h4">19.03%</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="hp-bg-black-0 hp-bg-dark-100 border hp-border-color-black-10 hp-border-color-dark-80 p-12 mb-16 col-12 rounded-5">
-                                <div className="row align-items-center justify-content-between">
-                                    <div className="mb-16 mb-sm-0 col-sm-6 col-12">
-                                        <div className="row align-items-center">
-                                            <div className="hp-flex-none w-auto pe-0 col">
-                                                <div className="hp-cursor-pointer border hp-border-color-dark-80 me-16" style={{ borderRadius: "15px" }}>
-                                                    <div className="overflow-hidden m-4 d-flex hp-bg-warning-4" style={{ minWidth: "64px", width: "64px", height: "64px", borderRadius: "15px" }}>
-                                                        <Image width={100} height={100} src="/app-assets/img/memoji/user-avatar-7.png" alt="User" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="hp-flex-none w-auto ps-0 col">
-                                                <span className="d-block h4 mb-0">Fazıl Say</span>
-                                                <span className="d-block hp-p1-body mt-4">Product Designer</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="text-sm-end text-start col-sm-3 col-6" style={{ minHeight: "50px" }}>
-                                        <span className="d-block h4 fw-normal mb-0"> $ 6789.19 </span>
-                                        <span className="d-block hp-p1-body mt-4">732</span>
-                                    </div>
-
-                                    <div className="text-end col-sm-3 col-6" style={{ minHeight: "50px" }}>
-                                        <span className="h4">13.98%</span>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -257,128 +228,36 @@ export default function Index({ userData, setuserData }: any) {
                     </div>
 
                     <div className="col-12">
-                        <span className="h3 d-block fw-semibold hp-text-color-black-bg hp-text-color-dark-0 mb-0"> Recent Activities </span>
-                        <span className="hp-p1-body d-block mt-4">05 Dec 2021</span>
+                        <span className="h3 d-block fw-semibold hp-text-color-black-bg hp-text-color-dark-0 mb-0"> Company </span>
 
                         <div className="row mt-24">
-                            <div className="hp-cursor-pointer hp-transition hp-hover-bg-dark-100 hp-hover-bg-black-10 rounded py-8 mb-16 col-12">
-                                <div className="row align-items-end justify-content-between">
-                                    <div className="col">
-                                        <div className="row align-items-center">
-                                            <div className="hp-flex-none w-auto pe-0 col">
-                                                <div className="me-16 border hp-border-color-black-10 hp-bg-black-0 rounded-3 d-flex align-items-center justify-content-center" style={{ minWidth: "48px", height: "48px" }}>
-                                                    <Image width={30} height={30} src="/app-assets/img/dashboard/zendesk-logo.svg" alt="Zendesk" />
+                            {data?.Company.map((mp: any, i: number) => {
+                                return (<div key={i} className="hp-cursor-pointer hp-transition hp-hover-bg-dark-100 hp-hover-bg-black-10 rounded py-8 mb-16 col-12">
+                                    <div className="row align-items-end justify-content-between">
+                                        <div className="col">
+                                            <div className="row align-items-center">
+                                                <div className="hp-flex-none w-auto pe-0 col">
+                                                    <div className="me-16 border hp-border-color-black-10 hp-bg-black-0 rounded-3 d-flex align-items-center justify-content-center" style={{ minWidth: "48px", height: "48px" }}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8">
+                                                            <path fillRule="evenodd" d="M3 2.25a.75.75 0 0 0 0 1.5v16.5h-.75a.75.75 0 0 0 0 1.5H15v-18a.75.75 0 0 0 0-1.5H3ZM6.75 19.5v-2.25a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1-.75-.75ZM6 6.75A.75.75 0 0 1 6.75 6h.75a.75.75 0 0 1 0 1.5h-.75A.75.75 0 0 1 6 6.75ZM6.75 9a.75.75 0 0 0 0 1.5h.75a.75.75 0 0 0 0-1.5h-.75ZM6 12.75a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 0 1.5h-.75a.75.75 0 0 1-.75-.75ZM10.5 6a.75.75 0 0 0 0 1.5h.75a.75.75 0 0 0 0-1.5h-.75Zm-.75 3.75A.75.75 0 0 1 10.5 9h.75a.75.75 0 0 1 0 1.5h-.75a.75.75 0 0 1-.75-.75ZM10.5 12a.75.75 0 0 0 0 1.5h.75a.75.75 0 0 0 0-1.5h-.75ZM16.5 6.75v15h5.25a.75.75 0 0 0 0-1.5H21v-12a.75.75 0 0 0 0-1.5h-4.5Zm1.5 4.5a.75.75 0 0 1 .75-.75h.008a.75.75 0 0 1 .75.75v.008a.75.75 0 0 1-.75.75h-.008a.75.75 0 0 1-.75-.75v-.008Zm.75 2.25a.75.75 0 0 0-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 0 0 .75-.75v-.008a.75.75 0 0 0-.75-.75h-.008ZM18 17.25a.75.75 0 0 1 .75-.75h.008a.75.75 0 0 1 .75.75v.008a.75.75 0 0 1-.75.75h-.008a.75.75 0 0 1-.75-.75v-.008Z" clipRule="evenodd" />
+                                                        </svg>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div className="hp-flex-none w-auto ps-0 col">
-                                                <span className="d-block hp-p1-body fw-medium hp-text-color-black-bg hp-text-color-dark-0"> Zendesk </span>
-                                                <span className="d-block hp-caption fw-normal hp-text-color-black-60"> 05 Dec 2021 </span>
+                                                <div className="hp-flex-none w-auto ps-0 col">
+                                                    <span className="d-block hp-p1-body fw-medium hp-text-color-black-bg hp-text-color-dark-0"> {mp.name} </span>
+                                                    <span className="d-block hp-caption fw-normal hp-text-color-black-60">NPWP : {mp.npwp} </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div className="hp-flex-none w-auto col">
-                                        <span className="h5 hp-text-color-black-bg hp-text-color-dark-0"> $ 500.00 </span>
-                                    </div>
                                 </div>
-                            </div>
-
-                            <div className="hp-cursor-pointer hp-transition hp-hover-bg-dark-100 hp-hover-bg-black-10 rounded py-8 mb-16 col-12">
-                                <div className="row align-items-end justify-content-between">
-                                    <div className="col">
-                                        <div className="row align-items-center">
-                                            <div className="hp-flex-none w-auto pe-0 col">
-                                                <div className="me-16 border hp-border-color-black-10 hp-bg-black-0 rounded-3 d-flex align-items-center justify-content-center" style={{ minWidth: "48px", height: "48px" }}>
-                                                    <Image width={30} height={30} src="/app-assets/img/dashboard/sales-force-logo.svg" alt="Sales Force" />
-                                                </div>
-                                            </div>
-
-                                            <div className="hp-flex-none w-auto ps-0 col">
-                                                <span className="d-block hp-p1-body fw-medium hp-text-color-black-bg hp-text-color-dark-0"> Sales Force </span>
-                                                <span className="d-block hp-caption fw-normal hp-text-color-black-60"> 24 Dec 2021 </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="hp-flex-none w-auto col">
-                                        <span className="h5 hp-text-color-black-bg hp-text-color-dark-0"> $ 337.00 </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="hp-cursor-pointer hp-transition hp-hover-bg-dark-100 hp-hover-bg-black-10 rounded py-8 mb-16 col-12">
-                                <div className="row align-items-end justify-content-between">
-                                    <div className="col">
-                                        <div className="row align-items-center">
-                                            <div className="hp-flex-none w-auto pe-0 col">
-                                                <div className="me-16 border hp-border-color-black-10 hp-bg-black-0 rounded-3 d-flex align-items-center justify-content-center" style={{ minWidth: "48px", height: "48px" }}>
-                                                    <Image width={30} height={30} src="/app-assets/img/dashboard/apple-logo.svg" alt="Apple" />
-                                                </div>
-                                            </div>
-
-                                            <div className="hp-flex-none w-auto ps-0 col">
-                                                <span className="d-block hp-p1-body fw-medium hp-text-color-black-bg hp-text-color-dark-0"> Apple </span>
-                                                <span className="d-block hp-caption fw-normal hp-text-color-black-60"> 29 Dec 2021 </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="hp-flex-none w-auto col">
-                                        <span className="h5 hp-text-color-black-bg hp-text-color-dark-0"> $ 320.67 </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="hp-cursor-pointer hp-transition hp-hover-bg-dark-100 hp-hover-bg-black-10 rounded py-8 mb-16 col-12">
-                                <div className="row align-items-end justify-content-between">
-                                    <div className="col">
-                                        <div className="row align-items-center">
-                                            <div className="hp-flex-none w-auto pe-0 col">
-                                                <div className="me-16 border hp-border-color-black-10 hp-bg-black-0 rounded-3 d-flex align-items-center justify-content-center" style={{ minWidth: "48px", height: "48px" }}>
-                                                    <Image width={30} height={30} src="/app-assets/img/dashboard/google-logo.svg" alt="Google Inc" />
-                                                </div>
-                                            </div>
-
-                                            <div className="hp-flex-none w-auto ps-0 col">
-                                                <span className="d-block hp-p1-body fw-medium hp-text-color-black-bg hp-text-color-dark-0"> Google Inc </span>
-                                                <span className="d-block hp-caption fw-normal hp-text-color-black-60"> 29 Dec 2021 </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="hp-flex-none w-auto col">
-                                        <span className="h5 hp-text-color-black-bg hp-text-color-dark-0"> $ 127.00 </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="hp-cursor-pointer hp-transition hp-hover-bg-dark-100 hp-hover-bg-black-10 rounded py-8 mb-16 col-12">
-                                <div className="row align-items-end justify-content-between">
-                                    <div className="col">
-                                        <div className="row align-items-center">
-                                            <div className="hp-flex-none w-auto pe-0 col">
-                                                <div className="me-16 border hp-border-color-black-10 hp-bg-black-0 rounded-3 d-flex align-items-center justify-content-center" style={{ minWidth: "48px", height: "48px" }}>
-                                                    <Image width={30} height={30} src="/app-assets/img/dashboard/virgin-logo.svg" alt="Virgin Media" />
-                                                </div>
-                                            </div>
-
-                                            <div className="hp-flex-none w-auto ps-0 col">
-                                                <span className="d-block hp-p1-body fw-medium hp-text-color-black-bg hp-text-color-dark-0"> Virgin Media </span>
-                                                <span className="d-block hp-caption fw-normal hp-text-color-black-60"> 29 Dec 2021 </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="hp-flex-none w-auto col">
-                                        <span className="h5 hp-text-color-black-bg hp-text-color-dark-0"> $ 28.00 </span>
-                                    </div>
-                                </div>
-                            </div>
+                                )
+                            })}
                         </div>
                     </div>
 
-                    <div className="col-12">
+                    {/* <div className="col-12">
                         <span className="h3 d-block fw-semibold hp-text-color-black-bg hp-text-color-dark-0 mb-0"> Upcoming Payments </span>
                         <span className="hp-p1-body d-block mt-4">05 Dec 2021</span>
 
@@ -452,7 +331,7 @@ export default function Index({ userData, setuserData }: any) {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

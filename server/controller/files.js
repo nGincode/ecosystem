@@ -8,66 +8,66 @@ const formatSize = (sizeInBytes) => {
   return `${sizeInKB} KB`;
 };
 
-const getFilesAndFolders = (dirPath) => {
-  let idCounter = 1;
+// const getFilesAndFolders = (dirPath) => {
+//   let idCounter = 1;
 
-  const generateId = () => {
-    return idCounter++;
-  };
+//   const generateId = () => {
+//     return idCounter++;
+//   };
 
-  const result = [];
+//   const result = [];
 
-  function readDirectory(currentPath) {
-    const items = fs.readdirSync(currentPath);
-    const stats = fs.statSync(currentPath);
-    const currentFolder = {
-      id: generateId(),
-      name: path.basename(currentPath),
-      location: currentPath
-        .replace(directoryPath, "")
-        .replace(path.join(directoryPath), ""),
-      type: "folder",
-      meta: {
-        created: moment(stats.ctime).format("DD MMM YYYY"),
-        modified: moment(stats.mtime).format("DD MMM YYYY"),
-        size: "0 KB",
-      },
-      children: [],
-    };
+//   function readDirectory(currentPath) {
+//     const items = fs.readdirSync(currentPath);
+//     const stats = fs.statSync(currentPath);
+//     const currentFolder = {
+//       id: generateId(),
+//       name: path.basename(currentPath),
+//       location: currentPath
+//         .replace(directoryPath, "")
+//         .replace(path.join(directoryPath), ""),
+//       type: "folder",
+//       meta: {
+//         created: moment(stats.ctime).format("DD MMM YYYY"),
+//         modified: moment(stats.mtime).format("DD MMM YYYY"),
+//         size: "0 KB",
+//       },
+//       children: [],
+//     };
 
-    items.forEach((item) => {
-      const itemPath = path.join(currentPath, item);
-      const stats = fs.statSync(itemPath);
-      if (stats.isDirectory()) {
-        currentFolder.children.push(readDirectory(itemPath)); // Rekursif untuk membaca subfolder
-      } else if (stats.isFile()) {
-        currentFolder.children.push({
-          id: generateId(),
-          name: item,
-          location: itemPath.replace(path.join(directoryPath), ""),
-          type: "file",
-          meta: {
-            created: moment(stats.ctime).format("DD MMM YYYY"),
-            modified: moment(stats.mtime).format("DD MMM YYYY"),
-            size: formatSize(stats.size),
-          },
-        });
-      }
-    });
+//     items.forEach((item) => {
+//       const itemPath = path.join(currentPath, item);
+//       const stats = fs.statSync(itemPath);
+//       if (stats.isDirectory()) {
+//         currentFolder.children.push(readDirectory(itemPath)); // Rekursif untuk membaca subfolder
+//       } else if (stats.isFile()) {
+//         currentFolder.children.push({
+//           id: generateId(),
+//           name: item,
+//           location: itemPath.replace(path.join(directoryPath), ""),
+//           type: "file",
+//           meta: {
+//             created: moment(stats.ctime).format("DD MMM YYYY"),
+//             modified: moment(stats.mtime).format("DD MMM YYYY"),
+//             size: formatSize(stats.size),
+//           },
+//         });
+//       }
+//     });
 
-    // Hitung ukuran folder dengan menjumlahkan ukuran isi dalam KB
-    const totalSizeInBytes = currentFolder.children.reduce(
-      (total, content) =>
-        total + parseFloat(content.meta.size.replace(" KB", "")) * 1024,
-      0
-    );
-    currentFolder.meta.size = formatSize(totalSizeInBytes);
-    return currentFolder;
-  }
+//     // Hitung ukuran folder dengan menjumlahkan ukuran isi dalam KB
+//     const totalSizeInBytes = currentFolder.children.reduce(
+//       (total, content) =>
+//         total + parseFloat(content.meta.size.replace(" KB", "")) * 1024,
+//       0
+//     );
+//     currentFolder.meta.size = formatSize(totalSizeInBytes);
+//     return currentFolder;
+//   }
 
-  result.push(readDirectory(dirPath));
-  return result;
-};
+//   result.push(readDirectory(dirPath));
+//   return result;
+// };
 
 const get = async (req, res) => {
   const { dir } = req.params;

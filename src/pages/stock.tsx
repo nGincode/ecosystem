@@ -377,7 +377,8 @@ export default function StockData({ userData, setuserData }: any) {
                                         initialSettings={{ startDate: moment(dateData?.[0]).format('DD/MM/YYYY'), endDate: moment(dateData?.[1]).format('DD/MM/YYYY') }}
                                     >
                                         <input type="text" className="form-control text-center rounded-none ps-8 bg-transparent border-t-0 border-l-0 border-r-0 border-b-2" />
-                                    </DateRangePicker>  </div>
+                                    </DateRangePicker>
+                                </div>
                             </div>
                         </div>
                     </div>

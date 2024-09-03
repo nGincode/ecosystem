@@ -5,8 +5,8 @@
   "devFiles": [],
   "ampDevFiles": [],
   "lowPriorityFiles": [
-    "static/JNx9j1opEsSUtdSwLp4pm/_buildManifest.js",
-    "static/JNx9j1opEsSUtdSwLp4pm/_ssgManifest.js"
+    "static/8sZBs0W6F1EiI4E5N_1Rz/_buildManifest.js",
+    "static/8sZBs0W6F1EiI4E5N_1Rz/_ssgManifest.js"
   ],
   "rootMainFiles": [],
   "pages": {
@@ -14,13 +14,14 @@
       "static/chunks/webpack-63ed5d8c4d9a1507.js",
       "static/chunks/framework-2c16ac744b6cdea6.js",
       "static/chunks/main-ffa90730685af1e5.js",
-      "static/chunks/pages/index-fc5694a5abbe2b18.js"
+      "static/chunks/77-f581ad5a53e03ace.js",
+      "static/chunks/pages/index-7f74f871349eb20b.js"
     ],
     "/_app": [
       "static/chunks/webpack-63ed5d8c4d9a1507.js",
       "static/chunks/framework-2c16ac744b6cdea6.js",
       "static/chunks/main-ffa90730685af1e5.js",
-      "static/css/f9aa8ffc8c138a28.css",
+      "static/css/424e78e3aefbeecc.css",
       "static/chunks/pages/_app-882fecc749c1a191.js"
     ],
     "/_error": [
@@ -52,7 +53,17 @@
       "static/chunks/2b7b2d2a-59ea5c59c9421470.js",
       "static/chunks/29107295-2a9ca7f07685bf37.js",
       "static/chunks/77-f581ad5a53e03ace.js",
-      "static/chunks/pages/converter-4d339454bc7450b7.js"
+      "static/chunks/pages/converter-36182cd705c456fe.js"
+    ],
+    "/converter copy": [
+      "static/chunks/webpack-63ed5d8c4d9a1507.js",
+      "static/chunks/framework-2c16ac744b6cdea6.js",
+      "static/chunks/main-ffa90730685af1e5.js",
+      "static/chunks/674a26a7-24716dbfa685fd5f.js",
+      "static/chunks/2b7b2d2a-59ea5c59c9421470.js",
+      "static/chunks/29107295-2a9ca7f07685bf37.js",
+      "static/chunks/77-f581ad5a53e03ace.js",
+      "static/chunks/pages/converter copy-cad725b2a98e74ae.js"
     ],
     "/efaktur/in": [
       "static/chunks/webpack-63ed5d8c4d9a1507.js",
@@ -62,10 +73,10 @@
       "static/chunks/2b7b2d2a-59ea5c59c9421470.js",
       "static/chunks/77-f581ad5a53e03ace.js",
       "static/chunks/298-80c27e0c9a45ac25.js",
-      "static/chunks/8-8e92dd7f76b83335.js",
+      "static/chunks/466-c54a6275976215c6.js",
       "static/chunks/269-fc93eb723b995434.js",
       "static/css/f43a46de6c0765fb.css",
-      "static/chunks/pages/efaktur/in-d28341ea426b60b8.js"
+      "static/chunks/pages/efaktur/in-2972295b99091f4a.js"
     ],
     "/efaktur/out": [
       "static/chunks/webpack-63ed5d8c4d9a1507.js",
@@ -75,16 +86,16 @@
       "static/chunks/2b7b2d2a-59ea5c59c9421470.js",
       "static/chunks/77-f581ad5a53e03ace.js",
       "static/chunks/298-80c27e0c9a45ac25.js",
-      "static/chunks/8-8e92dd7f76b83335.js",
+      "static/chunks/466-c54a6275976215c6.js",
       "static/chunks/269-fc93eb723b995434.js",
       "static/css/f43a46de6c0765fb.css",
-      "static/chunks/pages/efaktur/out-21af2b846b8c1a01.js"
+      "static/chunks/pages/efaktur/out-747709df3f8d605b.js"
     ],
     "/file": [
       "static/chunks/webpack-63ed5d8c4d9a1507.js",
       "static/chunks/framework-2c16ac744b6cdea6.js",
       "static/chunks/main-ffa90730685af1e5.js",
-      "static/chunks/pages/file-f4ffd75b3767360b.js"
+      "static/chunks/pages/file-c11be5b1d2d1c95b.js"
     ],
     "/npwp": [
       "static/chunks/webpack-63ed5d8c4d9a1507.js",
@@ -115,7 +126,9 @@
       "static/chunks/framework-2c16ac744b6cdea6.js",
       "static/chunks/main-ffa90730685af1e5.js",
       "static/chunks/674a26a7-24716dbfa685fd5f.js",
-      "static/chunks/pages/report-9ee38bc7721b33e5.js"
+      "static/chunks/466-c54a6275976215c6.js",
+      "static/css/f43a46de6c0765fb.css",
+      "static/chunks/pages/report-6d6a83bb5074eda6.js"
     ],
     "/stock": [
       "static/chunks/webpack-63ed5d8c4d9a1507.js",
@@ -125,10 +138,10 @@
       "static/chunks/2b7b2d2a-59ea5c59c9421470.js",
       "static/chunks/77-f581ad5a53e03ace.js",
       "static/chunks/298-80c27e0c9a45ac25.js",
-      "static/chunks/8-8e92dd7f76b83335.js",
+      "static/chunks/466-c54a6275976215c6.js",
       "static/chunks/269-fc93eb723b995434.js",
       "static/css/f43a46de6c0765fb.css",
-      "static/chunks/pages/stock-a2f62dd3831bd0dc.js"
+      "static/chunks/pages/stock-1754c879d8652a66.js"
     ],
     "/users": [
       "static/chunks/webpack-63ed5d8c4d9a1507.js",

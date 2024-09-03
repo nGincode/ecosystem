@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic'
 const Apexcharts = dynamic(() => import('react-apexcharts'), { ssr: false })
 
-export default function Chart() {
+export default function Chart({ data }: any) {
     let optionsAnalyticsBalanceChart = {
         series: [
             {
@@ -131,6 +131,8 @@ export default function Chart() {
     //     );
     //     chart.render();
     // }
+
+
     const chartData = {
         options: {
             fill: {
@@ -198,20 +200,7 @@ export default function Chart() {
                         fontSize: "12px",
                     },
                 },
-                categories: [
-                    "Jan",
-                    "Feb",
-                    "Mar",
-                    "Apr",
-                    "May",
-                    "Jun",
-                    "Jul",
-                    "Aug",
-                    "Sep",
-                    "Oct",
-                    "Nov",
-                    "Dec",
-                ],
+                categories: data?.map((m: any) => m.name)
             },
             legend: {
                 offsetX: 40,
@@ -226,18 +215,13 @@ export default function Chart() {
                         fontSize: "14px",
                     },
                 },
-                min: 0,
-                max: 60000,
                 tickAmount: 4,
             },
         },
         series: [
             {
-                name: "Balance",
-                data: [
-                    28877, 29334, 33233, 36439, 32675, 32333, 33457, 38345, 36783, 39457,
-                    22459, 39840,
-                ],
+                name: "KB",
+                data: data?.map((m: any) => Number(m.meta.size)),
             },
         ],
     };

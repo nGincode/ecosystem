@@ -11,6 +11,7 @@ const npwp = require("./npwp");
 const company = require("./company");
 const auth = require("./auth");
 const permission = require("./permission");
+const dashboard = require("./dashboard");
 
 router.get("/", async (req, res) => {
   // res.send("API Starting!");
@@ -72,6 +73,7 @@ router.use("/npwp", verifToken, npwp);
 router.use("/company", verifToken, company);
 router.use("/stock", verifToken, stock);
 router.use("/file", verifToken, file);
+router.use("/dashboard", verifToken, dashboard);
 router.use("/", auth);
 
 module.exports = router;
