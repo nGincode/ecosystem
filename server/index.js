@@ -17,7 +17,7 @@ const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
-  server.use(logger("dev"));
+  dev && server.use(logger("dev"));
   server.use(cookieParser());
   server.use(cors({ origin: true }));
   server.use(express.static(path.join(__dirname, "../public")));
